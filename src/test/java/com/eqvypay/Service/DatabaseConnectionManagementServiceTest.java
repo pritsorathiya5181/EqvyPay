@@ -5,37 +5,39 @@ import static org.junit.Assert.assertNotNull;
 
 import java.sql.Connection;
 
-import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import com.eqvypay.util.constants.Environment;
 
-public class DatabaseConnectionTest {
+@SpringBootTest
+public class DatabaseConnectionManagementServiceTest {
+	
+	@Autowired
+	private DatabaseConnectionManagementService dcms;
 
-	@Test
+	@org.junit.jupiter.api.Test 
 	public void shouldInstantiateDatabaseConnection() {
 		assertNotNull(new DatabaseConnectionManagementService());
 	}
 	
-	@Test
+	@org.junit.jupiter.api.Test
 	public void shouldCheckConnectionForTestDb() throws Exception {
-		DatabaseConnectionManagementService dcms = new DatabaseConnectionManagementService();
 		Connection connection = dcms.getConnection(Environment.TEST);
 		assertFalse(connection.isClosed());
 		connection.close();
 	}
 	
-	@Test
+	@org.junit.jupiter.api.Test
 	public void shouldCheckConnectionForDevDb() throws Exception {
-		DatabaseConnectionManagementService dcms = new DatabaseConnectionManagementService();
 		Connection connection = dcms.getConnection(Environment.DEV);
 		assertFalse(connection.isClosed());
 		connection.close();
 		
 	}
 
-	@Test
+	@org.junit.jupiter.api.Test
 	public void shouldCheckConnectionForProdDb() throws Exception {
-		DatabaseConnectionManagementService dcms = new DatabaseConnectionManagementService();
 		Connection connection = dcms.getConnection(Environment.PROD);
 		assertFalse(connection.isClosed());
 		connection.close();

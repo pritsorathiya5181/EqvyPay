@@ -2,6 +2,7 @@ package com.eqvypay;
 
 import org.springframework.boot.CommandLineRunner;
 
+import java.util.Arrays;
 import java.util.Scanner;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,8 +36,10 @@ public class EqvyPayApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception{
 		// Welcome, Login and Registration
+	
+		boolean test = Arrays.stream(env.getActiveProfiles()).anyMatch(profile->profile.equals("test"));
+		if(!test) {
 		Scanner scanner = new Scanner(System.in);
-		
 		System.out.println("----------------------");
 		System.out.println("Welcome");
 		System.out.println("----------------------");
@@ -108,7 +111,8 @@ public class EqvyPayApplication implements CommandLineRunner {
 		default:
 			System.out.println("Invalid Input");
 		}
-		
+		}
+		System.out.println("Started Application in Test Mode");
 	}
 
 }

@@ -1,13 +1,12 @@
 package com.eqvypay;
 
-import static org.junit.Assert.assertNotNull;
+import org.springframework.boot.test.context.SpringBootTest;
 
-import org.junit.Test;
-
+@SpringBootTest
 public class EqvyPayApplicationTest {
 
-	@Test
+	@org.junit.jupiter.api.Test
 	public void shouldInstantiateEqvyPayApplication(){
-		assertNotNull(new EqvyPayApplication());
+		System.out.println("tests started");
 	}
 }
