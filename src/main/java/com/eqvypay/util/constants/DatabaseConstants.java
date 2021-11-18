@@ -2,20 +2,29 @@ package com.eqvypay.util.constants;
 
 public class DatabaseConstants {
 
-	public static final String TEST_URL = "jdbc:mysql://db-5308.cs.dal.ca:3306/CSCI5308_11_TEST";
-	public static final String TEST_USERNAME = "CSCI5308_11_TEST_USER";
-	public static final String TEST_PASSWORD = "shuloVokoy2phalo";
+	public static final String TEST_URL = "db.test_url";
+	public static final String TEST_USERNAME = "db.test_username";
+	public static final String TEST_PASSWORD = "db.test_password";
 
 	//
 	
-	public static final String DEV_URL = "jdbc:mysql://db-5308.cs.dal.ca:3306/CSCI5308_11_DEVINT";
-	public static final String DEV_USERNAME = "CSCI5308_11_DEVINT_USER";
-	public static final String DEV_PASSWORD = "Di0xai8eiquiephu";
+	public static final String DEV_URL = "db.dev_url";
+	public static final String DEV_USERNAME = "db.dev_username";
+	public static final String DEV_PASSWORD = "db.dev_password";
 
 	//
 
-	public static final String PROD_URL = "jdbc:mysql://db-5308.cs.dal.ca:3306/CSCI5308_11_PRODUCTION";
-	public static final String PROD_USERNAME = "CSCI5308_11_PRODUCTION_USER";
-	public static final String PROD_PASSWORD = "uiL3Sheog7oogahn";
+	public static final String PROD_URL = "db.prod_url";
+	public static final String PROD_USERNAME = "db.prod_username";
+	public static final String PROD_PASSWORD = "db.prod_password";
+	
+	// USER SQL STATEMENTS
+	public static final String INSERT_USER = "INSERT INTO Users (uuid,name,email,contact,password,security_answer) VALUES (?,?,?,?,?,?)";
+	
+	
+	// GENERAL SQL
+	public static final String SELECT = "SELECT * FROM %s ";
+	
+	
 
 }

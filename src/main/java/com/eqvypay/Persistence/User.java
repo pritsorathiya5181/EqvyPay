@@ -3,12 +3,16 @@ package com.eqvypay.Persistence;
 import java.util.UUID;
 
 public class User {
-
+	
+	public void setUuid(UUID uuid) {
+		this.uuid = uuid;
+	}
 	private UUID uuid;
 	private String name;
 	private String email;
 	private String contact;
 	private String password;
+	private String securityAnswer;
 	
 	// 
 	
@@ -43,6 +47,12 @@ public class User {
 	}
 	public void setPassword(String password) {
 		this.password = password;
+	}
+	public String getSecurityAnswer() {
+		return securityAnswer;
+	}
+	public void setSecurityAnswer(String securityAnswer) {
+		this.securityAnswer = securityAnswer;
 	}
 	 
 }

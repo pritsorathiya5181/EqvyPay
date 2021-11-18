@@ -1,7 +1,114 @@
 package com.eqvypay;
 
-public class EqvyPayApplication {
- public static void main(String[] args) {
-	System.out.println("Hello World!");
-}
+import org.springframework.boot.CommandLineRunner;
+
+import java.util.Scanner;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.Banner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.core.env.Environment;
+
+import com.eqvypay.Persistence.User;
+import com.eqvypay.Service.AuthenticationService;
+import com.eqvypay.Service.DatabaseConnectionManagementService;
+import com.eqvypay.Service.UserRepository;
+
+@SpringBootApplication(scanBasePackages = {"com.eqvypay.Service"})
+public class EqvyPayApplication implements CommandLineRunner {
+	@Autowired
+	private Environment env;
+	
+	@Autowired 
+	private UserRepository userRepository;
+	
+	@Autowired
+	private DatabaseConnectionManagementService dcms;
+	
+	public static void main(String[] args) {
+		SpringApplication app = new SpringApplication(EqvyPayApplication.class);
+        app.setBannerMode(Banner.Mode.OFF);
+        app.run(args);
+	}
+	
+	@Override
+	public void run(String... args) throws Exception{
+		// Welcome, Login and Registration
+		Scanner scanner = new Scanner(System.in);
+		
+		System.out.println("----------------------");
+		System.out.println("Welcome");
+		System.out.println("----------------------");
+		System.out.println("1. Login");
+		System.out.println("2. Register");
+		System.out.println("3. Forgot Password");
+		
+		boolean loggedIn = false;
+		
+		Integer option = scanner.nextInt();
+		switch(option)  {
+		case 1:
+			System.out.println("Enter email");
+			String email = scanner.next();
+			System.out.println("Enter password");
+			String password = scanner.next();
+			System.out.println("Hashed password is "+AuthenticationService.getHashedPassword(password));
+			User user = userRepository.getUserByEmailAndPassword(email, AuthenticationService.getHashedPassword(password));
+			if(!(user==null)) {
+				System.out.println("Successfully Logged In");
+				System.out.println(user.getContact());
+				loggedIn = true;
+			}
+			else {
+				System.out.println("error in login please try again");
+				main(args);
+			}
+			break;
+		case 2:
+			System.out.println("Enter your name");
+			String name = scanner.next();
+			System.out.println("Enter your email");
+			String registrationEmail = scanner.next();
+			System.out.println("Enter your phone number");
+			String contact = scanner.next();
+			System.out.println("Enter your password");
+			String registrationPassword = scanner.next();
+			System.out.println("Enter confirm password");
+			String confirmPassword = scanner.next();
+			System.out.println("What is your first school name");	
+			String securityAnswer = scanner.next();
+			User newUser = new User();
+			newUser.setName(name);
+			newUser.setEmail(registrationEmail);
+			newUser.setContact(contact);
+			newUser.setPassword(AuthenticationService.getHashedPassword(registrationPassword));
+			newUser.setSecurityAnswer(securityAnswer);
+			userRepository.save(newUser);
+			main(args);
+			break;
+		case 3:
+			System.out.println("Enter your email");
+			String userEmail = scanner.next();
+			User oldUser = userRepository.getByEmail(userEmail);
+			System.out.println("What is your first school name");
+			String providedSecurityAnswer = scanner.next();
+			if(providedSecurityAnswer.equals(oldUser.getSecurityAnswer())) {
+				System.out.println("Enter passowrd");
+				String newPassword = scanner.next();
+				System.out.println("Enter confirm password");
+				String confirmNewPassword = scanner.next();
+				oldUser.setPassword(newPassword);
+				userRepository.save(oldUser);
+			}
+			else {
+				System.out.println("Incorrect security answer, please try again");
+			}
+			break;
+		default:
+			System.out.println("Invalid Input");
+		}
+		
+	}
+
 }
