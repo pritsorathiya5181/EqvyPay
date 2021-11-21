@@ -83,6 +83,5 @@ public class UserService implements UserRepository {
 				+ " ,password varchar(255)"
 				+ " ,security_answer varchar(255) );"
 				);
-		
 	}
 }
