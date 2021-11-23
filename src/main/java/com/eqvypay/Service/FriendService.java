@@ -34,6 +34,10 @@ public class FriendService {
 				continue;
 			}
 			
+			if(option == 3) {
+				break;
+			}
+			
 			DatabaseConnectionManagementService connectionManagement = new DatabaseConnectionManagementService();
 			Connection connection = connectionManagement.getConnection(Environment.DEV);
 	
@@ -82,10 +86,88 @@ public class FriendService {
 					break;
 				case 3:
 					break;
+				default: 
+					break;
 			}
-			scanner.close();
+		}
+	}
+	
+	public void removeFriend(User user) throws Exception {
+		
+		Scanner scanner = new Scanner(System.in);
+		String input = "";
+		
+		while(true) {
+			System.out.println("**********************Remove Friend************************");
+			System.out.println("[1] Remove friend by email");
+			System.out.println("[2] Remove friend by phone number");
+			System.out.println("[3] Exit");
+			try {
+				input = scanner.nextLine();
+			} catch (Exception e1) {
+			}
+
+			Integer option = 0;
+			try {
+				option = Integer.valueOf(input);
+			} catch (NumberFormatException e) {
+				System.out.println("Unknown Input. Please try again!");
+				continue;
+			}
 			
-			break;	
+			if(option == 3) {
+				break;
+			}
+			
+			DatabaseConnectionManagementService connectionManagement = new DatabaseConnectionManagementService();
+			Connection connection = connectionManagement.getConnection(Environment.DEV);
+	
+			switch (option) {
+				case 1:
+					System.out.println("Enter your friend's email id");
+					String friendEmail = scanner.nextLine();
+					ResultSet result = null;
+					try {
+						PreparedStatement selectQuery = connection.prepareStatement("select * from Users where email = ?");
+						selectQuery.setString(1, friendEmail);
+						result = selectQuery.executeQuery();
+					}catch(SQLException e) {
+						System.out.println("Enter a valid email id of a registered user!");
+					}
+
+					String friendUuid = null;
+					while(result.next()) {
+						friendUuid = result.getString("uuid");
+					}
+					PreparedStatement insertQuery = connection.prepareStatement("delete from Friend where friend_id = ?");
+					insertQuery.setString(1, friendUuid);
+					insertQuery.execute();
+					break;
+				case 2:
+					System.out.println("Enter your friend's contact number");
+					String friendContactNo = scanner.nextLine();
+					result = null;
+					try {
+						PreparedStatement selectQuery = connection.prepareStatement("select * from Users where contact = ?");
+						selectQuery.setString(1, friendContactNo);
+						result = selectQuery.executeQuery();
+					}catch(SQLException e) {
+						System.out.println("Enter a valid contact number of a registered user!");
+					}
+
+					friendUuid = null;
+					while(result.next()) {
+						friendUuid = result.getString("uuid");
+					}
+					insertQuery = connection.prepareStatement("delete from Friend where friend_id = ?");
+					insertQuery.setString(1, friendUuid);
+					insertQuery.execute();
+					break;
+				case 3:
+					break;
+				default:
+					break;
+			}
 		}
 	}
 	
