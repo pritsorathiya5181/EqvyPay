@@ -19,13 +19,16 @@ import com.eqvypay.Service.AuthenticationService;
 import com.eqvypay.Service.DatabaseConnectionManagementService;
 import com.eqvypay.Service.UserRepository;
 
-@SpringBootApplication(scanBasePackages = {"com.eqvypay.Service"})
+@SpringBootApplication(scanBasePackages = {"com.eqvypay.Service","com.eqvypay.Web"})
 public class EqvyPayApplication implements CommandLineRunner {
 	@Autowired
 	private Environment env;
 	
 	@Autowired 
 	private UserRepository userRepository;
+	
+	@Autowired
+	private UserMenu userMenu;
 
 	@Autowired
 	private ExpenseRepository expenseRepository;
@@ -45,6 +48,8 @@ public class EqvyPayApplication implements CommandLineRunner {
 	
 		boolean test = Arrays.stream(env.getActiveProfiles()).anyMatch(profile->profile.equals("test"));
 		if(!test) {
+		boolean loggedIn = false;
+			
 		Scanner scanner = new Scanner(System.in);
 		System.out.println("----------------------");
 		System.out.println("Welcome");
@@ -52,25 +57,22 @@ public class EqvyPayApplication implements CommandLineRunner {
 		System.out.println("1. Login");
 		System.out.println("2. Register");
 		System.out.println("3. Forgot Password");
-		
-		boolean loggedIn = false;
+		System.out.println("0. for exit");
 		
 		Integer option = scanner.nextInt();
+		User user = null;
 		switch(option)  {
+		case 0:
+			break;
 		case 1:
 			System.out.println("Enter email");
 			String email = scanner.next();
 			System.out.println("Enter password");
 			String password = scanner.next();
 			System.out.println("Hashed password is "+AuthenticationService.getHashedPassword(password));
-			User user = userRepository.getUserByEmailAndPassword(email, AuthenticationService.getHashedPassword(password));
-			if(!(user==null)) {
-				System.out.println("Successfully Logged In");
-				System.out.println(user.getContact());
+			user = userRepository.getUserByEmailAndPassword(email, AuthenticationService.getHashedPassword(password));
+			if(!(user.getEmail()==null)) {
 				loggedIn = true;
-
-				UserMenu userMenu = new UserMenu();
-				userMenu.userOptions(expenseRepository);
 			}
 			else {
 				System.out.println("error in login please try again");
@@ -120,7 +122,18 @@ public class EqvyPayApplication implements CommandLineRunner {
 		default:
 			System.out.println("Invalid Input");
 		}
+		if(loggedIn) {
+			userMenu.userNewOptions(user);
+			// just testing manage expense
+		//	ManageExpenseOption manageExpenseOption = new ManageExpenseOption();
+			//System.out.println("Managing options for user "+user.getEmail());
+			//boolean done = manageExpenseOption.expenseOptions(user,expenseRepository);
+			
+			
+		}else {
+			throw new Exception("Error: Invalid Login Creds, Application Exit");
 		}
+		} 
 		System.out.println("Started Application in Test Mode");
 	}
 }

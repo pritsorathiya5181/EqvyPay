@@ -25,6 +25,7 @@ public class UserService implements UserRepository {
 	Connection connection = dcms.getConnection(Environment.DEV);
 	Statement statement = connection.createStatement();
 	ResultSet resultSet = statement.executeQuery("SELECT * from Users WHERE email ="+"'"+email+"'"+"AND password="+"'"+password+"'");
+	System.out.println(resultSet.toString());
 	return DtoUtils.getUserFromResultSet(resultSet);
 	}
 	

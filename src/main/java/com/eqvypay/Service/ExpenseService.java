@@ -5,8 +5,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 import com.eqvypay.Persistence.Expense;
+import com.eqvypay.Persistence.ExpenseDto;
 import com.eqvypay.Persistence.Group;
 import com.eqvypay.util.constants.DatabaseConstants;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,26 +34,23 @@ public class ExpenseService implements ExpenseRepository {
     }
 
     @Override
-    public void save(Expense expense) throws Exception {
-        Connection connection = dcms.getConnection(Environment.DEV);
-        PreparedStatement preparedStatement = connection.prepareStatement(DatabaseConstants.INSERT_EXPENSE);
-        preparedStatement.setString(1, expense.getGroupId());
-        preparedStatement.setFloat(2, expense.getExpenseAmt());
-        preparedStatement.setString(3, expense.getExpenseDesc());
-        preparedStatement.setString(4, expense.getCurrencyType());
-        int count = preparedStatement.executeUpdate();
-        if(count>0) {
-            System.out.println("Expense Added into Db");
-        }
+    public Expense save(Expense expense) throws Exception {
+    	System.out.println("trying to save expense");
+        expense.setId(UUID.randomUUID().toString());
+        return expense;
     }
+    
 
     @Override
     public void createTable() throws Exception {
         Connection connection = dcms.getConnection(Environment.DEV);
         Statement s = connection.createStatement();
         s.executeUpdate("CREATE TABLE Expenses"
-                + " ( groupId varchar(255)"
-                + " ,expenseId varchar(255)"
+                + " ( id varchar(255)"
+                + ",sourceUserId varchar(255)"
+                + ",targetUserId varchar(266)"
+                + ",groupId varchar(255)"
+                + " ,expenseType varchar(255)"
                 + " ,expenseAmt float"
                 + " ,expenseDesc varchar(255)"
                 + " ,currencyType varchar(255) );"
@@ -71,4 +71,52 @@ public class ExpenseService implements ExpenseRepository {
         }
         return tableExists;
     }
+
+	@Override
+	public boolean saveAll(List<Expense> expenses) throws Exception {
+			Connection connection = dcms.getConnection(Environment.DEV);
+	        for(Expense expense:expenses) {
+			PreparedStatement preparedStatement = connection.prepareStatement(DatabaseConstants.INSERT_EXPENSE);
+	        System.out.println("SORUCEBUSERWID "+expense.getSourceUserId());
+			preparedStatement.setString(1,expense.getId());
+	        preparedStatement.setString(2,expense.getSourceUserId());
+	        preparedStatement.setString(3,expense.getTargetUserId());
+	        preparedStatement.setString(4,expense.getGroupId());
+	        preparedStatement.setString(5,expense.getExpenseType().getType());
+	        preparedStatement.setFloat(6, expense.getExpenseAmt());
+	        preparedStatement.setString(7, expense.getExpenseDesc());
+	        preparedStatement.setString(8, expense.getCurrencyType());
+	        try {
+	            int count = preparedStatement.executeUpdate();
+	            if(count>0) {
+	                System.out.println("Expense Added into Db");
+	            }
+	        		
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+	        }
+		return true;
+	}
+
+	@Override
+	public List<Expense> getExpensesByUserId(String userId) throws Exception {
+		Connection connection = dcms.getConnection(Environment.DEV);
+		Statement statement = connection.createStatement();
+		ResultSet rs = statement.executeQuery("SELECT * from Expenses where sourceUserId = '"+userId+"'"
+				+ " OR targetUserId = '"+userId+"'");
+		return DtoUtils.getExpenseFromResultSet(rs);
+	}
+
+	@Override
+	public boolean settleExpense(Expense expense) throws Exception {
+		Connection connection = dcms.getConnection(Environment.DEV);
+		Statement statement = connection.createStatement();
+		int count = statement.executeUpdate("DELETE from Expenses where id = '"+expense.getId()+"'");
+		if(count>0) {
+			System.out.println("Success!");
+			return true;
+		}
+		return false;
+	}
 }

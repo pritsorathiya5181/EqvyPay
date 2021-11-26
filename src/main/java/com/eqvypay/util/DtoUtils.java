@@ -3,10 +3,16 @@ package com.eqvypay.util;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
+import com.eqvypay.Persistence.Expense;
 import com.eqvypay.Persistence.Group;
 import com.eqvypay.Persistence.User;
+import com.eqvypay.util.constants.enums.ExpenseType;
+import com.mysql.cj.protocol.ResultsetRow;
+
+import ch.qos.logback.core.encoder.ByteArrayUtil;
 
 public class DtoUtils {
 
@@ -25,6 +31,34 @@ public class DtoUtils {
 			user.setSecurityAnswer(securityAnswer);
 		}
 		return user;
+	}
+	public static List<Expense> getExpenseFromResultSet(ResultSet resultSet) throws Exception {
+	
+		List<Expense> expenses = new ArrayList<>();
+		while(resultSet.next()) {
+			String id = resultSet.getString("id");
+			String targetUserId = resultSet.getString("targetUserId");
+			String groupId=resultSet.getString("groupId");
+			String expenseType = resultSet.getString("expenseType");
+			float expenseAmt  = resultSet.getFloat("expenseAmt");
+			String expenseDesc = resultSet.getString("expenseDesc");
+			String currencyType = resultSet.getString("currencyType");
+			String sourceUserId = resultSet.getString("sourceUserId");
+			
+			Expense expense = new Expense();
+			expense.setId(id);
+			expense.setCurrencyType(currencyType);
+			expense.setExpenseAmt(expenseAmt);
+			expense.setExpenseType(ExpenseType.valueOf(expenseType));
+			expense.setGroupId(groupId);
+			expense.setSourceUserId(sourceUserId);
+			expense.setTargetUserId(targetUserId);
+			expense.setExpenseDesc(expenseDesc);
+			
+			expenses.add(expense);
+			//
+		}
+		return expenses;
 	}
 
 	public static ArrayList<Group> getGroupsFromResultSet(ResultSet resultSet) throws SQLException {
