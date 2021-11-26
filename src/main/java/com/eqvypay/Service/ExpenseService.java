@@ -77,7 +77,6 @@ public class ExpenseService implements ExpenseRepository {
 			Connection connection = dcms.getConnection(Environment.DEV);
 	        for(Expense expense:expenses) {
 			PreparedStatement preparedStatement = connection.prepareStatement(DatabaseConstants.INSERT_EXPENSE);
-	        System.out.println("SORUCEBUSERWID "+expense.getSourceUserId());
 			preparedStatement.setString(1,expense.getId());
 	        preparedStatement.setString(2,expense.getSourceUserId());
 	        preparedStatement.setString(3,expense.getTargetUserId());
