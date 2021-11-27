@@ -61,6 +61,17 @@ public class DtoUtils {
 		return expenses;
 	}
 
+	public static int getCountOfRecords(ResultSet rs){
+		int count = 0;
+		try {
+			while (rs.next())
+				count++;
+		}catch (Exception e){
+			System.out.println(e.toString());
+		}
+		return count;
+	}
+
 	public static ArrayList<Group> getGroupsFromResultSet(ResultSet resultSet) throws SQLException {
 		ArrayList<Group> groups = new ArrayList<Group>();
 		Group group;
@@ -75,5 +86,12 @@ public class DtoUtils {
 			groups.add(group);
 		}
 		return groups;
+	}
+
+
+
+	public static String getGroupNameFromId(String id) throws SQLException {
+return "ds";
+
 	}
 }

@@ -1,13 +1,14 @@
 package com.eqvypay.Web;
 
 import com.eqvypay.Persistence.Group;
+import com.eqvypay.Persistence.User;
 import com.eqvypay.Service.GroupRepository;
 
 import java.util.Scanner;
 
 public class ManageGroupOption {
 
-    public void groupOptions(GroupRepository groupRepository){
+    public void groupOptions(User user, GroupRepository groupRepository){
 
         Scanner sc = new Scanner(System.in);
         int choice;
@@ -19,7 +20,7 @@ public class ManageGroupOption {
             System.out.println("1. Create group");
             System.out.println("2. Join group");
             System.out.println("3. Leave group");
-            System.out.println("2. Delete group");
+            System.out.println("4. Delete group");
             System.out.println("Select your choice: ");
 
             choice = sc.nextInt();
@@ -49,12 +50,31 @@ public class ManageGroupOption {
                     break;
 
                 case 2:
+                    System.out.println("Enter group ID to join");
+                    try {
+                        groupRepository.addGroupMember(user, sc.next());
+                    }catch (Exception e){
+                        System.out.println(e.toString());
+                    }
                     break;
 
                 case 3:
+                    try {
+                        groupRepository.removeGroupMember(user);
+                    }catch (Exception e){
+                        System.out.println(e.toString());
+                    }
                     break;
 
                 case 4:
+                    System.out.println("Enter group name");
+                    String group_name = sc.next();
+                    try {
+                        groupRepository.deleteGroup(group_name);
+                    }catch (Exception e){
+                        System.out.println("Error: " + e.toString());
+                    }
+
                     break;
 
                 default:

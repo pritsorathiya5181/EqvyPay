@@ -1,6 +1,8 @@
 package com.eqvypay.Service;
 
 import com.eqvypay.Persistence.Group;
+import com.eqvypay.Persistence.User;
+import com.eqvypay.util.DtoUtils;
 import com.eqvypay.util.constants.DatabaseConstants;
 import com.eqvypay.util.constants.Environment;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class GroupService implements GroupRepository{
@@ -29,10 +33,52 @@ public class GroupService implements GroupRepository{
         System.out.println("Groups table created");
 
     }
+    @Override
+    public void createGroupMembersTable() throws Exception {
+        Connection connection = dcms.getConnection(Environment.DEV);
+        Statement stmt = connection.createStatement();
+
+        stmt.executeUpdate("CREATE TABLE GroupMembers"
+                + " ( group_id varchar(255)"
+                + ",uuid varchar(255)  );");
+        System.out.println("Groups table created");
+
+    }
+
+    @Override
+    public void removeGroupMember(User user) throws Exception {
+        Connection connection = dcms.getConnection(Environment.DEV);
+        Statement stmt = connection.createStatement();
+        ResultSet rs = stmt.executeQuery("SELECT * FROM GroupMembers WHERE uuid ='"+user.getUuid()+"'");
+        // rs is, group_id column from GroupMembers
+        List<String> ids = new ArrayList<>();
+        while (rs.next()){
+            ids.add(rs.getString("group_id"));
+        }
+
+        List<String> groupsJoined = new ArrayList<>();
+        for(String id: ids){
+            rs = stmt.executeQuery("SELECT group_name FROM Groups WHERE group_id ='"+id+"'");
+            groupsJoined.add(rs.getString("group_name"));
+        }
+
+        System.out.println("User " + user.getName() + " has joined following groups:");
+        for(String s: groupsJoined){
+            System.out.print(s + ", ");
+        }
+
+
+
+
+
+
+
+
+
+    }
 
     @Override
     public boolean tableExist(String tableName) throws Exception {
-        System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa");
         Connection connection = dcms.getConnection(Environment.DEV);
         boolean tableExists = false;
         try (ResultSet rs = connection.getMetaData().getTables(null, null, tableName, null)) {
@@ -66,7 +112,13 @@ public class GroupService implements GroupRepository{
     }
 
     @Override
-    public void deleteGroupTable() throws Exception {
+    public void deleteGroup(String gName) throws Exception {
+//        Connection connection = dcms.getConnection(Environment.DEV);
+//
+//        Statement stmt = connection.createStatement();
+//        stmt.execute("DELETE FROM Groups WHERE group_name ="+ gName +";" );
+//        System.out.println("Group " + gName + " deleted");
+
 
     }
 
@@ -76,7 +128,19 @@ public class GroupService implements GroupRepository{
     }
 
     @Override
-    public void addGroupMember(Group group) throws Exception {
+    public void addGroupMember(User user, String inputId) throws Exception {
+        Connection connection = dcms.getConnection(Environment.DEV);
+        Statement stmt = connection.createStatement();
+        ResultSet rs = stmt.executeQuery("SELECT * FROM Groups WHERE group_id ='"+inputId+"'");
+        if(DtoUtils.getCountOfRecords(rs) == 1){
+            //Group exists
+            if(!tableExist("GroupMembers")){
+                createGroupMembersTable();
+            }
+            stmt.executeUpdate("INSERT INTO GroupMembers VALUES ('"+ inputId + "','" + user.getUuid() +"')");
+        }else{
+            System.out.println("Group does not exist. Please try again");
+        }
 
     }
 }

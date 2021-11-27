@@ -39,7 +39,7 @@ public class UserMenu {
 					case 2:
 						System.out.println("Manage group option selected");
 						ManageGroupOption manageGroupOption = new ManageGroupOption();
-						manageGroupOption.groupOptions(groupRepository);
+						manageGroupOption.groupOptions(user, groupRepository);
 
 						break;
 	                case 3:
