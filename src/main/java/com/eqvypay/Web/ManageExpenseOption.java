@@ -218,7 +218,7 @@ public class ManageExpenseOption {
             	for(int i=0;i<settlementIndexes.size();i++) {
             		Expense expenseToBeSettled = expenses.get(i);
               		Currency currency = Currency.getInstance(expenseToBeSettled.getCurrencyType());
-              		boolean settled = expenseRepository.settleExpense(expenseToBeSettled);
+              			boolean settled = expenseRepository.settleExpense(expenseToBeSettled);
             		if(settled) {
             			System.out.println("Expense of :"+expenseToBeSettled.getExpenseAmt()+" settled!");
             		}
