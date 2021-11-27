@@ -5,6 +5,7 @@ import com.eqvypay.Service.ExpenseRepository;
 
 import java.util.Scanner;
 
+import com.eqvypay.Service.GroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +14,10 @@ public class UserMenu {
 	
 	@Autowired
 	private ExpenseRepository expenseRepository;
-	
+
+	@Autowired
+	private GroupRepository groupRepository;
+
 	public void userNewOptions(User user) throws Exception {
 		  Scanner sc = new Scanner(System.in);
 	        while (true) {
@@ -30,6 +34,14 @@ public class UserMenu {
 
 	            int option = sc.nextInt();
 	            switch (option) {
+
+
+					case 2:
+						System.out.println("Manage group option selected");
+						ManageGroupOption manageGroupOption = new ManageGroupOption();
+						manageGroupOption.groupOptions(groupRepository);
+
+						break;
 	                case 3:
 	                	System.out.println("Manage option selected");
 	                    ManageExpenseOption manageExpenseOption = new ManageExpenseOption();

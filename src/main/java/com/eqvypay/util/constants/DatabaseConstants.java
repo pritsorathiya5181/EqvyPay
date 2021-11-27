@@ -21,6 +21,9 @@ public class DatabaseConstants {
 	// USER SQL STATEMENTS
 	public static final String INSERT_USER = "INSERT INTO Users (uuid,name,email,contact,password,security_answer) VALUES (?,?,?,?,?,?)";
 
+	// GROUP SQL STATEMENTS
+	public static final String INSERT_GROUP = "INSERT INTO Groups (group_id,group_name,group_desc) VALUES (?,?,?)";
+
 	// EXPENSE SQL STATEMENTS
 	public static final String INSERT_EXPENSE = "INSERT INTO Expenses (id,sourceUserId,targetUserId,groupId,expenseType,expenseAmt,expenseDesc,currencyType) VALUES (?,?,?,?,?,?,?,?)";
 
