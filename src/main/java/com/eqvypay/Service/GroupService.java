@@ -76,24 +76,6 @@ public class GroupService implements GroupRepository{
             System.out.println("Invalid group name. Please try again");
         }
 
-
-
-
-
-//
-//        System.out.println("User " + user.getName() + " has joined following groups:");
-//        for(String s: groupsJoined){
-//            System.out.print(s + ", ");
-//        }
-//
-
-
-
-
-
-
-
-
     }
 
     @Override
@@ -124,26 +106,34 @@ public class GroupService implements GroupRepository{
         if(count>0) {
             System.out.println("Group " + group.getGroupName() + "inserted to the database");
         }
-
-
-
-
     }
 
     @Override
-    public void deleteGroup(String gName) throws Exception {
-//        Connection connection = dcms.getConnection(Environment.DEV);
-//
+    public void deleteGroup(String groupName, User user) throws Exception {
+        Connection connection = dcms.getConnection(Environment.DEV);
+        Statement stmt = connection.createStatement();
+        ResultSet rs = stmt.executeQuery("SELECT group_id FROM Groups WHERE group_name ='" + groupName + "'");
+        String groupId = "";
+        while (rs.next()){
+            groupId = rs.getString("group_id");
+        }
+        if(groupId != ""){
+            String query = "SELECT * FROM GroupMembers WHERE group_id='" + groupId + "' AND uuid='" + user.getUuid() + "'";
+            rs = stmt.executeQuery(query);
+            int count = DtoUtils.getCountOfRecords(rs);
+            //check if group_id, and user_id exits in GroupMembers
+            if(count == 1)
+                stmt.executeUpdate("DELETE FROM Groups WHERE group_name ='" + groupName + "'");
+            else
+                System.out.println("You cannot delete this group as you are not a member of it.");
+        }else {
+            System.out.println("Group not found. Please try again");
+        }
+
+
 //        Statement stmt = connection.createStatement();
-//        stmt.execute("DELETE FROM Groups WHERE group_name ="+ gName +";" );
-//        System.out.println("Group " + gName + " deleted");
-
-
-    }
-
-    @Override
-    public Group getGroupById(String groupId) throws Exception {
-        return null;
+//
+//        System.out.println("Group " + groupName + " deleted successfully.");
     }
 
     @Override
@@ -152,15 +142,12 @@ public class GroupService implements GroupRepository{
         Statement stmt = connection.createStatement();
         ResultSet rs = stmt.executeQuery("SELECT * FROM Groups WHERE group_id ='"+inputId+"'");
         if(DtoUtils.getCountOfRecords(rs) == 1){
-            //Group exists
-            if(!tableExist("GroupMembers")){
+            if(!tableExist("GroupMembers"))
                 createGroupMembersTable();
-            }
             stmt.executeUpdate("INSERT INTO GroupMembers VALUES ('"+ inputId + "','" + user.getUuid() +"')");
             System.out.println("Joined successfully.");
         }else{
             System.out.println("Group does not exist. Please try again");
         }
-
     }
 }

@@ -7,8 +7,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface GroupRepository {
     public void createGroupTable() throws Exception;
-    public void deleteGroup(String group_name) throws Exception;
-    public Group getGroupById(String groupId) throws Exception;
+    public void deleteGroup(String group_name, User user) throws Exception;
     public void addGroupMember(User user, String inputId) throws Exception;
     public boolean tableExist(String groupName) throws Exception;
     public void save(Group group) throws Exception;

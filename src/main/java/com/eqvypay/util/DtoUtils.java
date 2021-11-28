@@ -63,6 +63,7 @@ public class DtoUtils {
 
 	public static int getCountOfRecords(ResultSet rs){
 		int count = 0;
+		System.out.println(rs);
 		try {
 			while (rs.next())
 				count++;
@@ -90,8 +91,10 @@ public class DtoUtils {
 
 
 
-	public static String getGroupNameFromId(String id) throws SQLException {
-return "ds";
+	public static String getGroupIdByName(String groupName) throws SQLException {
+
+
+		return "ds";
 
 	}
 

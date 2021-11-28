@@ -36,19 +36,16 @@ public class ManageGroupOption {
                     System.out.println("Enter group description");
                     group.setGroupDesc(sc.next());
                     try{
-                        if(groupRepository.tableExist("Groups")){
-                            System.out.println("Table Groups exists, inserting into it");
-                        }else {
+                        if (!groupRepository.tableExist("Groups")) {
                             groupRepository.createGroupTable();
                         }
                         //INSERT ROW TO GROUPS TABLE
                         groupRepository.save(group);
+                        groupRepository.addGroupMember(user, group.getGroupId());
+
                     }catch (Exception e){
                         System.out.println("Error: " + e.toString());
                     }
-
-
-
                     break;
 
                 case 2:
@@ -72,7 +69,7 @@ public class ManageGroupOption {
                     System.out.println("Enter group name");
                     String group_name = sc.next();
                     try {
-                        groupRepository.deleteGroup(group_name);
+                        groupRepository.deleteGroup(group_name, user);
                     }catch (Exception e){
                         System.out.println("Error: " + e.toString());
                     }
