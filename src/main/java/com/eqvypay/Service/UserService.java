@@ -58,7 +58,6 @@ public class UserService implements UserRepository {
 		if(count>0) {
 			System.out.println("user inserted");
 		}
-		
 	}
 
 	@Override

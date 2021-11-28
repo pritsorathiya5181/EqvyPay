@@ -5,6 +5,7 @@ import com.eqvypay.Service.ExpenseRepository;
 
 import java.util.Scanner;
 
+import com.eqvypay.Service.MoneyManagerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,9 @@ public class UserMenu {
 	
 	@Autowired
 	private ExpenseRepository expenseRepository;
+
+	@Autowired
+	private MoneyManagerRepository moneyManagerRepository;
 	
 	public void userNewOptions(User user) throws Exception {
 		  Scanner sc = new Scanner(System.in);
@@ -36,6 +40,10 @@ public class UserMenu {
 	                    boolean status = manageExpenseOption.expenseOptions(user,expenseRepository);
 	                    System.out.println("expense status=="+status);
 	                    break;
+					case 6:
+						System.out.println("Money manager option selected");
+						MoneyManagerOption moneyManagerOption = new MoneyManagerOption();
+						moneyManagerOption.handleOption(user, moneyManagerRepository);
 	                default:
 	                    System.out.println("Yet to implement");
 	            }

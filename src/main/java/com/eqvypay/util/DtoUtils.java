@@ -1,79 +1,121 @@
 package com.eqvypay.util;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
 import com.eqvypay.Persistence.Expense;
 import com.eqvypay.Persistence.Group;
+import com.eqvypay.Persistence.PersonalActivity;
 import com.eqvypay.Persistence.User;
+import com.eqvypay.Service.DatabaseConnectionManagementService;
+import com.eqvypay.util.constants.Environment;
 import com.eqvypay.util.constants.enums.ExpenseType;
 import com.mysql.cj.protocol.ResultsetRow;
 
 import ch.qos.logback.core.encoder.ByteArrayUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class DtoUtils {
 
-	public static User getUserFromResultSet(ResultSet resultSet) throws SQLException {
-		User user = new User();
-		while(resultSet.next()) {
-			String id = resultSet.getString("uuid");
-			String name = resultSet.getString("name");
-			String email = resultSet.getString("email");
-			String contact = resultSet.getString("contact");
-			String securityAnswer = resultSet.getString("security_answer");
-			user.setUuid(UUID.fromString(id));
-			user.setName(name);
-			user.setEmail(email);
-			user.setContact(contact);
-			user.setSecurityAnswer(securityAnswer);
-		}
-		return user;
-	}
-	public static List<Expense> getExpenseFromResultSet(ResultSet resultSet) throws Exception {
-	
-		List<Expense> expenses = new ArrayList<>();
-		while(resultSet.next()) {
-			String id = resultSet.getString("id");
-			String targetUserId = resultSet.getString("targetUserId");
-			String groupId=resultSet.getString("groupId");
-			String expenseType = resultSet.getString("expenseType");
-			float expenseAmt  = resultSet.getFloat("expenseAmt");
-			String expenseDesc = resultSet.getString("expenseDesc");
-			String currencyType = resultSet.getString("currencyType");
-			String sourceUserId = resultSet.getString("sourceUserId");
-			
-			Expense expense = new Expense();
-			expense.setId(id);
-			expense.setCurrencyType(currencyType);
-			expense.setExpenseAmt(expenseAmt);
-			expense.setExpenseType(ExpenseType.valueOf(expenseType));
-			expense.setGroupId(groupId);
-			expense.setSourceUserId(sourceUserId);
-			expense.setTargetUserId(targetUserId);
-			expense.setExpenseDesc(expenseDesc);
-			
-			expenses.add(expense);
-			//
-		}
-		return expenses;
-	}
+    public static boolean tableExist(DatabaseConnectionManagementService dcms, String tableName) throws Exception {
+        Connection connection = dcms.getConnection(Environment.DEV);
+        boolean tableExists = false;
+        try (ResultSet rs = connection.getMetaData().getTables(null, null, tableName, null)) {
+            while (rs.next()) {
+                String tName = rs.getString("TABLE_NAME");
+                if (tName != null && tName.equals(tableName)) {
+                    tableExists = true;
+                    break;
+                }
+            }
+        }
+        return tableExists;
+    }
 
-	public static ArrayList<Group> getGroupsFromResultSet(ResultSet resultSet) throws SQLException {
-		ArrayList<Group> groups = new ArrayList<Group>();
-		Group group;
-		while(resultSet.next()) {
-			group = new Group();
-			String groupId = resultSet.getString("group_id");
-			String groupName = resultSet.getString("group_name");
-			String groupDesc = resultSet.getString("group_desc");
-			group.setGroupId(groupId);
-			group.setGroupName(groupName);
-			group.setGroupDesc(groupDesc);
-			groups.add(group);
-		}
-		return groups;
-	}
+    public static User getUserFromResultSet(ResultSet resultSet) throws SQLException {
+        User user = new User();
+        while (resultSet.next()) {
+            String id = resultSet.getString("uuid");
+            String name = resultSet.getString("name");
+            String email = resultSet.getString("email");
+            String contact = resultSet.getString("contact");
+            String securityAnswer = resultSet.getString("security_answer");
+            user.setUuid(UUID.fromString(id));
+            user.setName(name);
+            user.setEmail(email);
+            user.setContact(contact);
+            user.setSecurityAnswer(securityAnswer);
+        }
+        return user;
+    }
+
+    public static List<Expense> getExpenseFromResultSet(ResultSet resultSet) throws Exception {
+
+        List<Expense> expenses = new ArrayList<>();
+        while (resultSet.next()) {
+            String id = resultSet.getString("id");
+            String targetUserId = resultSet.getString("targetUserId");
+            String groupId = resultSet.getString("groupId");
+            String expenseType = resultSet.getString("expenseType");
+            float expenseAmt = resultSet.getFloat("expenseAmt");
+            String expenseDesc = resultSet.getString("expenseDesc");
+            String currencyType = resultSet.getString("currencyType");
+            String sourceUserId = resultSet.getString("sourceUserId");
+
+            Expense expense = new Expense();
+            expense.setId(id);
+            expense.setCurrencyType(currencyType);
+            expense.setExpenseAmt(expenseAmt);
+            expense.setExpenseType(ExpenseType.valueOf(expenseType));
+            expense.setGroupId(groupId);
+            expense.setSourceUserId(sourceUserId);
+            expense.setTargetUserId(targetUserId);
+            expense.setExpenseDesc(expenseDesc);
+
+            expenses.add(expense);
+        }
+        return expenses;
+    }
+
+    public static ArrayList<Group> getGroupsFromResultSet(ResultSet resultSet) throws SQLException {
+        ArrayList<Group> groups = new ArrayList<Group>();
+        Group group;
+        while (resultSet.next()) {
+            group = new Group();
+            String groupId = resultSet.getString("group_id");
+            String groupName = resultSet.getString("group_name");
+            String groupDesc = resultSet.getString("group_desc");
+            group.setGroupId(groupId);
+            group.setGroupName(groupName);
+            group.setGroupDesc(groupDesc);
+            groups.add(group);
+        }
+        return groups;
+    }
+
+    public static ArrayList<PersonalActivity> getAllActivities(ResultSet resultSet) throws SQLException {
+        ArrayList<PersonalActivity> activities = new ArrayList<PersonalActivity>();
+        PersonalActivity activity;
+        while (resultSet.next()) {
+            activity = new PersonalActivity();
+            String userId = resultSet.getString("userId");
+            String amount = resultSet.getString("amount");
+            String description = resultSet.getString("description");
+            String expenseCate = resultSet.getString("expenseCate");
+            String date = resultSet.getString("date");
+
+            activity.setUserId(userId);
+            activity.setAmount(Float.parseFloat(amount));
+            activity.setDescription(description);
+            activity.setExpenseCate(expenseCate);
+            activity.setDate(date);
+            activities.add(activity);
+        }
+        return activities;
+    }
 }

@@ -210,19 +210,23 @@ public class ManageExpenseOption {
             			System.out.println();
             		}
             	}
-            	System.out.println("Enter expense to settle, for multiple settlements, enter by spaces");
-            	sc.nextLine();
-            	String settlementString = sc.nextLine();
-            	String [] settlements = settlementString.split(" ");
-            	List<Integer> settlementIndexes = Arrays.stream(settlements).map(p->Integer.valueOf(p)-1).collect(Collectors.toList());
-            	for(int i=0;i<settlementIndexes.size();i++) {
-            		Expense expenseToBeSettled = expenses.get(i);
-              		Currency currency = Currency.getInstance(expenseToBeSettled.getCurrencyType());
-              		boolean settled = expenseRepository.settleExpense(expenseToBeSettled);
-            		if(settled) {
-            			System.out.println("Expense of :"+expenseToBeSettled.getExpenseAmt()+" settled!");
-            		}
-            	}
+            	if(expenses.size() > 0) {
+					System.out.println("Enter expense to settle, for multiple settlements, enter by spaces");
+					sc.nextLine();
+					String settlementString = sc.nextLine();
+					String [] settlements = settlementString.split(" ");
+					List<Integer> settlementIndexes = Arrays.stream(settlements).map(p->Integer.valueOf(p)-1).collect(Collectors.toList());
+					for(int i=0;i<settlementIndexes.size();i++) {
+						Expense expenseToBeSettled = expenses.get(i);
+						Currency currency = Currency.getInstance(expenseToBeSettled.getCurrencyType());
+						boolean settled = expenseRepository.settleExpense(expenseToBeSettled);
+						if(settled) {
+							System.out.println("Expense of :"+expenseToBeSettled.getExpenseAmt()+" settled!");
+						}
+					}
+				} else {
+					System.out.println("You don't have any expense to settle");
+				}
             	return true;
             }
     }
