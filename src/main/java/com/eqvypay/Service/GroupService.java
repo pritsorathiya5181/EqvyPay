@@ -13,7 +13,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Scanner;
 
 @Service
 public class GroupService implements GroupRepository{
@@ -51,22 +53,39 @@ public class GroupService implements GroupRepository{
         Statement stmt = connection.createStatement();
         ResultSet rs = stmt.executeQuery("SELECT * FROM GroupMembers WHERE uuid ='"+user.getUuid()+"'");
         // rs is, group_id column from GroupMembers
-        List<String> ids = new ArrayList<>();
-        while (rs.next()){
-            ids.add(rs.getString("group_id"));
-        }
+        List<String> ids = DtoUtils.getIdFromResultSet(rs);
+        List<String> joinedGroups = new ArrayList<>();
 
-        List<String> groupsJoined = new ArrayList<>();
         for(String id: ids){
             rs = stmt.executeQuery("SELECT group_name FROM Groups WHERE group_id ='"+id+"'");
-            groupsJoined.add(rs.getString("group_name"));
+            while (rs.next())
+                joinedGroups.add(rs.getString("group_name"));
         }
 
-        System.out.println("User " + user.getName() + " has joined following groups:");
-        for(String s: groupsJoined){
-            System.out.print(s + ", ");
+        System.out.println("Group that you are currently part of: ");
+        System.out.println(Arrays.toString(joinedGroups.toArray()));
+        System.out.println("Enter the name of group you want to leave: ");
+
+        Scanner sc = new Scanner(System.in);
+        String deleteGroup = sc.nextLine();
+
+        if(joinedGroups.contains(deleteGroup)){
+            stmt.executeUpdate("DELETE FROM GroupMembers WHERE group_id ='"+ ids.get(joinedGroups.indexOf(deleteGroup)) +"' AND uuid = '" + user.getUuid() + "'");
+            System.out.println("Left from the group " + deleteGroup);
+        }else{
+            System.out.println("Invalid group name. Please try again");
         }
 
+
+
+
+
+//
+//        System.out.println("User " + user.getName() + " has joined following groups:");
+//        for(String s: groupsJoined){
+//            System.out.print(s + ", ");
+//        }
+//
 
 
 
@@ -138,6 +157,7 @@ public class GroupService implements GroupRepository{
                 createGroupMembersTable();
             }
             stmt.executeUpdate("INSERT INTO GroupMembers VALUES ('"+ inputId + "','" + user.getUuid() +"')");
+            System.out.println("Joined successfully.");
         }else{
             System.out.println("Group does not exist. Please try again");
         }

@@ -94,4 +94,17 @@ public class DtoUtils {
 return "ds";
 
 	}
+
+	public static List<String> getIdFromResultSet(ResultSet resultSet) {
+		List<String> ids = new ArrayList<>();
+		try {
+			while (resultSet.next()){
+				ids.add(resultSet.getString("group_id"));
+			}
+		}catch (Exception e){
+			System.out.println(e.toString());
+		}
+		return ids;
+
+	}
 }

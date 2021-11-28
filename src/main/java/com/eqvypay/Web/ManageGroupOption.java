@@ -30,7 +30,9 @@ public class ManageGroupOption {
                     Group group = new Group();
 
                     System.out.println("Enter group name");
-                    group.setGroupName(sc.next());
+                    sc.nextLine();
+                    String groupName = sc.nextLine();
+                    group.setGroupName(groupName);
                     System.out.println("Enter group description");
                     group.setGroupDesc(sc.next());
                     try{
