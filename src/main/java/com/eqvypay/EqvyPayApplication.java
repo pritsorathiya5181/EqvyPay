@@ -54,10 +54,10 @@ public class EqvyPayApplication implements CommandLineRunner {
 		System.out.println("----------------------");
 		System.out.println("Welcome");
 		System.out.println("----------------------");
-		System.out.println("1. Login");
-		System.out.println("2. Register");
-		System.out.println("3. Forgot Password");
-		System.out.println("0. for exit");
+		System.out.println("[1] Login");
+		System.out.println("[2] Register");
+		System.out.println("[3] Forgot Password");
+		System.out.println("[0] for exit");
 		
 		Integer option = scanner.nextInt();
 		User user = null;
