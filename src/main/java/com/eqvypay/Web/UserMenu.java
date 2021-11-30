@@ -4,6 +4,7 @@ import com.eqvypay.Persistence.User;
 import com.eqvypay.Service.ExpenseRepository;
 import com.eqvypay.Service.FriendRepository;
 import com.eqvypay.Service.FriendService;
+import com.eqvypay.Service.GroupRepository;
 import com.eqvypay.Service.ProfileRepository;
 
 import java.util.Scanner;
@@ -22,6 +23,9 @@ public class UserMenu {
 	
 	@Autowired
 	private ProfileRepository profileRepository;
+	
+	@Autowired
+	private GroupRepository groupRepository;
 	
 	public void userNewOptions(User user) throws Exception {
 		  Scanner sc = new Scanner(System.in);
@@ -56,6 +60,9 @@ public class UserMenu {
 	            		removeFriendOption.friendOptions(user, friendRepository);
 	            		break;
 	            	case 3:
+	            		System.out.println("Manage Groups");
+	            		ManageGroupOption manageGroupOption = new ManageGroupOption();
+	            		manageGroupOption.groupOptions(user, groupRepository);
 	            		break;
 	                case 4:
 	                	System.out.println("Manage option selected");

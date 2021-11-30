@@ -1,8 +1,8 @@
 package com.eqvypay;
 
 import com.eqvypay.Service.ExpenseRepository;
-import com.eqvypay.Web.ManageExpenseOption;
 import com.eqvypay.Web.UserMenu;
+
 import org.springframework.boot.CommandLineRunner;
 
 import java.util.Arrays;
@@ -35,7 +35,7 @@ public class EqvyPayApplication implements CommandLineRunner {
 	
 	@Autowired
 	private DatabaseConnectionManagementService dcms;
-	
+		
 	public static void main(String[] args) {
 		SpringApplication app = new SpringApplication(EqvyPayApplication.class);
         app.setBannerMode(Banner.Mode.OFF);
@@ -73,9 +73,11 @@ public class EqvyPayApplication implements CommandLineRunner {
 			user = userRepository.getUserByEmailAndPassword(email, AuthenticationService.getHashedPassword(password));
 			if(!(user.getEmail()==null)) {
 				loggedIn = true;
+				System.out.println(user.getName() + " successfully logged in");
 			}
 			else {
 				System.out.println("error in login please try again");
+				
 				main(args);
 			}
 			break;
