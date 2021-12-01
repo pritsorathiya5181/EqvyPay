@@ -22,7 +22,7 @@ public class DatabaseConstants {
 	public static final String INSERT_USER = "INSERT INTO Users (uuid,name,email,contact,password,security_answer) VALUES (?,?,?,?,?,?)";
 
 	// EXPENSE SQL STATEMENTS
-	public static final String INSERT_EXPENSE = "INSERT INTO Expenses (id,sourceUserId,targetUserId,groupId,expenseType,expenseAmt,expenseDesc,currencyType) VALUES (?,?,?,?,?,?,?,?)";
+	public static final String INSERT_EXPENSE = "INSERT INTO Expenses (id,sourceUserId,targetUserId,groupId,expenseType,expenseAmt,expenseDesc,currencyType,timestamp) VALUES (?,?,?,?,?,?,?,?,?)";
 
 	// GENERAL SQL
 	public static final String SELECT = "SELECT * FROM %s ";

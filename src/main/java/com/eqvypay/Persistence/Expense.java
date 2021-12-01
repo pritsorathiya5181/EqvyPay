@@ -1,5 +1,7 @@
 package com.eqvypay.Persistence;
 
+import java.time.LocalDateTime;
+
 import com.eqvypay.util.constants.enums.ExpenseType;
 
 public class Expense {
@@ -12,7 +14,8 @@ public class Expense {
     private String expenseDesc;
     private String currencyType;
     private String sourceUserId;
-
+    private LocalDateTime timestamp;
+    
     //
     
 	public String getSourceUserId() {
@@ -78,4 +81,13 @@ public class Expense {
 	public void setCurrencyType(String currencyType) {
         this.currencyType = currencyType;
     }
+
+	public LocalDateTime getTimestamp() {
+		return timestamp;
+	}
+
+	public void setTimestamp(LocalDateTime timestamp) {
+		this.timestamp = timestamp;
+	}
+	
 }

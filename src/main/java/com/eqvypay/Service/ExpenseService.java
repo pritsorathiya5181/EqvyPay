@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -53,7 +54,8 @@ public class ExpenseService implements ExpenseRepository {
                 + " ,expenseType varchar(255)"
                 + " ,expenseAmt float"
                 + " ,expenseDesc varchar(255)"
-                + " ,currencyType varchar(255) );"
+                + " ,currencyType varchar(255)"
+                + " ,timestamp varchar(255) );"
         );
     }
 
@@ -85,6 +87,7 @@ public class ExpenseService implements ExpenseRepository {
 	        preparedStatement.setFloat(6, expense.getExpenseAmt());
 	        preparedStatement.setString(7, expense.getExpenseDesc());
 	        preparedStatement.setString(8, expense.getCurrencyType());
+	        preparedStatement.setString(9, LocalDateTime.now().toString());
 	        try {
 	            int count = preparedStatement.executeUpdate();
 	            if(count>0) {

@@ -87,7 +87,6 @@ public class ManageExpenseOption {
                                 	List<Expense> expenses = new ArrayList<Expense>();
                                 	List<String> groupMembers = new ArrayList<>(Arrays.asList(expense.getTargetUserId(),"#user3","#user4","#user1"));
                                 	float share = (expense.getExpenseAmt())/((groupMembers.size()-1));
-                                	System.out.println("PerShare "+share);
                                 	for(String member : groupMembers) {
                                 		if(!member.equalsIgnoreCase(expense.getTargetUserId())) {
                                 			Expense memberExpense = new Expense();

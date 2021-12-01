@@ -2,6 +2,7 @@ package com.eqvypay.util;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -44,6 +45,7 @@ public class DtoUtils {
 			String expenseDesc = resultSet.getString("expenseDesc");
 			String currencyType = resultSet.getString("currencyType");
 			String sourceUserId = resultSet.getString("sourceUserId");
+			String timestamp = resultSet.getString("timestamp");
 			
 			Expense expense = new Expense();
 			expense.setId(id);
@@ -54,6 +56,7 @@ public class DtoUtils {
 			expense.setSourceUserId(sourceUserId);
 			expense.setTargetUserId(targetUserId);
 			expense.setExpenseDesc(expenseDesc);
+			expense.setTimestamp(LocalDateTime.parse(timestamp));
 			
 			expenses.add(expense);
 			//

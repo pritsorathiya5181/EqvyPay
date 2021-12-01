@@ -36,6 +36,10 @@ public class UserMenu {
 	                    boolean status = manageExpenseOption.expenseOptions(user,expenseRepository);
 	                    System.out.println("expense status=="+status);
 	                    break;
+	                case 4:
+	                	System.out.println("Fetching your activity details!");
+	                	ActivityMenu activityMenu = new ActivityMenu();
+	                	boolean activity = activityMenu.activityOptions(user, expenseRepository);
 	                default:
 	                    System.out.println("Yet to implement");
 	            }
