@@ -1,6 +1,8 @@
 package com.eqvypay;
 
 import com.eqvypay.Service.ExpenseRepository;
+import com.eqvypay.Service.*;
+import com.eqvypay.Web.ManageExpenseOption;
 import com.eqvypay.Web.UserMenu;
 
 import org.springframework.boot.CommandLineRunner;
@@ -15,9 +17,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.core.env.Environment;
 
 import com.eqvypay.Persistence.User;
-import com.eqvypay.Service.AuthenticationService;
-import com.eqvypay.Service.DatabaseConnectionManagementService;
-import com.eqvypay.Service.UserRepository;
 
 @SpringBootApplication(scanBasePackages = {"com.eqvypay.Service", "com.eqvypay.Web"})
 public class EqvyPayApplication implements CommandLineRunner {
@@ -32,6 +31,9 @@ public class EqvyPayApplication implements CommandLineRunner {
 
     @Autowired
     private ExpenseRepository expenseRepository;
+
+    @Autowired
+    private MoneyManagerRepository moneyManagerRepository;
 
     @Autowired
     private DatabaseConnectionManagementService dcms;
