@@ -32,7 +32,7 @@ public class UserService implements UserRepository {
 	public User getByEmail(String email) throws Exception {
 		Connection connection = dcms.getConnection(Environment.DEV);
 		Statement statement = connection.createStatement();
-		ResultSet resultSet = statement.executeQuery("SELECT * from Users WHERE email ="+"'"+email);
+		ResultSet resultSet = statement.executeQuery("SELECT * from Users WHERE email ="+"'"+email+"'");
 		return DtoUtils.getUserFromResultSet(resultSet);	
 	}
 	@Override

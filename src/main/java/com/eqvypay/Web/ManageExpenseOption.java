@@ -24,19 +24,27 @@ public class ManageExpenseOption {
             System.out.println("----------------------------");
             System.out.println("\tManage Expenses");
             System.out.println("----------------------------\n");
-            System.out.println("1. Add expense");
-            System.out.println("2. Settle expense");
-            System.out.println("Select one option from the above: ");
+            System.out.println("[1] Add expense");
+            System.out.println("[2] Settle expense");
+            System.out.println("[3] Exit");
 
             int option = sc.nextInt();
-
+            
+            if(option == 3) {
+            	break;
+            }
+            
             if(option == 1) {
-                System.out.println("1. Add in the group");
-                System.out.println("2. Add to the friend");
-                System.out.println("Select one option from the above: ");
+                System.out.println("[1] Add in the group");
+                System.out.println("[2] Add to the friend");
+                System.out.println("[3] Exit");
 
                 int payOption = sc.nextInt();
 
+                if(payOption == 3) {
+                	break;
+                }
+                
                 if(payOption == 1) {
                     System.out.println("1. Add in the existing group");
                     System.out.println("2. Create a new group");
@@ -82,8 +90,8 @@ public class ManageExpenseOption {
 								System.out.println("Expense target user is "+expense.getTargetUserId());
                                 System.out.println("Expense "+expense.getExpenseAmt());
                                 
-                                System.out.println("1. Split equally");
-                                System.out.println("2. Split unequally");
+                                System.out.println("[1] Split equally");
+                                System.out.println("[2] Split unequally");
                                 int divideType = sc.nextInt();
 
                                 if (divideType == 1) {
@@ -235,5 +243,6 @@ public class ManageExpenseOption {
             	return true;
             }
     }
+		return false;
 }
 }

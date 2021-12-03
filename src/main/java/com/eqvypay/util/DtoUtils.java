@@ -118,4 +118,51 @@ public class DtoUtils {
         }
         return activities;
     }
+
+	public static int getCountOfRecords(ResultSet rs){
+		int count = 0;
+//		System.out.println(rs);
+		try {
+			while (rs.next())
+				count++;
+		}catch (Exception e){
+			System.out.println(e.toString());
+		}
+		return count;
+	}
+	
+	public static ArrayList<Group> getGroupsFromResultSet(ResultSet resultSet) throws SQLException {
+		ArrayList<Group> groups = new ArrayList<Group>();
+		Group group;
+		while(resultSet.next()) {
+			group = new Group();
+			String groupId = resultSet.getString("group_id");
+			String groupName = resultSet.getString("group_name");
+			String groupDesc = resultSet.getString("group_desc");
+			group.setGroupId(groupId);
+			group.setGroupName(groupName);
+			group.setGroupDesc(groupDesc);
+			groups.add(group);
+		}
+		return groups;
+	}
+	
+	public static String getGroupIdByName(String groupName) throws SQLException {
+
+
+		return "ds";
+
+	}
+	public static List<String> getIdFromResultSet(ResultSet resultSet) {
+		List<String> ids = new ArrayList<>();
+		try {
+			while (resultSet.next()){
+				ids.add(resultSet.getString("group_id"));
+			}
+		}catch (Exception e){
+			System.out.println(e.toString());
+		}
+		return ids;
+
+	}
 }

@@ -23,6 +23,13 @@ public class DatabaseConstants {
 
     // EXPENSE SQL STATEMENTS
     public static final String INSERT_EXPENSE = "INSERT INTO Expenses (id,sourceUserId,targetUserId,groupId,expenseType,expenseAmt,expenseDesc,currencyType) VALUES (?,?,?,?,?,?,?,?)";
+	// GROUP SQL STATEMENTS
+	public static final String INSERT_GROUP = "INSERT INTO Groups (group_id,group_name,group_desc) VALUES (?,?,?)";
+	// GROUP SQL STATEMENTS
+	public static final String DELETE_GROUP = "DELETE FROM Groups WHERE group_id=?";
+
+	// EXPENSE SQL STATEMENTS
+	public static final String INSERT_EXPENSE = "INSERT INTO Expenses (id,sourceUserId,targetUserId,groupId,expenseType,expenseAmt,expenseDesc,currencyType) VALUES (?,?,?,?,?,?,?,?)";
 
     // PERSONAL ACTIVITY SQL STATEMENTS
     public static final String INSERT_PERSONAL_ACTIVITY = "INSERT INTO PersonalActivities (userId,amount,description,expenseCate,date) VALUES (?,?,?,?,?)";
