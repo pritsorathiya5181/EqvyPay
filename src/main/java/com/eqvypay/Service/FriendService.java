@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Scanner;
 
+import com.eqvypay.util.DtoUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -53,13 +54,20 @@ public class FriendService implements FriendRepository{
 		}
 
 		String friendUuid = null;
-		while(result.next()) {
-			friendUuid = result.getString("uuid");
+		if(DtoUtils.getCountOfRecords(result) == 0){
+			System.out.println("No user with contact " + contact + " is registered in the system. Please try again");
 		}
-		PreparedStatement insertQuery = connection.prepareStatement("insert into Friend (user_id, friend_id) values (?, ?)");
-		insertQuery.setString(1, user.getUuid().toString());
-		insertQuery.setString(2, friendUuid);
-		insertQuery.execute();
+		else {
+			while(result.next()) {
+				friendUuid = result.getString("uuid");
+			}
+			PreparedStatement insertQuery = connection.prepareStatement("insert into Friend (user_id, friend_id) values (?, ?)");
+			insertQuery.setString(1, user.getUuid().toString());
+			insertQuery.setString(2, friendUuid);
+			insertQuery.execute();
+			System.out.println("Friend added successfully.");
+
+		}
 	}
 	
 	@Override
