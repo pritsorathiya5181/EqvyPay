@@ -22,6 +22,7 @@ public class ManageGroupOption {
             System.out.println("[3] Leave group");
             System.out.println("[4] Delete group");
             System.out.println("[5] Exit");
+            System.out.println("Select an option: ");
 
             choice = sc.nextInt();
 
@@ -55,7 +56,6 @@ public class ManageGroupOption {
                 	groupRepository.getAllGroups();
                     System.out.println("Enter group ID to join");
                     try {
-                    	
                         groupRepository.addGroupMember(user, sc.next().toUpperCase());
                     }catch (Exception e){
                         System.out.println(e.toString());

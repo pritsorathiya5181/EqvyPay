@@ -122,14 +122,24 @@ public class GroupService implements GroupRepository{
             groupId = rs.getString("group_id");
         }
         if(groupId != ""){
-        	System.out.println("group id: " + groupId + "uuid: " + user.getUuid());
+//        	System.out.println("group id: " + groupId + "uuid: " + user.getUuid());
             String query = "SELECT * FROM GroupMembers WHERE group_id='" + groupId + "' AND uuid='" + user.getUuid() + "'";
             rs = stmt.executeQuery(query);
             int count = DtoUtils.getCountOfRecords(rs);
            
             //check if group_id, and user_id exits in GroupMembers
-            if(count == 1)
-                stmt.executeUpdate("DELETE FROM Groups WHERE group_name ='" + groupName + "'");
+            if(count == 1){
+                System.out.println("Are you sure you want to delete group " + groupName + " ?[Y/N]: ");
+                Scanner sc = new Scanner(System.in);
+                String choice = sc.nextLine();
+                if(choice.equalsIgnoreCase("Y")){
+                    stmt.executeUpdate("DELETE FROM Groups WHERE group_name ='" + groupName + "'");
+                    System.out.println("Group " + groupName + " deleted successfully.");
+                }else {
+                    System.out.println("No changes made");
+                }
+
+            }
             else
                 System.out.println("You cannot delete this group as you are not a member of it.");
         }else {
