@@ -51,7 +51,8 @@ public class DateValidatorUsingDateFormat implements DateValidator {
                 return 11;
             case "dec":
                 return 12;
+            default:
+                return 0;
         }
-        return 10;
     }
 }

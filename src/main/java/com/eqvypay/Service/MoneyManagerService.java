@@ -44,7 +44,6 @@ public class MoneyManagerService implements MoneyManagerRepository {
         Connection connection = dcms.getConnection(Environment.DEV);
         PreparedStatement preparedStatement = connection.prepareStatement(DatabaseConstants.INSERT_PERSONAL_ACTIVITY);
 
-        createTable();
         preparedStatement.setString(1, activity.getUserId());
         preparedStatement.setString(2, activity.getAmount().toString());
         preparedStatement.setString(3, activity.getDescription());

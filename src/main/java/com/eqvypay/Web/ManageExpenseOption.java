@@ -46,7 +46,8 @@ public class ManageExpenseOption {
                     System.out.println("group option "+groupOption);
                     if(groupOption == 1) {
                         System.out.println("List of available groups");
-                        ArrayList<Group> groups = expenseRepository.getAllGroups();
+                        ArrayList<Group> groups = expenseRepository.getAllGroups(user);
+
                         for (int i = 0; i < groups.size(); i++) {
                             System.out.println((i+1)+". "+groups.get(i).getGroupName());
                         }
@@ -71,12 +72,14 @@ public class ManageExpenseOption {
                                 newExpense.setCurrencyType(currencyType);
                                 newExpense.setExpenseType(ExpenseType.GROUP);
                                 newExpense.setTargetUserId(user.getUuid().toString());
-                                boolean isTableExists = expenseRepository.tableExist("Expenses");
-                                if (!isTableExists) {
+
+								boolean isTableExists = expenseRepository.tableExist("Expenses");
+
+								if (!isTableExists) {
                                     expenseRepository.createTable();
                                 }
                                 Expense expense = expenseRepository.save(newExpense);
-                                System.out.println("Expense target user is "+expense.getTargetUserId());
+								System.out.println("Expense target user is "+expense.getTargetUserId());
                                 System.out.println("Expense "+expense.getExpenseAmt());
                                 
                                 System.out.println("1. Split equally");
@@ -85,7 +88,9 @@ public class ManageExpenseOption {
 
                                 if (divideType == 1) {
                                 	List<Expense> expenses = new ArrayList<Expense>();
-                                	List<String> groupMembers = new ArrayList<>(Arrays.asList(expense.getTargetUserId(),"#user3","#user4","#user1"));
+
+									ArrayList<Group> members = expenseRepository.getAllGroups(user);
+									List<String> groupMembers = new ArrayList<>(Arrays.asList(expense.getTargetUserId(),"#user3","#user4","#user1"));
                                 	float share = (expense.getExpenseAmt())/((groupMembers.size()-1));
                                 	System.out.println("PerShare "+share);
                                 	for(String member : groupMembers) {
@@ -214,7 +219,7 @@ public class ManageExpenseOption {
 					System.out.println("Enter expense to settle, for multiple settlements, enter by spaces");
 					sc.nextLine();
 					String settlementString = sc.nextLine();
-					String [] settlements = settlementString.split(" ");
+					String [] settlements = settlementString.split(" "); 
 					List<Integer> settlementIndexes = Arrays.stream(settlements).map(p->Integer.valueOf(p)-1).collect(Collectors.toList());
 					for(int i=0;i<settlementIndexes.size();i++) {
 						Expense expenseToBeSettled = expenses.get(i);
