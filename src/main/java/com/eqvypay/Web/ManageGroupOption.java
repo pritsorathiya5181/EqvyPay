@@ -4,6 +4,7 @@ import com.eqvypay.Persistence.Group;
 import com.eqvypay.Persistence.User;
 import com.eqvypay.Service.GroupRepository;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class ManageGroupOption {
@@ -53,13 +54,28 @@ public class ManageGroupOption {
                     break;
 
                 case 2:
-                	groupRepository.getAllGroups();
-                    System.out.println("Enter group ID to join");
                     try {
-                        groupRepository.addGroupMember(user, sc.next().toUpperCase());
+                        List<String> groupIds = groupRepository.getFriendsGroupIds(user);
+                        List<Group> all_groups = groupRepository.getAllGroups();
+
+                        System.out.println("List of groups that your friends are member of:");
+                        for(Group each_group: all_groups){
+                            if(groupIds.contains(each_group.getGroupId())){
+                                System.out.println("Group ID: " + each_group.getGroupId() + "\tGroup Name: " + each_group.getGroupName());
+                            }
+                        }
+
+                        System.out.println("Enter group ID to join: ");
+                        String groupId = sc.next().toUpperCase();
+                        if(groupIds.contains(groupId)){
+                            groupRepository.addGroupMember(user, groupId);
+                        }else{
+                            System.out.println("Enter group id from list given only. Please try again.");
+                        }
                     }catch (Exception e){
-                        System.out.println(e.toString());
+                        System.out.println("Exception occurred: " + e.toString());
                     }
+
                     break;
 
                 case 3:

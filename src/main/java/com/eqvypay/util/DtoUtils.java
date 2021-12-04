@@ -37,38 +37,31 @@ public class DtoUtils {
         return tableExists;
     }
 
-    public static int getCountOfRecords(ResultSet rs) {
-        int count = 0;
+	public static int getCountOfRecords(ResultSet rs){
+		int count = 0;
 //		System.out.println(rs);
-        try {
-            while (rs.next())
-                count++;
-        } catch (Exception e) {
-            System.out.println(e.toString());
-        }
-        return count;
-    }
+		try {
+			while (rs.next())
+				count++;
+		}catch (Exception e){
+			System.out.println(e.toString());
+		}
+		return count;
+	}
+	
 
-    public static String getGroupIdByName(String groupName) throws SQLException {
+	public static List<String> getIdFromResultSet(ResultSet resultSet) {
+		List<String> ids = new ArrayList<>();
+		try {
+			while (resultSet.next()){
+				ids.add(resultSet.getString("group_id"));
+			}
+		}catch (Exception e){
+			System.out.println(e.toString());
+		}
+		return ids;
 
-
-        return "ds";
-
-    }
-
-    public static List<String> getIdFromResultSet(ResultSet resultSet) {
-        List<String> ids = new ArrayList<>();
-        try {
-            while (resultSet.next()) {
-                ids.add(resultSet.getString("group_id"));
-            }
-        } catch (Exception e) {
-            System.out.println(e.toString());
-        }
-        return ids;
-
-    }
-
+	}
     public static User getUserFromResultSet(ResultSet resultSet) throws SQLException {
         User user = new User();
         while (resultSet.next()) {

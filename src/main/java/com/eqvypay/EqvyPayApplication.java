@@ -102,7 +102,6 @@ public class EqvyPayApplication implements CommandLineRunner {
                         newUser.setPassword(AuthenticationService.getHashedPassword(registrationPassword));
                         newUser.setSecurityAnswer(securityAnswer);
                         userRepository.save(newUser);
-                        main(args);
                         break;
                     case 3:
                         System.out.println("Enter your email");

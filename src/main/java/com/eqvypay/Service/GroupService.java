@@ -167,14 +167,56 @@ public class GroupService implements GroupRepository{
         }
     }
 	@Override
-	public void getAllGroups() throws Exception {
-		Connection connection = dcms.getConnection(Environment.DEV);
+	public List<Group> getAllGroups() throws Exception {
+        List<Group> groups = new ArrayList<>();
+        Connection connection = dcms.getConnection(Environment.DEV);
 		Statement stmt = connection.createStatement();
 		ResultSet rs = stmt.executeQuery("Select group_id, group_name from Groups");
 		while(rs.next()) {
-			System.out.println("Group Id: " + rs.getString("group_id") + " Group Name: " + rs.getString("group_name"));
+            Group group = new Group();
+
+            group.setGroupId(rs.getString("group_id"));
+            group.setGroupName(rs.getString("group_name"));
+
+            groups.add(group);
+//			System.out.println("Group Id: " + rs.getString("group_id") + " Group Name: " + rs.getString("group_name"));
 		}
+
+        return groups;
 	}
-    
-    
+
+    @Override
+    public List<String> getFriendsGroupIds(User user) throws Exception {
+
+        //get
+        List<String> friends_group_Id = new ArrayList<>();
+
+        List<String> friendIds = new ArrayList<>();
+        Connection connection = dcms.getConnection(Environment.DEV);
+        Statement stmt = connection.createStatement();
+        ResultSet rs = stmt.executeQuery("SELECT friend_id from Friend WHERE user_id = '"+user.getUuid()+"'");
+
+        while(rs.next()) {
+            friendIds.add(rs.getString("friend_id"));
+        }
+
+        for(String id: friendIds){
+            rs = stmt.executeQuery("SELECT group_id FROM GroupMembers WHERE uuid ='" + id + "'");
+            while (rs.next()){
+                friends_group_Id.add(rs.getString("group_id"));
+            }
+        }
+
+//        String s = DtoUtils.getGroupNameById("Asadas");
+
+//        for(String id: friends_group_Id){
+//            System.out.println("");
+//        }
+//        System.out.println(Arrays.toString(friends_group_Id.toArray()));
+
+        return friends_group_Id;
+
+    }
+
+
 }
