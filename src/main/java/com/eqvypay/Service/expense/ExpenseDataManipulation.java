@@ -5,6 +5,8 @@ import com.eqvypay.Service.database.DatabaseConnectionManagementService;
 import com.eqvypay.util.constants.DatabaseConstants;
 import com.eqvypay.util.constants.Environment;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.sql.Connection;

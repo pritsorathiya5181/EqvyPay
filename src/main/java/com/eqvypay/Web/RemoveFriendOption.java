@@ -4,7 +4,9 @@ import java.util.Scanner;
 
 import com.eqvypay.Persistence.User;
 import com.eqvypay.Service.friends.FriendRepository;
+import org.springframework.stereotype.Service;
 
+@Service
 public class RemoveFriendOption {
 	public void friendOptions(User user,FriendRepository friendRepository) throws Exception {
         Scanner sc = new Scanner(System.in);

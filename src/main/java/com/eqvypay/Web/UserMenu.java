@@ -30,6 +30,24 @@ public class UserMenu {
     @Autowired
     private GroupRepository groupRepository;
 
+    @Autowired
+    AddFriendOption addFriendOption;
+
+    @Autowired
+    RemoveFriendOption removeFriendOption;
+
+    @Autowired
+    ManageExpenseOption manageExpenseOption;
+
+    @Autowired
+    ManageGroupOption manageGroupOption;
+
+    @Autowired
+    MoneyManagerOption moneyManagerOption;
+
+    @Autowired
+    UpdateProfileOption profileOptions;
+
     public int userNewOptions(User user) throws Exception {
         Scanner sc = new Scanner(System.in);
         while (true) {
@@ -52,33 +70,27 @@ public class UserMenu {
                 switch (option) {
                     case 1:
                         System.out.println("Add friend option selected");
-                        AddFriendOption addFriendOption = new AddFriendOption();
                         addFriendOption.friendOptions(user, friendRepository);
                         break;
                     case 2:
                         System.out.println("Remove friend option selected");
-                        RemoveFriendOption removeFriendOption = new RemoveFriendOption();
                         removeFriendOption.friendOptions(user, friendRepository);
                         break;
                     case 3:
                         System.out.println("Manage Groups");
-                        ManageGroupOption manageGroupOption = new ManageGroupOption();
                         manageGroupOption.groupOptions(user, groupRepository);
                         break;
                     case 4:
                         System.out.println("Manage option selected");
-                        ManageExpenseOption manageExpenseOption = new ManageExpenseOption();
                         manageExpenseOption.expenseOptions(user, expenseRepository, friendRepository);
                         break;
                     case 5:
                         break;
                     case 6:
-                        UpdateProfileOption profileOptions = new UpdateProfileOption();
                         profileOptions.updateProfileOption(user, profileRepository);
                         break;
                     case 7:
                         System.out.println("Money manager option selected");
-                        MoneyManagerOption moneyManagerOption = new MoneyManagerOption();
                         moneyManagerOption.handleOption(user, moneyManagerRepository);
                     default:
                         System.out.println("Yet to implement");

@@ -14,14 +14,6 @@ public interface ExpenseRepository {
 
     List<Expense> getExpensesByUserId(String userId) throws Exception;
 
-//    Expense save(Expense expense) throws Exception;
-//
-//    boolean saveAll(List<Expense> expenses) throws Exception;
-//
-//    void createTable() throws Exception;
-//
-//    boolean tableExist(String tableName) throws Exception;
-
     boolean settleExpense(Expense expense) throws Exception;
 
     List<User> findAllFriends(String userId) throws Exception;

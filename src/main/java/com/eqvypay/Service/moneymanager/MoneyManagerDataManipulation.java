@@ -4,10 +4,12 @@ import com.eqvypay.Service.database.DatabaseConnectionManagementService;
 import com.eqvypay.util.DtoUtils;
 import com.eqvypay.util.constants.Environment;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
 import java.sql.Statement;
 
+@Service
 public class MoneyManagerDataManipulation implements IMoneyManagerDataManipulation {
 
     @Autowired

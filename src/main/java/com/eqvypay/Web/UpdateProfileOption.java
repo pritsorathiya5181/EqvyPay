@@ -4,7 +4,9 @@ import java.util.Scanner;
 
 import com.eqvypay.Persistence.User;
 import com.eqvypay.Service.profile.ProfileRepository;
+import org.springframework.stereotype.Service;
 
+@Service
 public class UpdateProfileOption {
 	
 	public void updateProfileOption(User user, ProfileRepository profileRepo) throws Exception {

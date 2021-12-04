@@ -5,10 +5,12 @@ import com.eqvypay.Persistence.User;
 import com.eqvypay.Service.groups.GroupDataManipulation;
 import com.eqvypay.Service.groups.GroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Scanner;
 
+@Service
 public class ManageGroupOption {
 
     @Autowired

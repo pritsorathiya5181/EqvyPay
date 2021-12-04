@@ -4,6 +4,7 @@ import com.eqvypay.Service.authentication.AuthenticationService;
 import com.eqvypay.Service.database.DatabaseConnectionManagementService;
 import com.eqvypay.Service.expense.ExpenseRepository;
 import com.eqvypay.Service.moneymanager.MoneyManagerRepository;
+import com.eqvypay.Service.user.UserDataManipulation;
 import com.eqvypay.Service.user.UserRepository;
 import com.eqvypay.Web.UserMenu;
 
@@ -20,7 +21,7 @@ import org.springframework.core.env.Environment;
 
 import com.eqvypay.Persistence.User;
 
-@SpringBootApplication(scanBasePackages = {"com.eqvypay.Service", "com.eqvypay.Service.expense", "com.eqvypay.Web"})
+@SpringBootApplication(scanBasePackages = {"com.eqvypay.Service", "com.eqvypay.Web"})
 public class EqvyPayApplication implements CommandLineRunner {
     @Autowired
     private Environment env;
@@ -39,6 +40,9 @@ public class EqvyPayApplication implements CommandLineRunner {
 
     @Autowired
     private DatabaseConnectionManagementService dcms;
+
+    @Autowired
+    private UserDataManipulation dataManipulation;
 
     public static void main(String[] args) {
         SpringApplication app = new SpringApplication(EqvyPayApplication.class);
@@ -73,7 +77,7 @@ public class EqvyPayApplication implements CommandLineRunner {
                         String email = scanner.next();
                         System.out.println("Enter password");
                         String password = scanner.next();
-                        user = userRepository.getUserByEmailAndPassword(email, AuthenticationService.getHashedPassword(password));
+                        user = dataManipulation.getUserByEmailAndPassword(email, AuthenticationService.getHashedPassword(password));
                         if (!(user.getEmail() == null)) {
                             loggedIn = true;
                             System.out.println(user.getName() + " successfully logged in");
@@ -106,7 +110,7 @@ public class EqvyPayApplication implements CommandLineRunner {
                     case 3:
                         System.out.println("Enter your email");
                         String userEmail = scanner.next();
-                        User oldUser = userRepository.getByEmail(userEmail);
+                        User oldUser = dataManipulation.getByEmail(userEmail);
                         System.out.println("What is your first school name");
                         String providedSecurityAnswer = scanner.next();
                         if (providedSecurityAnswer.equals(oldUser.getSecurityAnswer())) {

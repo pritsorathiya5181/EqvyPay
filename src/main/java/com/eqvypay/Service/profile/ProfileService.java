@@ -20,18 +20,6 @@ public class ProfileService implements ProfileRepository{
 
     @Autowired
     private UserRepository userRepo;
-    
-	@Override
-	public void getProfile(User user) throws Exception {
-		Connection connection = dcms.getConnection(Environment.DEV);
-		user = userRepo.getByEmail(user.getEmail());
-		
-		System.out.println("\nProfile Details for " + user.getName());
-		System.out.println("Username: " + user.getName());
-		System.out.println("Email id: " + user.getEmail());
-		System.out.println("Contact number: " + user.getContact());
-		
-	}
 	
 	@Override
 	public void updateUsername(User user, String username) throws Exception {

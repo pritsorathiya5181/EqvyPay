@@ -9,6 +9,7 @@ import com.eqvypay.Service.friends.FriendRepository;
 import com.eqvypay.util.constants.Constants;
 import com.eqvypay.util.constants.enums.ExpenseType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -24,9 +25,6 @@ public class ManageExpenseOption {
 
     @Autowired
     ExpenseDataManipulation dataManipulation;
-
-    @Autowired
-    Test test;
 
     public void expenseOptions(User user, ExpenseRepository expenseRepository, FriendRepository friendRepository) throws Exception {
 

@@ -5,9 +5,6 @@ import com.eqvypay.Persistence.User;
 
 @Repository
 public interface ProfileRepository {
-
-    public void getProfile(User user) throws Exception;
-
     public void updateUsername(User user, String username) throws Exception;
 
     public void updateContact(User user, String contact) throws Exception;
