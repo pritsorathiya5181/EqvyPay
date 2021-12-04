@@ -1,9 +1,8 @@
 package com.eqvypay;
 
-import com.eqvypay.Service.ExpenseRepository;
 import com.eqvypay.Service.*;
-import com.eqvypay.Web.ManageExpenseOption;
 import com.eqvypay.Web.UserMenu;
+import com.eqvypay.util.validator.RegistrationValidator;
 
 import org.springframework.boot.CommandLineRunner;
 
@@ -83,27 +82,22 @@ public class EqvyPayApplication implements CommandLineRunner {
                         }
                         break;
                     case 2:
-                        System.out.println("Enter your name");
-                        String name = scanner.next();
-                        System.out.println("Enter your email");
-                        String registrationEmail = scanner.next();
-                        System.out.println("Enter your phone number");
-                        String contact = scanner.next();
-                        System.out.println("Enter your password");
-                        String registrationPassword = scanner.next();
-                        System.out.println("Enter confirm password");
-                        String confirmPassword = scanner.next();
-                        System.out.println("What is your first school name");
-                        String securityAnswer = scanner.next();
-                        User newUser = new User();
-                        newUser.setName(name);
-                        newUser.setEmail(registrationEmail);
-                        newUser.setContact(contact);
-                        newUser.setPassword(AuthenticationService.getHashedPassword(registrationPassword));
-                        newUser.setSecurityAnswer(securityAnswer);
-                        userRepository.save(newUser);
-//                        main(args);
-                        break;
+                		String name = RegistrationValidator.getAndValidateName(scanner);
+            			String registrationEmail = RegistrationValidator.getAndValidateEmail(scanner);
+            			String contact = RegistrationValidator.getAndValidateContact(scanner);
+            			String registrationPassword = RegistrationValidator.getAndValidatePassword(scanner);
+            			String confirmPassword = RegistrationValidator.getAndValidatePassword(scanner);
+            			confirmPassword = RegistrationValidator.getAndValidatePasswordAndConfirmPassword(scanner,registrationPassword, confirmPassword);
+            			String securityAnswer = RegistrationValidator.getAndValidateSecurityAnswer(scanner);
+            			User newUser = new User();
+            			newUser.setName(name);
+            			newUser.setEmail(registrationEmail);
+            			newUser.setContact(contact);
+            			newUser.setPassword(AuthenticationService.getHashedPassword(registrationPassword));
+            			newUser.setSecurityAnswer(securityAnswer);
+            			userRepository.save(newUser);
+            			main(args);
+            	        break;
                     case 3:
                         System.out.println("Enter your email");
                         String userEmail = scanner.next();
