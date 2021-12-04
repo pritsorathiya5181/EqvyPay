@@ -43,7 +43,7 @@ public class ExpenseService implements ExpenseRepository {
 	}
 
     @Override
-    public ArrayList<Group> getAllGroups(User user) throws Exception {
+    public ArrayList<Group> getAllJoinedGroups(User user) throws Exception {
         Connection connection = dcms.getConnection(Environment.DEV);
         Statement statement = connection.createStatement();
 		String query = "SELECT * FROM Groups INNER JOIN GroupMembers on Groups.group_id = GroupMembers.group_id where uuid = '"+user.getUuid().toString()+"'";
@@ -118,5 +118,13 @@ public class ExpenseService implements ExpenseRepository {
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public List<User> findAllFriends(String userId) throws Exception {
+		Connection connection = dcms.getConnection(Environment.DEV);
+		Statement statement = connection.createStatement();
+		ResultSet rs = statement.executeQuery("select * from Friend inner join Users on Friend.friend_id = Users.uuid where Friend.user_id ='"+userId+"'");
+		return DtoUtils.getAllFriendsFromResultSet(rs);
 	}
 }

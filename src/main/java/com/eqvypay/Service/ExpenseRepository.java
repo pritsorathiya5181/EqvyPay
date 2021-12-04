@@ -11,11 +11,12 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ExpenseRepository {
-    public ArrayList<Group> getAllGroups(User user) throws Exception;
-    public List<Expense> getExpensesByUserId(String userId) throws Exception;
-    public Expense save(Expense expense) throws Exception;
-    public boolean saveAll(List<Expense> expenses) throws Exception;
-    public void createTable() throws Exception;
-    public boolean tableExist(String tableName) throws Exception;
-    public boolean settleExpense(Expense expense) throws Exception;
+    ArrayList<Group> getAllJoinedGroups(User user) throws Exception;
+    List<Expense> getExpensesByUserId(String userId) throws Exception;
+    Expense save(Expense expense) throws Exception;
+    boolean saveAll(List<Expense> expenses) throws Exception;
+    void createTable() throws Exception;
+    boolean tableExist(String tableName) throws Exception;
+    boolean settleExpense(Expense expense) throws Exception;
+    List<User> findAllFriends(String userId) throws Exception;
 }

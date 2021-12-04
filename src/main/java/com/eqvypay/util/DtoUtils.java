@@ -37,36 +37,38 @@ public class DtoUtils {
         return tableExists;
     }
 
-	public static int getCountOfRecords(ResultSet rs){
-		int count = 0;
+    public static int getCountOfRecords(ResultSet rs) {
+        int count = 0;
 //		System.out.println(rs);
-		try {
-			while (rs.next())
-				count++;
-		}catch (Exception e){
-			System.out.println(e.toString());
-		}
-		return count;
-	}
-	
-	public static String getGroupIdByName(String groupName) throws SQLException {
+        try {
+            while (rs.next())
+                count++;
+        } catch (Exception e) {
+            System.out.println(e.toString());
+        }
+        return count;
+    }
+
+    public static String getGroupIdByName(String groupName) throws SQLException {
 
 
-		return "ds";
+        return "ds";
 
-	}
-	public static List<String> getIdFromResultSet(ResultSet resultSet) {
-		List<String> ids = new ArrayList<>();
-		try {
-			while (resultSet.next()){
-				ids.add(resultSet.getString("group_id"));
-			}
-		}catch (Exception e){
-			System.out.println(e.toString());
-		}
-		return ids;
+    }
 
-	}
+    public static List<String> getIdFromResultSet(ResultSet resultSet) {
+        List<String> ids = new ArrayList<>();
+        try {
+            while (resultSet.next()) {
+                ids.add(resultSet.getString("group_id"));
+            }
+        } catch (Exception e) {
+            System.out.println(e.toString());
+        }
+        return ids;
+
+    }
+
     public static User getUserFromResultSet(ResultSet resultSet) throws SQLException {
         User user = new User();
         while (resultSet.next()) {
@@ -147,5 +149,23 @@ public class DtoUtils {
             activities.add(activity);
         }
         return activities;
+    }
+
+    public static ArrayList<User> getAllFriendsFromResultSet(ResultSet resultSet) throws SQLException {
+        ArrayList<User> friends = new ArrayList<User>();
+        User friend;
+        while (resultSet.next()) {
+            friend = new User();
+            String friendId = resultSet.getString("friend_id");
+            String friendName = resultSet.getString("name");
+            String friendEmail = resultSet.getString("email");
+
+            friend.setUuid(UUID.fromString(friendId));
+            friend.setName(friendName);
+            friend.setEmail(friendEmail);
+
+            friends.add(friend);
+        }
+        return friends;
     }
 }
