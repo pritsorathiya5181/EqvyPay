@@ -13,10 +13,10 @@ public class DateValidatorUsingDateFormat implements DateValidator {
 
     @Override
     public boolean isDateValid(String dateStr) {
-        DateFormat sdf = new SimpleDateFormat(this.dateFormat);
-        sdf.setLenient(false);
+        DateFormat dateFormat = new SimpleDateFormat(this.dateFormat);
+        dateFormat.setLenient(false);
         try {
-            sdf.parse(dateStr);
+            dateFormat.parse(dateStr);
         } catch (ParseException e) {
             System.out.println("date format error=="+e);
             return false;
@@ -26,7 +26,8 @@ public class DateValidatorUsingDateFormat implements DateValidator {
 
     @Override
     public int getMonth(String month) {
-        switch (month.toLowerCase()) {
+        int i = 5;
+        switch (month.toLowerCase().substring(0,3)) {
             case "jan":
                 return 1;
             case "feb":

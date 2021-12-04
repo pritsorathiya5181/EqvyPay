@@ -14,111 +14,104 @@ import com.eqvypay.Persistence.User;
 import com.eqvypay.util.constants.Environment;
 
 @Service
-public class FriendService implements FriendRepository {
+public class FriendService implements FriendRepository{
 
     @Autowired
     private DatabaseConnectionManagementService dcms;
 
     @Autowired
     private UserRepository userRepo;
+    
+	@Override
+	public void addFriendByEmail(User user, String email) throws Exception{
+		Connection connection = dcms.getConnection(Environment.DEV);
+		ResultSet result = null;
+		User friend = null;
+		try {
+			friend = userRepo.getByEmail(email);
+		}catch(SQLException e) {
+			System.out.println("Enter a valid email id of a registered user!" + e);
+		}
 
-    @Override
-    public void addFriendByEmail(User user, String email) throws Exception {
-        Connection connection = dcms.getConnection(Environment.DEV);
-        ResultSet result = null;
-        User friend = null;
-        try {
-            friend = userRepo.getByEmail(email);
-        } catch (SQLException e) {
-            System.out.println("Enter a valid email id of a registered user!" + e);
-        }
+		String friendUuid = null;
+		PreparedStatement insertQuery = connection.prepareStatement("insert into Friend (user_id, friend_id) values (?, ?)");
+		insertQuery.setString(1, user.getUuid().toString());
+		insertQuery.setString(2, friend.getUuid().toString());
+		insertQuery.execute();
+	}
+	
 
-        String friendUuid = null;
-        PreparedStatement insertQuery = connection.prepareStatement("insert into Friend (user_id, friend_id) values (?, ?)");
-        insertQuery.setString(1, user.getUuid().toString());
-        insertQuery.setString(2, friend.getUuid().toString());
-        insertQuery.execute();
-    }
+	@Override
+	public void addFriendByContact(User user, String contact) throws Exception {
+		Connection connection = dcms.getConnection(Environment.DEV);
+		ResultSet result = null;
+		try {
+			PreparedStatement selectQuery = connection.prepareStatement("select * from Users where contact = ?");
+			selectQuery.setString(1, contact);
+			result = selectQuery.executeQuery();
+		}catch(SQLException e) {
+			System.out.println("Enter a valid contact number of a registered user!");
+		}
 
-
-    @Override
-    public void addFriendByContact(User user, String contact) throws Exception {
-        Connection connection = dcms.getConnection(Environment.DEV);
-        ResultSet result = null;
-        try {
-            PreparedStatement selectQuery = connection.prepareStatement("select * from Users where contact = ?");
-            selectQuery.setString(1, contact);
-            result = selectQuery.executeQuery();
-        } catch (SQLException e) {
-            System.out.println("Enter a valid contact number of a registered user!");
-        }
-
-        String friendUuid = null;
-        int count = DtoUtils.getCountOfRecords(result);
-		PreparedStatement selectQuery = connection.prepareStatement("select * from Users where contact = ?");
-		selectQuery.setString(1, contact);
-		result = selectQuery.executeQuery();
-
-		if (count == 0) {
-            System.out.println("No user with contact " + contact + " is registered in the system. Please try again");
-        } else {
-
-			if(result.next()){
-                friendUuid = result.getString("uuid");
+		String friendUuid = null;
+		if(DtoUtils.getCountOfRecords(result) == 0){
+			System.out.println("No user with contact " + contact + " is registered in the system. Please try again");
+		}
+		else {
+			while(result.next()) {
+				friendUuid = result.getString("uuid");
 			}
-            System.out.println("FID: " + friendUuid);
+			PreparedStatement insertQuery = connection.prepareStatement("insert into Friend (user_id, friend_id) values (?, ?)");
+			insertQuery.setString(1, user.getUuid().toString());
+			insertQuery.setString(2, friendUuid);
+			insertQuery.execute();
+			System.out.println("Friend added successfully.");
 
-            PreparedStatement insertQuery = connection.prepareStatement("insert into Friend (user_id, friend_id) values (?, ?)");
-            insertQuery.setString(1, user.getUuid().toString());
-            insertQuery.setString(2, friendUuid);
-            insertQuery.execute();
-            System.out.println("Friend added successfully.");
-
-        }
-    }
-
-    @Override
-    public void removeFriendByEmail(User user, String email) throws Exception {
-        Connection connection = dcms.getConnection(Environment.DEV);
-        ResultSet result = null;
-        try {
-            PreparedStatement selectQuery = connection.prepareStatement("select * from Users where email = ?");
-            selectQuery.setString(1, email);
-            result = selectQuery.executeQuery();
-        } catch (SQLException e) {
-            System.out.println("Enter a valid email id of a registered user!");
-        }
-
-        String friendUuid = null;
-        while (result.next()) {
-            friendUuid = result.getString("uuid");
-        }
-        PreparedStatement insertQuery = connection.prepareStatement("delete from Friend where friend_id = ?");
-        insertQuery.setString(1, friendUuid);
-        insertQuery.execute();
-
-    }
+		}
+	}
+	
+	@Override
+	public void removeFriendByEmail(User user, String email) throws Exception {
+		Connection connection = dcms.getConnection(Environment.DEV);
+		ResultSet result = null;
+		try {
+			PreparedStatement selectQuery = connection.prepareStatement("select * from Users where email = ?");
+			selectQuery.setString(1, email);
+			result = selectQuery.executeQuery();
+		}catch(SQLException e) {
+			System.out.println("Enter a valid email id of a registered user!");
+		}
+	
+		String friendUuid = null;
+		while(result.next()) {
+			friendUuid = result.getString("uuid");
+		}
+		PreparedStatement insertQuery = connection.prepareStatement("delete from Friend where friend_id = ?");
+		insertQuery.setString(1, friendUuid);
+		insertQuery.execute();				
+		
+	}
 
 
-    @Override
-    public void removeFriendByContact(User user, String contact) throws Exception {
-        Connection connection = dcms.getConnection(Environment.DEV);
-        ResultSet result = null;
-        try {
-            PreparedStatement selectQuery = connection.prepareStatement("select * from Users where contact = ?");
-            selectQuery.setString(1, contact);
-            result = selectQuery.executeQuery();
-        } catch (SQLException e) {
-            System.out.println("Enter a valid contact number of a registered user!");
-        }
+	@Override
+	public void removeFriendByContact(User user, String contact) throws Exception {
+		Connection connection = dcms.getConnection(Environment.DEV);
+		ResultSet result = null;
+		try {
+			PreparedStatement selectQuery = connection.prepareStatement("select * from Users where contact = ?");
+			selectQuery.setString(1, contact);
+			result = selectQuery.executeQuery();
+		}catch(SQLException e) {
+			System.out.println("Enter a valid contact number of a registered user!");
+		}
 
-        String friendUuid = null;
-        while (result.next()) {
-            friendUuid = result.getString("uuid");
-        }
-        PreparedStatement insertQuery = connection.prepareStatement("delete from Friend where friend_id = ?");
-        insertQuery.setString(1, friendUuid);
-        insertQuery.execute();
-    }
-
+		String friendUuid = null;
+		while(result.next()) {
+			friendUuid = result.getString("uuid");
+		}
+		PreparedStatement insertQuery = connection.prepareStatement("delete from Friend where friend_id = ?");
+		insertQuery.setString(1, friendUuid);
+		insertQuery.execute();
+	}
+	
 }

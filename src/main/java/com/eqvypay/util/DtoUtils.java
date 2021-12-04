@@ -144,4 +144,21 @@ public class DtoUtils {
         return activities;
     }
 
+    public static ArrayList<User> getAllFriendsFromResultSet(ResultSet resultSet) throws SQLException {
+        ArrayList<User> friends = new ArrayList<User>();
+        User friend;
+        while (resultSet.next()) {
+            friend = new User();
+            String friendId = resultSet.getString("friend_id");
+            String friendName = resultSet.getString("name");
+            String friendEmail = resultSet.getString("email");
+
+            friend.setUuid(UUID.fromString(friendId));
+            friend.setName(friendName);
+            friend.setEmail(friendEmail);
+
+            friends.add(friend);
+        }
+        return friends;
+    }
 }

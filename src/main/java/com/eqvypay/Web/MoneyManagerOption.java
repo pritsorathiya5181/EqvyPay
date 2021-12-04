@@ -30,67 +30,67 @@ public class MoneyManagerOption {
             DateValidator validator = new DateValidatorUsingDateFormat("MM/dd/yyyy");
             PersonalActivity newActivity;
 
-            switch (option) {
-                case 1:
-                    System.out.println("Enter your income amount");
-                    float incomeValue = sc.nextFloat();
-                    System.out.println("Enter description about your income");
-                    sc.nextLine();
-                    String incDesc = sc.nextLine();
-                    System.out.println("Enter date of income (MM/DD/YYYY)");
-                    String incomeDate = sc.next();
-                    if (!validator.isDateValid(incomeDate)) {
-                        System.out.println("Date format is not valid. Enter valid date");
+            try {
+                switch (option) {
+                    case 1:
+                        System.out.println("Enter your income amount");
+                        float incomeValue = sc.nextFloat();
+                        System.out.println("Enter description about your income");
+                        sc.nextLine();
+                        String incDesc = sc.nextLine();
+                        System.out.println("Enter date of income (MM/DD/YYYY)");
+                        String incomeDate = sc.next();
+                        if (!validator.isDateValid(incomeDate)) {
+                            System.out.println("Date format is not valid. Enter valid date");
+                            break;
+                        }
+
+                        newActivity = new PersonalActivity();
+
+                        newActivity.setUserId(user.getUuid().toString());
+                        newActivity.setAmount(incomeValue);
+                        newActivity.setDescription(incDesc);
+                        newActivity.setExpenseCate("NA");
+                        newActivity.setDate(incomeDate);
+
+                        moneyManagerRepository.createTable();
+                        moneyManagerRepository.save(newActivity);
                         break;
-                    }
+                    case 2:
+                        System.out.println("Enter expense amount");
+                        Float personalExpense = sc.nextFloat();
+                        System.out.println("Enter expense description");
+                        sc.nextLine();
+                        String expenseDesc = sc.nextLine();
+                        System.out.println("Enter expense category");
+                        String expenseCat = sc.next();
+                        System.out.println("Enter date of expenses (MM/DD/YYYY)");
+                        String expenseDate = sc.next();
+                        if (!validator.isDateValid(expenseDate)) {
+                            System.out.println("Date format is not valid. Enter valid date");
+                            break;
+                        }
 
-                    newActivity = new PersonalActivity();
+                        newActivity = new PersonalActivity();
+                        String userId = user.getUuid().toString();
 
-                    newActivity.setUserId(user.getUuid().toString());
-                    newActivity.setAmount(incomeValue);
-                    newActivity.setDescription(incDesc);
-                    newActivity.setExpenseCate("NA");
-                    newActivity.setDate(incomeDate);
+                        newActivity.setUserId(userId);
+                        newActivity.setAmount(personalExpense);
+                        newActivity.setDescription(expenseDesc);
+                        newActivity.setExpenseCate(expenseCat);
+                        newActivity.setDate(expenseDate);
 
-                    moneyManagerRepository.createTable();
-                    moneyManagerRepository.save(newActivity);
-                    break;
-                case 2:
-                    System.out.println("Enter expense amount");
-                    Float personalExpense = sc.nextFloat();
-                    System.out.println("Enter expense description");
-                    sc.nextLine();
-                    String expenseDesc = sc.nextLine();
-                    System.out.println("Enter expense category");
-                    String expenseCat = sc.next();
-                    System.out.println("Enter date of expenses (MM/DD/YYYY)");
-                    String expenseDate = sc.next();
-                    if (!validator.isDateValid(expenseDate)) {
-                        System.out.println("Date format is not valid. Enter valid date");
+                        moneyManagerRepository.createTable();
+                        moneyManagerRepository.save(newActivity);
                         break;
-                    }
+                    case 3:
+                        NumberFormatter numberFormatter = new NumberFormatUsingFormatter();
 
-                    newActivity = new PersonalActivity();
-                    String userId = user.getUuid().toString();
+                        System.out.println("1. display by month");
+                        System.out.println("2. display by category");
+                        System.out.println("Select one option from the above");
 
-                    newActivity.setUserId(userId);
-                    newActivity.setAmount(personalExpense);
-                    newActivity.setDescription(expenseDesc);
-                    newActivity.setExpenseCate(expenseCat);
-                    newActivity.setDate(expenseDate);
-
-                    moneyManagerRepository.createTable();
-                    moneyManagerRepository.save(newActivity);
-                    break;
-                case 3:
-                    NumberFormatter numberFormatter = new NumberFormatUsingFormatter();
-
-                    System.out.println("1. display by month");
-                    System.out.println("2. display by category");
-                    System.out.println("Select one option from the above");
-
-                    int selectOption = 0;
-                    try {
+                        int selectOption = 0;
                         selectOption = sc.nextInt();
 
                         if (selectOption == 1) {
@@ -102,10 +102,9 @@ public class MoneyManagerOption {
                             ArrayList<PersonalActivity> activities = moneyManagerRepository.getActivities(user.getUuid().toString());
                             float totalIncome = 0;
                             float totalExpenditure = 0;
-                            int minExpenditureIndex = 0;
-                            int maxExpenditureIndex = 0;
+                            int minExpenditureIndex = -1;
+                            int maxExpenditureIndex = -1;
                             boolean activityFound = false;
-                            boolean hasMinExp = false;
                             boolean hasMaxExp = false;
 
                             if (monthNum > 0) {
@@ -114,36 +113,44 @@ public class MoneyManagerOption {
 
                                     if (monthNum == Integer.parseInt(activity.getDate().split("/")[0])) {
                                         if (!activityFound) {
-                                            System.out.printf("%-15s%-15s%-15s%-15s%n", "sr.no.", "amount", "description", "category");
+                                            System.out.printf("%-15s%-15s%-15s%-15s%-15s%n", "sr.no.", "amount", "description", "category", "date");
                                             activityFound = true;
                                         }
                                         Float amount = activity.getAmount();
+
                                         if (activity.getExpenseCate().trim().equals("NA")) {
                                             totalIncome += amount;
                                         } else {
+                                            float maxValue = maxExpenditureIndex > -1 ? activities.get(maxExpenditureIndex).getAmount() : 0;
+                                            float minValue;
+
+                                            if (minExpenditureIndex > -1) {
+                                                minValue = activities.get(minExpenditureIndex).getAmount();
+                                            } else {
+                                                minValue = activities.get(i).getAmount();
+                                                minExpenditureIndex = i;
+                                            }
                                             totalExpenditure += amount;
-                                            if (amount > activities.get(maxExpenditureIndex).getAmount()) {
+                                            if (amount > maxValue) {
                                                 hasMaxExp = true;
                                                 maxExpenditureIndex = i;
-                                            } else if (activities.get(minExpenditureIndex).getAmount() > amount) {
-                                                hasMinExp = true;
+                                            } else if (minValue > amount) {
                                                 minExpenditureIndex = i;
                                             }
                                         }
                                     }
                                     if (activityFound) {
-                                        System.out.printf("%-15s%-15s%-15s%-15s%n", i + 1, activity.getAmount(), activity.getDescription(), activity.getExpenseCate());
+                                        System.out.printf("%-15s%-15s%-15s%-15s%-15s%n", i + 1, activity.getAmount(), activity.getDescription(), activity.getExpenseCate(), activity.getDate());
                                     }
                                 }
                             }
                             if (activityFound) {
                                 System.out.println("\nTotal income: $" + numberFormatter.formatNumber(totalIncome));
                                 System.out.println("Total balance: " + (totalIncome > totalExpenditure ? ("$" + numberFormatter.formatNumber(totalIncome - totalExpenditure)) : "you have spent more than your earnings of this " + month));
-                                if (hasMinExp) {
-                                    System.out.println("Minimum expenditure is $" + activities.get(minExpenditureIndex).getAmount() + " - on " + activities.get(minExpenditureIndex).getExpenseCate());
-                                }
+                                System.out.println("Minimum expenditure is $" + activities.get(minExpenditureIndex).getAmount() + " - on " + activities.get(minExpenditureIndex).getExpenseCate());
+
                                 if (hasMaxExp) {
-                                    System.out.println("Minimum expenditure is $" + activities.get(maxExpenditureIndex).getAmount() + " - on " + activities.get(maxExpenditureIndex).getExpenseCate());
+                                    System.out.println("Maximum expenditure is $" + activities.get(maxExpenditureIndex).getAmount() + " - on " + activities.get(maxExpenditureIndex).getExpenseCate());
                                 }
                             } else {
                                 System.out.println("No activity for this " + month + " month");
@@ -156,7 +163,7 @@ public class MoneyManagerOption {
 
                             float totalExpenditure = 0;
                             int minExpenditureIndex = 0;
-                            int maxExpenditureIndex = 0;
+                            int maxExpenditureIndex = -1;
                             boolean activityFound = false;
                             boolean hasMinExp = false;
                             boolean hasMaxExp = false;
@@ -166,23 +173,24 @@ public class MoneyManagerOption {
 
                                 if (category.equals(activity.getExpenseCate())) {
                                     if (!activityFound) {
-                                        System.out.printf("%-15s%-15s%-15s%-15s%n", "sr.no.", "amount", "description", "category");
+                                        System.out.printf("%-15s%-15s%-15s%-15s%-15s%n", "sr.no.", "amount", "description", "category", "date");
                                         activityFound = true;
                                     }
 
                                     Float amount = activity.getAmount();
 
                                     totalExpenditure += amount;
-                                    if (amount > activities.get(maxExpenditureIndex).getAmount()) {
+                                    float maxValue = maxExpenditureIndex > -1 ? activities.get(maxExpenditureIndex).getAmount() : 0;
+                                    float minValue = activities.get(minExpenditureIndex).getAmount();
+                                    if (amount > maxValue) {
                                         hasMaxExp = true;
                                         maxExpenditureIndex = i;
-                                    } else if (activities.get(minExpenditureIndex).getAmount() > amount) {
+                                    }
+                                    if (minValue > amount) {
                                         hasMinExp = true;
                                         minExpenditureIndex = i;
                                     }
-                                }
-                                if (activityFound) {
-                                    System.out.printf("%-15s%-15s%-15s%-15s%n", i + 1, activity.getAmount(), activity.getDescription(), activity.getExpenseCate());
+                                    System.out.printf("%-15s%-15s%-15s%-15s%-15s%n", i + 1, activity.getAmount(), activity.getDescription(), activity.getExpenseCate(), activity.getDate());
                                 }
                             }
 
@@ -191,21 +199,23 @@ public class MoneyManagerOption {
                                 if (hasMinExp) {
                                     System.out.println("Minimum expenditure is $" + activities.get(minExpenditureIndex).getAmount() + " - on " + activities.get(minExpenditureIndex).getExpenseCate());
                                 }
-                                if (hasMaxExp) {
-                                    System.out.println("Minimum expenditure is $" + activities.get(maxExpenditureIndex).getAmount() + " - on " + activities.get(maxExpenditureIndex).getExpenseCate());
+                                if (hasMaxExp && minExpenditureIndex != maxExpenditureIndex) {
+                                    System.out.println("Maximum expenditure is $" + activities.get(maxExpenditureIndex).getAmount() + " - on " + activities.get(maxExpenditureIndex).getExpenseCate());
                                 }
                             } else {
                                 System.out.println("No activity for this " + category + " category");
                             }
                         }
-                    } catch (InputMismatchException ie) {
-                        sc.next();
-                        System.out.println("Input must be integer");
-                    }
-                    break;
-                default:
-                    System.out.println("Please select a valid option");
+                        break;
+                    default:
+                        System.out.println("Please select a valid option");
+                }
+
+            } catch (InputMismatchException e) {
+                sc.next();
+                System.out.println("Input Mismatch! please add valid input");
             }
+
         }
     }
 }
