@@ -25,11 +25,29 @@ public class ExpenseService implements ExpenseRepository {
     @Autowired
     private DatabaseConnectionManagementService dcms;
 
+
+	@Override
+	public void createTable() throws Exception {
+		Connection connection = dcms.getConnection(Environment.DEV);
+		Statement s = connection.createStatement();
+		s.executeUpdate("CREATE TABLE Expenses"
+				+ " ( id varchar(255)"
+				+ ",sourceUserId varchar(255)"
+				+ ",targetUserId varchar(266)"
+				+ ",groupId varchar(255)"
+				+ " ,expenseType varchar(255)"
+				+ " ,expenseAmt float"
+				+ " ,expenseDesc varchar(255)"
+				+ " ,currencyType varchar(255) );"
+		);
+	}
+
     @Override
-    public ArrayList<Group> getAllGroups() throws Exception {
+    public ArrayList<Group> getAllGroups(User user) throws Exception {
         Connection connection = dcms.getConnection(Environment.DEV);
         Statement statement = connection.createStatement();
-        ResultSet resultSet = statement.executeQuery("SELECT * from test_group");
+		String query = "SELECT * FROM Groups INNER JOIN GroupMembers on Groups.group_id = GroupMembers.group_id where uuid = '"+user.getUuid().toString()+"'";
+		ResultSet resultSet = statement.executeQuery(query);
         return DtoUtils.getGroupsFromResultSet(resultSet);
     }
 
@@ -38,23 +56,6 @@ public class ExpenseService implements ExpenseRepository {
     	System.out.println("trying to save expense");
         expense.setId(UUID.randomUUID().toString());
         return expense;
-    }
-    
-
-    @Override
-    public void createTable() throws Exception {
-        Connection connection = dcms.getConnection(Environment.DEV);
-        Statement s = connection.createStatement();
-        s.executeUpdate("CREATE TABLE Expenses"
-                + " ( id varchar(255)"
-                + ",sourceUserId varchar(255)"
-                + ",targetUserId varchar(266)"
-                + ",groupId varchar(255)"
-                + " ,expenseType varchar(255)"
-                + " ,expenseAmt float"
-                + " ,expenseDesc varchar(255)"
-                + " ,currencyType varchar(255) );"
-        );
     }
 
     public boolean tableExist(String tableName) throws Exception {

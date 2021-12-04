@@ -25,7 +25,6 @@ public class UserService implements UserRepository {
 	Connection connection = dcms.getConnection(Environment.DEV);
 	Statement statement = connection.createStatement();
 	ResultSet resultSet = statement.executeQuery("SELECT * from Users WHERE email ="+"'"+email+"'"+"AND password="+"'"+password+"'");
-	System.out.println(resultSet.toString());
 	return DtoUtils.getUserFromResultSet(resultSet);
 	}
 	
@@ -33,7 +32,7 @@ public class UserService implements UserRepository {
 	public User getByEmail(String email) throws Exception {
 		Connection connection = dcms.getConnection(Environment.DEV);
 		Statement statement = connection.createStatement();
-		ResultSet resultSet = statement.executeQuery("SELECT * from Users WHERE email ="+"'"+email);
+		ResultSet resultSet = statement.executeQuery("SELECT * from Users WHERE email ="+"'"+email+"'");
 		return DtoUtils.getUserFromResultSet(resultSet);	
 	}
 	@Override
@@ -58,7 +57,6 @@ public class UserService implements UserRepository {
 		if(count>0) {
 			System.out.println("user inserted");
 		}
-		
 	}
 
 	@Override

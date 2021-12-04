@@ -4,11 +4,12 @@ import com.eqvypay.Persistence.Group;
 import com.eqvypay.Persistence.User;
 import com.eqvypay.Service.GroupRepository;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class ManageGroupOption {
 
-    public void groupOptions(User user, GroupRepository groupRepository){
+    public void groupOptions(User user, GroupRepository groupRepository) throws Exception{
 
         Scanner sc = new Scanner(System.in);
         int choice;
@@ -17,24 +18,28 @@ public class ManageGroupOption {
             System.out.println("----------------------------");
             System.out.println("\tManage Group");
             System.out.println("----------------------------\n");
-            System.out.println("1. Create group");
-            System.out.println("2. Join group");
-            System.out.println("3. Leave group");
-            System.out.println("4. Delete group");
-            System.out.println("Select your choice: ");
+            System.out.println("[1] Create group");
+            System.out.println("[2] Join group");
+            System.out.println("[3] Leave group");
+            System.out.println("[4] Delete group");
+            System.out.println("[5] Exit");
+            System.out.println("Select an option: ");
 
             choice = sc.nextInt();
 
+            if(choice == 5) {
+            	break;
+            }
+            
             switch (choice){
                 case 1:
                     Group group = new Group();
-
                     System.out.println("Enter group name");
                     sc.nextLine();
                     String groupName = sc.nextLine();
                     group.setGroupName(groupName);
                     System.out.println("Enter group description");
-                    group.setGroupDesc(sc.next());
+                    group.setGroupDesc(sc.nextLine());
                     try{
                         if (!groupRepository.tableExist("Groups")) {
                             groupRepository.createGroupTable();
@@ -49,12 +54,28 @@ public class ManageGroupOption {
                     break;
 
                 case 2:
-                    System.out.println("Enter group ID to join");
                     try {
-                        groupRepository.addGroupMember(user, sc.next());
+                        List<String> groupIds = groupRepository.getFriendsGroupIds(user);
+                        List<Group> all_groups = groupRepository.getAllGroups();
+
+                        System.out.println("List of groups that your friends are member of:");
+                        for(Group each_group: all_groups){
+                            if(groupIds.contains(each_group.getGroupId())){
+                                System.out.println("Group ID: " + each_group.getGroupId() + "\tGroup Name: " + each_group.getGroupName());
+                            }
+                        }
+
+                        System.out.println("Enter group ID to join: ");
+                        String groupId = sc.next().toUpperCase();
+                        if(groupIds.contains(groupId)){
+                            groupRepository.addGroupMember(user, groupId);
+                        }else{
+                            System.out.println("Enter group id from list given only. Please try again.");
+                        }
                     }catch (Exception e){
-                        System.out.println(e.toString());
+                        System.out.println("Exception occurred: " + e.toString());
                     }
+
                     break;
 
                 case 3:
