@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.sql.Connection;
 
+import com.eqvypay.Service.database.DatabaseConnectionManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 

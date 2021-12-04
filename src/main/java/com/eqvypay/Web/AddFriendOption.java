@@ -3,7 +3,7 @@ package com.eqvypay.Web;
 import java.util.Scanner;
 
 import com.eqvypay.Persistence.User;
-import com.eqvypay.Service.FriendRepository;
+import com.eqvypay.Service.friends.FriendRepository;
 
 public class AddFriendOption {
 	public void friendOptions(User user,FriendRepository friendRepository) throws Exception {

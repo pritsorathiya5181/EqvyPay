@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -12,13 +11,9 @@ import com.eqvypay.Persistence.Expense;
 import com.eqvypay.Persistence.Group;
 import com.eqvypay.Persistence.PersonalActivity;
 import com.eqvypay.Persistence.User;
-import com.eqvypay.Service.DatabaseConnectionManagementService;
+import com.eqvypay.Service.database.DatabaseConnectionManagementService;
 import com.eqvypay.util.constants.Environment;
 import com.eqvypay.util.constants.enums.ExpenseType;
-import com.mysql.cj.protocol.ResultsetRow;
-
-import ch.qos.logback.core.encoder.ByteArrayUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 
 public class DtoUtils {
 
@@ -131,13 +126,13 @@ public class DtoUtils {
             String userId = resultSet.getString("userId");
             String amount = resultSet.getString("amount");
             String description = resultSet.getString("description");
-            String expenseCate = resultSet.getString("expenseCate");
+            String expenseCategory = resultSet.getString("expenseCate");
             String date = resultSet.getString("date");
 
             activity.setUserId(userId);
             activity.setAmount(Float.parseFloat(amount));
             activity.setDescription(description);
-            activity.setExpenseCate(expenseCate);
+            activity.setExpenseCategory(expenseCategory);
             activity.setDate(date);
             activities.add(activity);
         }

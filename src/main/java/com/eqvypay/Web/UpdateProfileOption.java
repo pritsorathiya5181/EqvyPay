@@ -2,10 +2,8 @@ package com.eqvypay.Web;
 
 import java.util.Scanner;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.eqvypay.Persistence.User;
-import com.eqvypay.Service.ProfileRepository;
+import com.eqvypay.Service.profile.ProfileRepository;
 
 public class UpdateProfileOption {
 	

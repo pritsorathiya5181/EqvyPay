@@ -1,10 +1,11 @@
-package com.eqvypay.Service;
+package com.eqvypay.Service.profile;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.util.Scanner;
 
+import com.eqvypay.Service.authentication.AuthenticationService;
+import com.eqvypay.Service.database.DatabaseConnectionManagementService;
+import com.eqvypay.Service.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

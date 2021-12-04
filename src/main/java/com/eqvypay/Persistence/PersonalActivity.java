@@ -4,7 +4,7 @@ public class PersonalActivity {
     private String userId;
     private Float amount;
     private String description;
-    private String expenseCate;
+    private String expenseCategory;
     private String date;
 
     public String getUserId() {
@@ -31,13 +31,11 @@ public class PersonalActivity {
         this.description = description;
     }
 
-    public String getExpenseCate() {
-        return expenseCate;
+    public String getExpenseCategory() {
+        return expenseCategory;
     }
 
-    public void setExpenseCate(String expenseCate) {
-        this.expenseCate = expenseCate;
-    }
+    public void setExpenseCategory(String expenseCategory) { this.expenseCategory = expenseCategory; }
 
     public String getDate() {
         return date;

@@ -2,17 +2,22 @@ package com.eqvypay.Web;
 
 import com.eqvypay.Persistence.PersonalActivity;
 import com.eqvypay.Persistence.User;
-import com.eqvypay.Service.MoneyManagerRepository;
+import com.eqvypay.Service.moneymanager.MoneyManagerDataManipulation;
+import com.eqvypay.Service.moneymanager.MoneyManagerRepository;
 import com.eqvypay.util.formatter.NumberFormatUsingFormatter;
 import com.eqvypay.util.formatter.NumberFormatter;
 import com.eqvypay.util.validator.DateValidator;
 import com.eqvypay.util.validator.DateValidatorUsingDateFormat;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class MoneyManagerOption {
+
+    @Autowired
+    MoneyManagerDataManipulation dataManipulation;
 
     public void handleOption(User user, MoneyManagerRepository moneyManagerRepository) throws Exception {
         Scanner sc = new Scanner(System.in);
@@ -50,11 +55,11 @@ public class MoneyManagerOption {
                         newActivity.setUserId(user.getUuid().toString());
                         newActivity.setAmount(incomeValue);
                         newActivity.setDescription(incDesc);
-                        newActivity.setExpenseCate("NA");
+                        newActivity.setExpenseCategory("NA");
                         newActivity.setDate(incomeDate);
 
-                        moneyManagerRepository.createTable();
-                        moneyManagerRepository.save(newActivity);
+                        dataManipulation.createTable();
+                        moneyManagerRepository.addIncomeExpense(newActivity);
                         break;
                     case 2:
                         System.out.println("Enter expense amount");
@@ -77,11 +82,11 @@ public class MoneyManagerOption {
                         newActivity.setUserId(userId);
                         newActivity.setAmount(personalExpense);
                         newActivity.setDescription(expenseDesc);
-                        newActivity.setExpenseCate(expenseCat);
+                        newActivity.setExpenseCategory(expenseCat);
                         newActivity.setDate(expenseDate);
 
-                        moneyManagerRepository.createTable();
-                        moneyManagerRepository.save(newActivity);
+                        dataManipulation.createTable();
+                        moneyManagerRepository.addIncomeExpense(newActivity);
                         break;
                     case 3:
                         NumberFormatter numberFormatter = new NumberFormatUsingFormatter();
@@ -118,7 +123,7 @@ public class MoneyManagerOption {
                                         }
                                         Float amount = activity.getAmount();
 
-                                        if (activity.getExpenseCate().trim().equals("NA")) {
+                                        if (activity.getExpenseCategory().trim().equals("NA")) {
                                             totalIncome += amount;
                                         } else {
                                             float maxValue = maxExpenditureIndex > -1 ? activities.get(maxExpenditureIndex).getAmount() : 0;
@@ -140,17 +145,17 @@ public class MoneyManagerOption {
                                         }
                                     }
                                     if (activityFound) {
-                                        System.out.printf("%-15s%-15s%-15s%-15s%-15s%n", i + 1, activity.getAmount(), activity.getDescription(), activity.getExpenseCate(), activity.getDate());
+                                        System.out.printf("%-15s%-15s%-15s%-15s%-15s%n", i + 1, activity.getAmount(), activity.getDescription(), activity.getExpenseCategory(), activity.getDate());
                                     }
                                 }
                             }
                             if (activityFound) {
                                 System.out.println("\nTotal income: $" + numberFormatter.formatNumber(totalIncome));
                                 System.out.println("Total balance: " + (totalIncome > totalExpenditure ? ("$" + numberFormatter.formatNumber(totalIncome - totalExpenditure)) : "you have spent more than your earnings of this " + month));
-                                System.out.println("Minimum expenditure is $" + activities.get(minExpenditureIndex).getAmount() + " - on " + activities.get(minExpenditureIndex).getExpenseCate());
+                                System.out.println("Minimum expenditure is $" + activities.get(minExpenditureIndex).getAmount() + " - on " + activities.get(minExpenditureIndex).getExpenseCategory());
 
                                 if (hasMaxExp) {
-                                    System.out.println("Maximum expenditure is $" + activities.get(maxExpenditureIndex).getAmount() + " - on " + activities.get(maxExpenditureIndex).getExpenseCate());
+                                    System.out.println("Maximum expenditure is $" + activities.get(maxExpenditureIndex).getAmount() + " - on " + activities.get(maxExpenditureIndex).getExpenseCategory());
                                 }
                             } else {
                                 System.out.println("No activity for this " + month + " month");
@@ -171,7 +176,7 @@ public class MoneyManagerOption {
                             for (int i = 0; i < activities.size(); i++) {
                                 PersonalActivity activity = activities.get(i);
 
-                                if (category.equals(activity.getExpenseCate())) {
+                                if (category.equals(activity.getExpenseCategory())) {
                                     if (!activityFound) {
                                         System.out.printf("%-15s%-15s%-15s%-15s%-15s%n", "sr.no.", "amount", "description", "category", "date");
                                         activityFound = true;
@@ -190,17 +195,17 @@ public class MoneyManagerOption {
                                         hasMinExp = true;
                                         minExpenditureIndex = i;
                                     }
-                                    System.out.printf("%-15s%-15s%-15s%-15s%-15s%n", i + 1, activity.getAmount(), activity.getDescription(), activity.getExpenseCate(), activity.getDate());
+                                    System.out.printf("%-15s%-15s%-15s%-15s%-15s%n", i + 1, activity.getAmount(), activity.getDescription(), activity.getExpenseCategory(), activity.getDate());
                                 }
                             }
 
                             if (activityFound) {
                                 System.out.println("\nTotal Expenditure: $" + numberFormatter.formatNumber(totalExpenditure));
                                 if (hasMinExp) {
-                                    System.out.println("Minimum expenditure is $" + activities.get(minExpenditureIndex).getAmount() + " - on " + activities.get(minExpenditureIndex).getExpenseCate());
+                                    System.out.println("Minimum expenditure is $" + activities.get(minExpenditureIndex).getAmount() + " - on " + activities.get(minExpenditureIndex).getExpenseCategory());
                                 }
                                 if (hasMaxExp && minExpenditureIndex != maxExpenditureIndex) {
-                                    System.out.println("Maximum expenditure is $" + activities.get(maxExpenditureIndex).getAmount() + " - on " + activities.get(maxExpenditureIndex).getExpenseCate());
+                                    System.out.println("Maximum expenditure is $" + activities.get(maxExpenditureIndex).getAmount() + " - on " + activities.get(maxExpenditureIndex).getExpenseCategory());
                                 }
                             } else {
                                 System.out.println("No activity for this " + category + " category");

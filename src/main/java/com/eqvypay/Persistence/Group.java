@@ -8,10 +8,10 @@ public class Group {
     private String groupName;
     private String groupDesc;
 
-    public Group(){
+    public Group() {
         // generate random group id
         Random random = new Random();
-        this.groupId = String.valueOf(random.nextInt(10)) + String.valueOf(random.nextInt(10)) + (char)(random.nextInt(26) + 'a') +  (char)(random.nextInt(26) + 'a')+  String.valueOf(random.nextInt(10) + String.valueOf(random.nextInt(10)));
+        this.groupId = String.valueOf(random.nextInt(10)) + String.valueOf(random.nextInt(10)) + (char) (random.nextInt(26) + 'a') + (char) (random.nextInt(26) + 'a') + String.valueOf(random.nextInt(10) + String.valueOf(random.nextInt(10)));
         this.groupId = this.groupId.toUpperCase();
     }
 

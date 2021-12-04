@@ -8,13 +8,11 @@ public class Expense {
 	private String targetUserId;
 	private String groupId;
 	private ExpenseType expenseType;
-    private float expenseAmt;
+    private float expenseAmount;
     private String expenseDesc;
     private String currencyType;
     private String sourceUserId;
 
-    //
-    
 	public String getSourceUserId() {
 		return sourceUserId;
 	}
@@ -40,11 +38,11 @@ public class Expense {
 	}
 
 	public float getExpenseAmt() {
-        return expenseAmt;
+        return expenseAmount;
     }
 
-    public void setExpenseAmt(float expenseAmt) {
-        this.expenseAmt = expenseAmt;
+    public void setExpenseAmt(float expenseAmount) {
+        this.expenseAmount = expenseAmount;
     }
 
     public String getExpenseDesc() {

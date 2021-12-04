@@ -2,12 +2,17 @@ package com.eqvypay.Web;
 
 import com.eqvypay.Persistence.Group;
 import com.eqvypay.Persistence.User;
-import com.eqvypay.Service.GroupRepository;
+import com.eqvypay.Service.groups.GroupDataManipulation;
+import com.eqvypay.Service.groups.GroupRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 import java.util.Scanner;
 
 public class ManageGroupOption {
+
+    @Autowired
+    GroupDataManipulation dataManipulation;
 
     public void groupOptions(User user, GroupRepository groupRepository) throws Exception{
 
@@ -41,12 +46,12 @@ public class ManageGroupOption {
                     System.out.println("Enter group description");
                     group.setGroupDesc(sc.nextLine());
                     try{
-                        if (!groupRepository.tableExist("Groups")) {
-                            groupRepository.createGroupTable();
+                        if (!dataManipulation.tableExist("Groups")) {
+                            dataManipulation.createTable();
                         }
                         //INSERT ROW TO GROUPS TABLE
-                        groupRepository.save(group);
-                        groupRepository.addGroupMember(user, group.getGroupId());
+                        groupRepository.createGroup(group);
+                        groupRepository.joinGroup(user, group.getGroupId());
 
                     }catch (Exception e){
                         System.out.println("Error: " + e.toString());
@@ -55,8 +60,8 @@ public class ManageGroupOption {
 
                 case 2:
                     try {
-                        List<String> groupIds = groupRepository.getFriendsGroupIds(user);
-                        List<Group> all_groups = groupRepository.getAllGroups();
+                        List<String> groupIds = dataManipulation.getFriendsGroupIds(user);
+                        List<Group> all_groups = dataManipulation.getAllGroups();
 
                         System.out.println("List of groups that your friends are member of:");
                         for(Group each_group: all_groups){
@@ -68,7 +73,7 @@ public class ManageGroupOption {
                         System.out.println("Enter group ID to join: ");
                         String groupId = sc.next().toUpperCase();
                         if(groupIds.contains(groupId)){
-                            groupRepository.addGroupMember(user, groupId);
+                            groupRepository.joinGroup(user, groupId);
                         }else{
                             System.out.println("Enter group id from list given only. Please try again.");
                         }
@@ -80,7 +85,7 @@ public class ManageGroupOption {
 
                 case 3:
                     try {
-                        groupRepository.removeGroupMember(user);
+                        groupRepository.leaveGroup(user);
                     }catch (Exception e){
                         System.out.println(e.toString());
                     }

@@ -1,17 +1,17 @@
 package com.eqvypay.Persistence;
 
 public class PersonalExpense {
-    private Float expenseAmt;
+    private Float expenseAmount;
     private String expenseDesc;
-    private String expenseCate;
+    private String expenseCategory;
     private String expenseDate;
 
     public Float getExpenseAmt() {
-        return expenseAmt;
+        return expenseAmount;
     }
 
     public void setExpenseAmt(Float expenseAmt) {
-        this.expenseAmt = expenseAmt;
+        this.expenseAmount = expenseAmt;
     }
 
     public String getExpenseDesc() {
@@ -23,11 +23,11 @@ public class PersonalExpense {
     }
 
     public String getExpenseCate() {
-        return expenseCate;
+        return expenseCategory;
     }
 
-    public void setExpenseCate(String expenseCate) {
-        this.expenseCate = expenseCate;
+    public void setExpenseCate(String expenseCategory) {
+        this.expenseCategory = expenseCategory;
     }
 
     public String getExpenseDate() {

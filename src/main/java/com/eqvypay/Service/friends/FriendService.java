@@ -1,11 +1,12 @@
-package com.eqvypay.Service;
+package com.eqvypay.Service.friends;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Scanner;
 
+import com.eqvypay.Service.database.DatabaseConnectionManagementService;
+import com.eqvypay.Service.user.UserRepository;
 import com.eqvypay.util.DtoUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,7 +15,7 @@ import com.eqvypay.Persistence.User;
 import com.eqvypay.util.constants.Environment;
 
 @Service
-public class FriendService implements FriendRepository{
+public class FriendService implements FriendRepository {
 
     @Autowired
     private DatabaseConnectionManagementService dcms;
@@ -55,17 +56,17 @@ public class FriendService implements FriendRepository{
 
         String friendUuid = null;
         int count = DtoUtils.getCountOfRecords(result);
-		PreparedStatement selectQuery = connection.prepareStatement("select * from Users where contact = ?");
-		selectQuery.setString(1, contact);
-		result = selectQuery.executeQuery();
+        PreparedStatement selectQuery = connection.prepareStatement("select * from Users where contact = ?");
+        selectQuery.setString(1, contact);
+        result = selectQuery.executeQuery();
 
-		if (count == 0) {
+        if (count == 0) {
             System.out.println("No user with contact " + contact + " is registered in the system. Please try again");
         } else {
 
-			if(result.next()){
+            if (result.next()) {
                 friendUuid = result.getString("uuid");
-			}
+            }
             System.out.println("FID: " + friendUuid);
 
             PreparedStatement insertQuery = connection.prepareStatement("insert into Friend (user_id, friend_id) values (?, ?)");

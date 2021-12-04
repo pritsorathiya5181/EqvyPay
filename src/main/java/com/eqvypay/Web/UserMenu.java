@@ -1,15 +1,14 @@
 package com.eqvypay.Web;
 
 import com.eqvypay.Persistence.User;
-import com.eqvypay.Service.ExpenseRepository;
-import com.eqvypay.Service.FriendRepository;
-import com.eqvypay.Service.FriendService;
-import com.eqvypay.Service.GroupRepository;
-import com.eqvypay.Service.ProfileRepository;
+import com.eqvypay.Service.expense.ExpenseRepository;
+import com.eqvypay.Service.friends.FriendRepository;
+import com.eqvypay.Service.groups.GroupRepository;
+import com.eqvypay.Service.profile.ProfileRepository;
 
 import java.util.Scanner;
 
-import com.eqvypay.Service.MoneyManagerRepository;
+import com.eqvypay.Service.moneymanager.MoneyManagerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -45,7 +44,6 @@ public class UserMenu {
             System.out.println("[6] Profile details");
             System.out.println("[7] Money manager");
             System.out.println("[8] Logout");
-            System.out.println("Select an option: ");
 
             int option = sc.nextInt();
             if (option == 8) {
@@ -86,7 +84,7 @@ public class UserMenu {
                         System.out.println("Yet to implement");
                 }
             }
-            return 0;
+
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.eqvypay.Service;
+package com.eqvypay.Service.user;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.UUID;
 
+import com.eqvypay.Service.database.DatabaseConnectionManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,8 @@ import com.eqvypay.Persistence.User;
 import com.eqvypay.util.DtoUtils;
 import com.eqvypay.util.constants.DatabaseConstants;
 import com.eqvypay.util.constants.Environment;
+
+import javax.xml.crypto.Data;
 
 @Service
 public class UserService implements UserRepository {

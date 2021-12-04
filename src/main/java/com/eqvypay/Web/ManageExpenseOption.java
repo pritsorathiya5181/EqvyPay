@@ -3,10 +3,13 @@ package com.eqvypay.Web;
 import com.eqvypay.Persistence.Expense;
 import com.eqvypay.Persistence.Group;
 import com.eqvypay.Persistence.User;
-import com.eqvypay.Service.ExpenseRepository;
-import com.eqvypay.Service.FriendRepository;
+import com.eqvypay.Service.expense.ExpenseDataManipulation;
+import com.eqvypay.Service.expense.ExpenseRepository;
+import com.eqvypay.Service.friends.FriendRepository;
 import com.eqvypay.util.constants.Constants;
 import com.eqvypay.util.constants.enums.ExpenseType;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,9 +19,17 @@ import java.util.Scanner;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+@Service
 public class ManageExpenseOption {
 
+    @Autowired
+    ExpenseDataManipulation dataManipulation;
+
+    @Autowired
+    Test test;
+
     public void expenseOptions(User user, ExpenseRepository expenseRepository, FriendRepository friendRepository) throws Exception {
+
         Scanner sc = new Scanner(System.in);
 
         while (true) {
@@ -83,12 +94,13 @@ public class ManageExpenseOption {
                                     newExpense.setExpenseType(ExpenseType.GROUP);
                                     newExpense.setTargetUserId(user.getUuid().toString());
 
-                                    boolean isTableExists = expenseRepository.tableExist("Expenses");
+
+                                    boolean isTableExists = dataManipulation.tableExist("Expenses");
 
                                     if (!isTableExists) {
-                                        expenseRepository.createTable();
+                                        dataManipulation.createTable();
                                     }
-                                    Expense expense = expenseRepository.save(newExpense);
+                                    Expense expense = dataManipulation.save(newExpense);
                                     System.out.println("Expense target user is " + expense.getTargetUserId());
                                     System.out.println("Expense " + expense.getExpenseAmt());
 
@@ -117,7 +129,7 @@ public class ManageExpenseOption {
                                                 expenses.add(memberExpense);
                                             }
                                         }
-                                        expenseRepository.saveAll(expenses);
+                                        dataManipulation.saveAll(expenses);
                                         System.out.println("option 1 select");
                                     } else if (divideType == 2) {
                                         List<Expense> expenses = new ArrayList<Expense>();
@@ -138,7 +150,7 @@ public class ManageExpenseOption {
                                                 expenses.add(memberExpense);
                                             }
                                         }
-                                        expenseRepository.saveAll(expenses);
+                                        dataManipulation.saveAll(expenses);
                                         System.out.println("option 2 select");
                                     }
                                     System.out.println("Succeed! expenses added");
@@ -190,7 +202,7 @@ public class ManageExpenseOption {
                             expense.setTargetUserId(user.getUuid().toString());
                             friendExpenseList.add(expense);
                         }
-                        expenseRepository.saveAll(friendExpenseList);
+                        dataManipulation.saveAll(friendExpenseList);
                     } else {
                         for (User friend : selectedFriendIds) {
                             Expense expense = new Expense();
@@ -205,7 +217,7 @@ public class ManageExpenseOption {
                             expense.setTargetUserId(user.getUuid().toString());
                             friendExpenseList.add(expense);
                         }
-                        expenseRepository.saveAll(friendExpenseList);
+                        dataManipulation.saveAll(friendExpenseList);
                     }
                 }
             } else if (option == 2) {
