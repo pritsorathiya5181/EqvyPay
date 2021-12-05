@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import com.eqvypay.Service.database.DatabaseConnectionManagementService;
+import com.eqvypay.Service.user.UserDataManipulation;
 import com.eqvypay.Service.user.UserRepository;
 import com.eqvypay.util.DtoUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,17 +20,17 @@ public class FriendService implements FriendRepository {
 
     @Autowired
     private DatabaseConnectionManagementService dcms;
-
+    
     @Autowired
-    private UserRepository userRepo;
-
+    private UserDataManipulation userDataManipulation;
+    
     @Override
     public void addFriendByEmail(User user, String email) throws Exception {
         Connection connection = dcms.getConnection(Environment.DEV);
         ResultSet result = null;
         User friend = null;
         try {
-            friend = userRepo.getByEmail(email);
+            friend = userDataManipulation.getByEmail(email);
         } catch (SQLException e) {
             System.out.println("Enter a valid email id of a registered user!" + e);
         }

@@ -5,12 +5,15 @@ import com.eqvypay.Service.database.DatabaseConnectionManagementService;
 import com.eqvypay.util.DtoUtils;
 import com.eqvypay.util.constants.Environment;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.List;
 import java.util.UUID;
 
+@Service
 public class UserDataManipulation implements IUserDataManipulation {
 
     @Autowired
@@ -49,8 +52,15 @@ public class UserDataManipulation implements IUserDataManipulation {
     public User getByUuid(UUID uuid) throws Exception {
         Connection connection = dcms.getConnection(Environment.DEV);
         Statement statement = connection.createStatement();
-        ResultSet resultSet = statement.executeQuery("SELECT * from Users WHERE uuid ="+"'"+uuid.toString());
+        ResultSet resultSet = statement.executeQuery("SELECT * from Users WHERE uuid = '"+uuid+"'");
         return DtoUtils.getUserFromResultSet(resultSet);
     }
-
+    
+    @Override
+    public List<User> findAllFriends(String userId) throws Exception {
+       Connection connection = dcms.getConnection(Environment.DEV);
+       Statement statement = connection.createStatement();
+       ResultSet rs = statement.executeQuery("select * from Friend inner join Users on Friend.friend_id = Users.uuid where Friend.user_id ='" + userId + "'");
+       return DtoUtils.getAllFriendsFromResultSet(rs);
+    }
 }

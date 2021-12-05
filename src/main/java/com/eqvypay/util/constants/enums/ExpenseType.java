@@ -3,7 +3,8 @@ package com.eqvypay.util.constants.enums;
 public enum ExpenseType {
 
 	GROUP("GROUP"),
-	INDIVIDUAL("FRIEND");
+	INDIVIDUAL("FRIEND"),
+	FRIEND("FRIEND");
 	
 	private String type;
 	

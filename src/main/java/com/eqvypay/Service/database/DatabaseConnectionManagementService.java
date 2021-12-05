@@ -1,10 +1,10 @@
 package com.eqvypay.Service.database;
 
 import java.sql.Connection;
+
 import java.sql.DriverManager;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Profiles;
 import org.springframework.stereotype.Service;
 
 import com.eqvypay.util.constants.DatabaseConstants;
@@ -15,22 +15,37 @@ public class DatabaseConnectionManagementService {
 
     @Autowired
     private org.springframework.core.env.Environment environment;
-
+    
+    private static Connection connection;
+    private static Environment currentEnvironment = Environment.DEV;
+    
     public Connection getConnection(Environment env) throws Exception {
 
         switch (env) {
             case TEST:
-                return DriverManager.getConnection(environment.getProperty(DatabaseConstants.TEST_URL),
-                        environment.getProperty(DatabaseConstants.TEST_USERNAME),
-                        environment.getProperty(DatabaseConstants.TEST_PASSWORD));
+               if(connection==null || !(env.equals(currentEnvironment))) {
+            		connection =  DriverManager.getConnection(environment.getProperty(DatabaseConstants.TEST_URL),
+                            environment.getProperty(DatabaseConstants.TEST_USERNAME),
+                            environment.getProperty(DatabaseConstants.TEST_PASSWORD));
+            		currentEnvironment = Environment.TEST;
+               }
+               return connection;
             case DEV:
-                return DriverManager.getConnection(environment.getProperty(DatabaseConstants.DEV_URL),
+            	if(connection==null || !(env.equals(currentEnvironment))) {
+            			connection = DriverManager.getConnection(environment.getProperty(DatabaseConstants.DEV_URL),
                         environment.getProperty(DatabaseConstants.DEV_USERNAME),
                         environment.getProperty(DatabaseConstants.DEV_PASSWORD));
+            			currentEnvironment = Environment.DEV;
+            	}
+            	return connection;
             case PROD:
-                return DriverManager.getConnection(environment.getProperty(DatabaseConstants.PROD_URL),
-                        environment.getProperty(DatabaseConstants.PROD_USERNAME),
-                        environment.getProperty(DatabaseConstants.PROD_PASSWORD));
+            	if(connection==null || (!env.equals(currentEnvironment))) {
+            	   connection = DriverManager.getConnection(environment.getProperty(DatabaseConstants.PROD_URL),
+                            environment.getProperty(DatabaseConstants.PROD_USERNAME),
+                            environment.getProperty(DatabaseConstants.PROD_PASSWORD));
+                	currentEnvironment = Environment.PROD;
+            	}
+            	return connection;
             default:
                 throw new Exception("Unable to get a connection object for env :" + env.getEnvironment());
         }

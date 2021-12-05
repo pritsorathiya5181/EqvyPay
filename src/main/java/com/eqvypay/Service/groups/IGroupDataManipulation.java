@@ -3,6 +3,7 @@ package com.eqvypay.Service.groups;
 import com.eqvypay.Persistence.Group;
 import com.eqvypay.Persistence.User;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public interface IGroupDataManipulation {
@@ -15,4 +16,6 @@ public interface IGroupDataManipulation {
     public List<Group> getAllGroups() throws Exception;
 
     public List<String> getFriendsGroupIds(User user) throws Exception;
+
+	ArrayList<Group> getAllJoinedGroups(User user) throws Exception;
 }

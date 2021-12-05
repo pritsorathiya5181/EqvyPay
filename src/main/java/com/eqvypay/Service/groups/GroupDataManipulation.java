@@ -3,6 +3,7 @@ package com.eqvypay.Service.groups;
 import com.eqvypay.Persistence.Group;
 import com.eqvypay.Persistence.User;
 import com.eqvypay.Service.database.DatabaseConnectionManagementService;
+import com.eqvypay.util.DtoUtils;
 import com.eqvypay.util.constants.Environment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -75,6 +76,26 @@ public class GroupDataManipulation implements IGroupDataManipulation {
             groups.add(group);
         }
         return groups;
+    }
+    
+    public List<String> getMembersOfGroup(String groupId) throws Exception {
+    	List<String> members = new ArrayList<String>();
+    	Connection connection = dcms.getConnection(Environment.DEV);
+    	Statement stmt = connection.createStatement();
+        ResultSet rs = stmt.executeQuery("Select * from GroupMembers where group_id = '"+groupId+"'");
+        while(rs.next()) {
+        	members.add(rs.getString("uuid"));
+        }
+        return members;
+    }
+
+    @Override
+    public ArrayList<Group> getAllJoinedGroups(User user) throws Exception {
+        Connection connection = dcms.getConnection(Environment.DEV);
+        Statement statement = connection.createStatement();
+        String query = "SELECT * FROM Groups INNER JOIN GroupMembers on Groups.group_id = GroupMembers.group_id where uuid = '" + user.getUuid().toString() + "'";
+        ResultSet resultSet = statement.executeQuery(query);
+        return DtoUtils.getGroupsFromResultSet(resultSet);
     }
 
     @Override

@@ -4,6 +4,7 @@ import com.eqvypay.Persistence.Group;
 import com.eqvypay.Persistence.User;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -15,4 +16,5 @@ public interface GroupRepository {
     public void createGroup(Group group) throws Exception;
 
     public void leaveGroup(User user) throws Exception;
+	
 }

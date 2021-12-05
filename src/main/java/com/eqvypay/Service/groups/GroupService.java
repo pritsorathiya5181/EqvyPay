@@ -40,6 +40,8 @@ public class GroupService implements GroupRepository{
         }
     }
 
+
+    
     @Override
     public void joinGroup(User user, String inputId) throws Exception {
         Connection connection = dcms.getConnection(Environment.DEV);
