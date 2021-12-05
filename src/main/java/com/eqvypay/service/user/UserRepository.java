@@ -1,4 +1,4 @@
-package com.eqvypay.service.repository;
+package com.eqvypay.service.user;
 
 import java.util.UUID;
 

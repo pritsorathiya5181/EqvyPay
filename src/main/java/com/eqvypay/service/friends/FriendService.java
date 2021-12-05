@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import com.eqvypay.service.database.DatabaseConnectionManagementService;
-import com.eqvypay.service.repository.FriendRepository;
 import com.eqvypay.service.user.UserDataManipulation;
 import com.eqvypay.util.DtoUtils;
 import org.springframework.beans.factory.annotation.Autowired;

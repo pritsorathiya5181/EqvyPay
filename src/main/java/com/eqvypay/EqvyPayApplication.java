@@ -2,10 +2,10 @@ package com.eqvypay;
 
 import com.eqvypay.service.authentication.AuthenticationService;
 import com.eqvypay.service.database.DatabaseConnectionManagementService;
-import com.eqvypay.service.repository.ExpenseRepository;
-import com.eqvypay.service.repository.MoneyManagerRepository;
+import com.eqvypay.service.expense.ExpenseRepository;
+import com.eqvypay.service.moneymanager.MoneyManagerRepository;
 import com.eqvypay.service.user.UserDataManipulation;
-import com.eqvypay.service.repository.UserRepository;
+import com.eqvypay.service.user.UserRepository;
 import com.eqvypay.web.UserMenu;
 
 import org.springframework.boot.CommandLineRunner;

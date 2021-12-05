@@ -2,7 +2,6 @@ package com.eqvypay.service.moneymanager;
 
 import com.eqvypay.persistence.*;
 import com.eqvypay.service.database.DatabaseConnectionManagementService;
-import com.eqvypay.service.repository.MoneyManagerRepository;
 import com.eqvypay.util.DtoUtils;
 import com.eqvypay.util.constants.DatabaseConstants;
 import com.eqvypay.util.constants.Environment;

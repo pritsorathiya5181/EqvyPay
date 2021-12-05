@@ -3,7 +3,6 @@ package com.eqvypay.service.groups;
 import com.eqvypay.persistence.Group;
 import com.eqvypay.persistence.User;
 import com.eqvypay.service.database.DatabaseConnectionManagementService;
-import com.eqvypay.service.repository.GroupRepository;
 import com.eqvypay.util.DtoUtils;
 import com.eqvypay.util.constants.DatabaseConstants;
 import com.eqvypay.util.constants.Environment;

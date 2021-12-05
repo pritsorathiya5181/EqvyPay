@@ -7,7 +7,6 @@ import java.sql.Statement;
 import java.util.List;
 import com.eqvypay.persistence.Expense;
 import com.eqvypay.service.database.DatabaseConnectionManagementService;
-import com.eqvypay.service.repository.ExpenseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.eqvypay.util.DtoUtils;

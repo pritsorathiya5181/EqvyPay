@@ -3,7 +3,7 @@ package com.eqvypay.web;
 import java.util.Scanner;
 
 import com.eqvypay.persistence.User;
-import com.eqvypay.service.repository.ProfileRepository;
+import com.eqvypay.service.profile.ProfileRepository;
 import org.springframework.stereotype.Service;
 
 @Service

@@ -1,14 +1,14 @@
 package com.eqvypay.web;
 
 import com.eqvypay.persistence.User;
-import com.eqvypay.service.repository.ExpenseRepository;
-import com.eqvypay.service.repository.FriendRepository;
-import com.eqvypay.service.repository.GroupRepository;
-import com.eqvypay.service.repository.ProfileRepository;
+import com.eqvypay.service.expense.ExpenseRepository;
+import com.eqvypay.service.friends.FriendRepository;
+import com.eqvypay.service.groups.GroupRepository;
+import com.eqvypay.service.moneymanager.MoneyManagerRepository;
+import com.eqvypay.service.profile.ProfileRepository;
 
 import java.util.Scanner;
 
-import com.eqvypay.service.repository.MoneyManagerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

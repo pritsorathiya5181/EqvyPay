@@ -1,4 +1,4 @@
-package com.eqvypay.service.repository;
+package com.eqvypay.service.groups;
 
 import com.eqvypay.persistence.Group;
 import com.eqvypay.persistence.User;

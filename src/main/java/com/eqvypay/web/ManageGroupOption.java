@@ -3,7 +3,7 @@ package com.eqvypay.web;
 import com.eqvypay.persistence.Group;
 import com.eqvypay.persistence.User;
 import com.eqvypay.service.groups.GroupDataManipulation;
-import com.eqvypay.service.repository.GroupRepository;
+import com.eqvypay.service.groups.GroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

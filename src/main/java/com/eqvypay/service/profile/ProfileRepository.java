@@ -1,10 +1,10 @@
-package com.eqvypay.service.repository;
+package com.eqvypay.service.profile;
 
 import org.springframework.stereotype.Repository;
 import com.eqvypay.persistence.User;
 
 @Repository
-public interface ProfileRepository extends IRepositories {
+public interface ProfileRepository {
     public void updateUsername(User user, String username) throws Exception;
 
     public void updateContact(User user, String contact) throws Exception;

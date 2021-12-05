@@ -5,7 +5,6 @@ import java.sql.PreparedStatement;
 import java.util.UUID;
 
 import com.eqvypay.service.database.DatabaseConnectionManagementService;
-import com.eqvypay.service.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

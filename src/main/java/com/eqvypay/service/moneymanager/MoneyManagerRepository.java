@@ -1,4 +1,4 @@
-package com.eqvypay.service.repository;
+package com.eqvypay.service.moneymanager;
 
 import com.eqvypay.persistence.PersonalActivity;
 import org.springframework.stereotype.Repository;

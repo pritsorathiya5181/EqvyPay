@@ -3,7 +3,7 @@ package com.eqvypay.service.profile;
 import com.eqvypay.persistence.User;
 import com.eqvypay.service.database.DatabaseConnectionManagementService;
 import com.eqvypay.service.user.UserDataManipulation;
-import com.eqvypay.service.repository.UserRepository;
+import com.eqvypay.service.user.UserRepository;
 import com.eqvypay.util.constants.Environment;
 import org.springframework.beans.factory.annotation.Autowired;
 

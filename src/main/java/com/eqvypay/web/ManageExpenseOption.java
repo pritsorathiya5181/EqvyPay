@@ -4,10 +4,9 @@ import com.eqvypay.persistence.Expense;
 import com.eqvypay.persistence.Group;
 import com.eqvypay.persistence.User;
 import com.eqvypay.service.expense.ExpenseDataManipulation;
-import com.eqvypay.service.repository.ExpenseRepository;
 import com.eqvypay.service.groups.GroupDataManipulation;
-import com.eqvypay.service.repository.GroupRepository;
-import com.eqvypay.service.repository.IRepositories;
+import com.eqvypay.service.expense.ExpenseRepository;
+import com.eqvypay.service.groups.GroupRepository;
 import com.eqvypay.service.user.UserDataManipulation;
 import com.eqvypay.util.constants.Constants;
 import com.eqvypay.util.constants.enums.ExpenseType;
@@ -23,7 +22,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
-public class ManageExpenseOption implements WebOptions {
+public class ManageExpenseOption{
 
     @Autowired
     ExpenseDataManipulation dataManipulation;
@@ -37,7 +36,7 @@ public class ManageExpenseOption implements WebOptions {
     @Autowired
     GroupRepository groupRepository;
 
-    public void options(User user, IRepositories expenseRepository) throws Exception {
+    public void options(User user, ExpenseRepository expenseRepository) throws Exception {
 
         Scanner sc = new Scanner(System.in);
 
@@ -256,7 +255,8 @@ public class ManageExpenseOption implements WebOptions {
                 }
             } else if (option == 2) {
                 System.out.println("Your outstandings are");
-                List<Expense> expenses = expenseRepository.getExpensesByUserId(user.getUuid().toString());
+                ExpenseRepository expenseRepository2 = (ExpenseRepository) expenseRepository;
+                List<Expense> expenses = expenseRepository2.getExpensesByUserId(user.getUuid().toString());
                 for (Expense expense : expenses) {
                     Currency currency = Currency.getInstance(expense.getCurrencyType().toUpperCase());
                     if (expense.getSourceUserId().equals(user.getUuid().toString())) {
@@ -277,7 +277,7 @@ public class ManageExpenseOption implements WebOptions {
                     for (int i = 0; i < settlementIndexes.size(); i++) {
                         Expense expenseToBeSettled = expenses.get(i);
                         Currency currency = Currency.getInstance(expenseToBeSettled.getCurrencyType().toUpperCase());
-                        boolean settled = expenseRepository.settleExpense(expenseToBeSettled);
+                        boolean settled = expenseRepository2.settleExpense(expenseToBeSettled);
                         if (settled) {
                             System.out.println("Expense of :" + expenseToBeSettled.getExpenseAmt() + " settled!");
                         }

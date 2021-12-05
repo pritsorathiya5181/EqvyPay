@@ -3,7 +3,7 @@ package com.eqvypay.web;
 import com.eqvypay.persistence.PersonalActivity;
 import com.eqvypay.persistence.User;
 import com.eqvypay.service.moneymanager.MoneyManagerDataManipulation;
-import com.eqvypay.service.repository.MoneyManagerRepository;
+import com.eqvypay.service.moneymanager.MoneyManagerRepository;
 import com.eqvypay.util.formatter.NumberFormatUsingFormatter;
 import com.eqvypay.util.formatter.NumberFormatter;
 import com.eqvypay.util.validator.DateValidator;
