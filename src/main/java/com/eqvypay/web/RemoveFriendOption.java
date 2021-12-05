@@ -4,11 +4,16 @@ import java.util.Scanner;
 
 import com.eqvypay.persistence.User;
 import com.eqvypay.service.friends.FriendRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class RemoveFriendOption {
-	public void friendOptions(User user,FriendRepository friendRepository) throws Exception {
+public class RemoveFriendOption implements WebOption {
+
+	@Autowired
+	FriendRepository friendRepository;
+
+	public void options(User user) throws Exception {
         Scanner sc = new Scanner(System.in);
         
         while (true) {

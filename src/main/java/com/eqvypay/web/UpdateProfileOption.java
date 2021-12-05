@@ -4,12 +4,16 @@ import java.util.Scanner;
 
 import com.eqvypay.persistence.User;
 import com.eqvypay.service.profile.ProfileRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UpdateProfileOption {
-	
-	public void updateProfileOption(User user, ProfileRepository profileRepo) throws Exception {
+public class UpdateProfileOption implements WebOption {
+
+	@Autowired
+	ProfileRepository profileRepo;
+
+	public void options(User user) throws Exception {
 		Scanner scanner = new Scanner(System.in);
 		String input = "";
 		

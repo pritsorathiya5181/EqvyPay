@@ -11,12 +11,15 @@ import java.util.List;
 import java.util.Scanner;
 
 @Service
-public class ManageGroupOption {
+public class ManageGroupOption implements WebOption {
 
     @Autowired
     GroupDataManipulation dataManipulation;
 
-    public void groupOptions(User user, GroupRepository groupRepository) throws Exception{
+    @Autowired
+    GroupRepository groupRepository;
+
+    public void options(User user) throws Exception{
 
         Scanner sc = new Scanner(System.in);
         int choice;

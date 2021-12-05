@@ -70,28 +70,30 @@ public class UserMenu {
                 switch (option) {
                     case 1:
                         System.out.println("Add friend option selected");
-                        addFriendOption.friendOptions(user, friendRepository);
+                        addFriendOption.options(user);
                         break;
                     case 2:
                         System.out.println("Remove friend option selected");
-                        removeFriendOption.friendOptions(user, friendRepository);
+                        removeFriendOption.options(user);
                         break;
                     case 3:
-                        System.out.println("Manage Groups");
-                        manageGroupOption.groupOptions(user, groupRepository);
+                        System.out.println("Manage groups option selected");
+                        manageGroupOption.options(user);
                         break;
                     case 4:
-                        System.out.println("Manage option selected");
-                        manageExpenseOption.options(user, expenseRepository);
+                        System.out.println("Manage expense option selected");
+                        manageExpenseOption.options(user);
                         break;
                     case 5:
                         break;
                     case 6:
-                        profileOptions.updateProfileOption(user, profileRepository);
+                        System.out.println("Profile update option selected");
+                        profileOptions.options(user);
                         break;
                     case 7:
                         System.out.println("Money manager option selected");
-                        moneyManagerOption.handleOption(user, moneyManagerRepository);
+                        moneyManagerOption.options(user);
+                        break;
                     default:
                         System.out.println("Yet to implement");
                 }

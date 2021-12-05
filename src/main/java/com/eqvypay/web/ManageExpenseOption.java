@@ -22,7 +22,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
-public class ManageExpenseOption{
+public class ManageExpenseOption implements WebOption{
 
     @Autowired
     ExpenseDataManipulation dataManipulation;
@@ -36,7 +36,10 @@ public class ManageExpenseOption{
     @Autowired
     GroupRepository groupRepository;
 
-    public void options(User user, ExpenseRepository expenseRepository) throws Exception {
+    @Autowired
+    ExpenseRepository expenseRepository;
+
+    public void options(User user) throws Exception {
 
         Scanner sc = new Scanner(System.in);
 

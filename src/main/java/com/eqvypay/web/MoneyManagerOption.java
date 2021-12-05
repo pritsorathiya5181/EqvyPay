@@ -16,12 +16,15 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 @Service
-public class MoneyManagerOption {
+public class MoneyManagerOption implements WebOption {
 
     @Autowired
     MoneyManagerDataManipulation dataManipulation;
 
-    public void handleOption(User user, MoneyManagerRepository moneyManagerRepository) throws Exception {
+    @Autowired
+    MoneyManagerRepository moneyManagerRepository;
+
+    public void options(User user) throws Exception {
         Scanner sc = new Scanner(System.in);
 
         while (true) {
