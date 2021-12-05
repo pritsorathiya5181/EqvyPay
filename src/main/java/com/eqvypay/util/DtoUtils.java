@@ -70,11 +70,13 @@ public class DtoUtils {
             String email = resultSet.getString("email");
             String contact = resultSet.getString("contact");
             String securityAnswer = resultSet.getString("security_answer");
+            String password = resultSet.getString("password");
             user.setUuid(UUID.fromString(id));
             user.setName(name);
             user.setEmail(email);
             user.setContact(contact);
             user.setSecurityAnswer(securityAnswer);
+            user.setPassword(password);
         }
         return user;
     }
