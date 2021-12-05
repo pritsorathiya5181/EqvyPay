@@ -1,7 +1,12 @@
 package com.eqvypay;
 
-import com.eqvypay.Service.*;
-import com.eqvypay.Web.UserMenu;
+import com.eqvypay.service.authentication.AuthenticationService;
+import com.eqvypay.service.database.DatabaseConnectionManagementService;
+import com.eqvypay.service.expense.ExpenseRepository;
+import com.eqvypay.service.moneymanager.MoneyManagerRepository;
+import com.eqvypay.service.user.UserDataManipulation;
+import com.eqvypay.service.user.UserRepository;
+import com.eqvypay.web.UserMenu;
 import com.eqvypay.util.validator.RegistrationValidator;
 
 import org.springframework.boot.CommandLineRunner;
@@ -15,7 +20,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.core.env.Environment;
 
-import com.eqvypay.Persistence.User;
+import com.eqvypay.persistence.User;
 
 @SpringBootApplication(scanBasePackages = {"com.eqvypay.Service", "com.eqvypay.Web"})
 public class EqvyPayApplication implements CommandLineRunner {
@@ -37,6 +42,9 @@ public class EqvyPayApplication implements CommandLineRunner {
     @Autowired
     private DatabaseConnectionManagementService dcms;
 
+    @Autowired
+    private UserDataManipulation dataManipulation;
+
     public static void main(String[] args) {
         SpringApplication app = new SpringApplication(EqvyPayApplication.class);
         app.setBannerMode(Banner.Mode.OFF);
@@ -45,7 +53,6 @@ public class EqvyPayApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        // Welcome, Login and Registration
 
         boolean test = Arrays.stream(env.getActiveProfiles()).anyMatch(profile -> profile.equals("test"));
         if (!test) {
@@ -58,7 +65,7 @@ public class EqvyPayApplication implements CommandLineRunner {
                 System.out.println("[1] Login");
                 System.out.println("[2] Register");
                 System.out.println("[3] Forgot Password");
-                System.out.println("[0] for exit");
+                System.out.println("[0] Exit");
                 System.out.println("Select an option: ");
 
                 Integer option = scanner.nextInt();
@@ -71,8 +78,7 @@ public class EqvyPayApplication implements CommandLineRunner {
                         String email = scanner.next();
                         System.out.println("Enter password");
                         String password = scanner.next();
-//			System.out.println("Hashed password is "+AuthenticationService.getHashedPassword(password));
-                        user = userRepository.getUserByEmailAndPassword(email, AuthenticationService.getHashedPassword(password));
+                        user = dataManipulation.getUserByEmailAndPassword(email, AuthenticationService.getHashedPassword(password));
                         if (!(user.getEmail() == null)) {
                             loggedIn = true;
                             System.out.println(user.getName() + " successfully logged in");
@@ -101,7 +107,7 @@ public class EqvyPayApplication implements CommandLineRunner {
                     case 3:
                         System.out.println("Enter your email");
                         String userEmail = scanner.next();
-                        User oldUser = userRepository.getByEmail(userEmail);
+                        User oldUser = dataManipulation.getByEmail(userEmail);
                         System.out.println("What is your first school name");
                         String providedSecurityAnswer = scanner.next();
                         if (providedSecurityAnswer.equals(oldUser.getSecurityAnswer())) {
@@ -123,13 +129,7 @@ public class EqvyPayApplication implements CommandLineRunner {
                     if (ret == 8) {
                         loggedIn = false;
                     }
-                    // just testing manage expense
-                    //	ManageExpenseOption manageExpenseOption = new ManageExpenseOption();
-                    //System.out.println("Managing options for user "+user.getEmail());
-                    //boolean done = manageExpenseOption.expenseOptions(user,expenseRepository);
-
                 }
-                //                System.out.println("Started Application in Test Mode");
 
             }
 
