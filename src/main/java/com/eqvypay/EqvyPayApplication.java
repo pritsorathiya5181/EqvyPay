@@ -21,7 +21,7 @@ import org.springframework.core.env.Environment;
 
 import com.eqvypay.persistence.User;
 
-@SpringBootApplication(scanBasePackages = {"com.eqvypay.Service", "com.eqvypay.Web"})
+@SpringBootApplication(scanBasePackages = {"com.eqvypay.service", "com.eqvypay.web"})
 public class EqvyPayApplication implements CommandLineRunner {
     @Autowired
     private Environment env;
