@@ -1,12 +1,12 @@
 package com.eqvypay;
 
-import com.eqvypay.Service.authentication.AuthenticationService;
-import com.eqvypay.Service.database.DatabaseConnectionManagementService;
-import com.eqvypay.Service.expense.ExpenseRepository;
-import com.eqvypay.Service.moneymanager.MoneyManagerRepository;
-import com.eqvypay.Service.user.UserDataManipulation;
-import com.eqvypay.Service.user.UserRepository;
-import com.eqvypay.Web.UserMenu;
+import com.eqvypay.service.authentication.AuthenticationService;
+import com.eqvypay.service.database.DatabaseConnectionManagementService;
+import com.eqvypay.service.repository.ExpenseRepository;
+import com.eqvypay.service.repository.MoneyManagerRepository;
+import com.eqvypay.service.user.UserDataManipulation;
+import com.eqvypay.service.repository.UserRepository;
+import com.eqvypay.web.UserMenu;
 
 import org.springframework.boot.CommandLineRunner;
 
@@ -19,7 +19,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.core.env.Environment;
 
-import com.eqvypay.Persistence.User;
+import com.eqvypay.persistence.User;
 
 @SpringBootApplication(scanBasePackages = {"com.eqvypay.Service", "com.eqvypay.Web"})
 public class EqvyPayApplication implements CommandLineRunner {

@@ -7,11 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import com.eqvypay.Persistence.Expense;
-import com.eqvypay.Persistence.Group;
-import com.eqvypay.Persistence.PersonalActivity;
-import com.eqvypay.Persistence.User;
-import com.eqvypay.Service.database.DatabaseConnectionManagementService;
+import com.eqvypay.persistence.Expense;
+import com.eqvypay.persistence.Group;
+import com.eqvypay.persistence.PersonalActivity;
+import com.eqvypay.persistence.User;
+import com.eqvypay.service.database.DatabaseConnectionManagementService;
 import com.eqvypay.util.constants.Environment;
 import com.eqvypay.util.constants.enums.ExpenseType;
 
