@@ -2,6 +2,7 @@ package com.eqvypay;
 
 import com.eqvypay.Service.*;
 import com.eqvypay.Web.UserMenu;
+import com.eqvypay.util.validator.AuthenticationValidator;
 import com.eqvypay.util.validator.RegistrationValidator;
 
 import org.springframework.boot.CommandLineRunner;
@@ -67,11 +68,8 @@ public class EqvyPayApplication implements CommandLineRunner {
                     case 0:
                         System.exit(0);
                     case 1:
-                        System.out.println("Enter email");
-                        String email = scanner.next();
-                        System.out.println("Enter password");
-                        String password = scanner.next();
-//			System.out.println("Hashed password is "+AuthenticationService.getHashedPassword(password));
+                        String email = AuthenticationValidator.getAndValidateEmail(scanner);
+                        String password = AuthenticationValidator.getAndValidatePassword(scanner);
                         user = userRepository.getUserByEmailAndPassword(email, AuthenticationService.getHashedPassword(password));
                         if (!(user.getEmail() == null)) {
                             loggedIn = true;
@@ -83,10 +81,11 @@ public class EqvyPayApplication implements CommandLineRunner {
                         break;
                     case 2:
                 		String name = RegistrationValidator.getAndValidateName(scanner);
-            			String registrationEmail = RegistrationValidator.getAndValidateEmail(scanner);
+            			String registrationEmail = AuthenticationValidator.getAndValidateEmail(scanner);
             			String contact = RegistrationValidator.getAndValidateContact(scanner);
-            			String registrationPassword = RegistrationValidator.getAndValidatePassword(scanner);
-            			String confirmPassword = RegistrationValidator.getAndValidatePassword(scanner);
+            			String registrationPassword = AuthenticationValidator.getAndValidatePassword(scanner);
+                        System.out.print("Confirm password: ");
+            			String confirmPassword = AuthenticationValidator.getAndValidatePassword(scanner);
             			confirmPassword = RegistrationValidator.getAndValidatePasswordAndConfirmPassword(scanner,registrationPassword, confirmPassword);
             			String securityAnswer = RegistrationValidator.getAndValidateSecurityAnswer(scanner);
             			User newUser = new User();
@@ -96,21 +95,29 @@ public class EqvyPayApplication implements CommandLineRunner {
             			newUser.setPassword(AuthenticationService.getHashedPassword(registrationPassword));
             			newUser.setSecurityAnswer(securityAnswer);
             			userRepository.save(newUser);
-            			main(args);
+//            			main(args);
             	        break;
                     case 3:
-                        System.out.println("Enter your email");
-                        String userEmail = scanner.next();
+                        String userEmail = AuthenticationValidator.getAndValidateEmail(scanner);
                         User oldUser = userRepository.getByEmail(userEmail);
-                        System.out.println("What is your first school name");
+                        System.out.println("What is your first school name?");
                         String providedSecurityAnswer = scanner.next();
                         if (providedSecurityAnswer.equals(oldUser.getSecurityAnswer())) {
-                            System.out.println("Enter passowrd");
-                            String newPassword = scanner.next();
-                            System.out.println("Enter confirm password");
-                            String confirmNewPassword = scanner.next();
-                            oldUser.setPassword(newPassword);
-                            userRepository.save(oldUser);
+//                            System.out.println("Enter passowrd");
+                            String newPassword = AuthenticationValidator.getAndValidatePassword(scanner);
+//                            String newPassword = scanner.next();
+                            System.out.println("Confirm password");
+                            String confirmNewPassword = AuthenticationValidator.getAndValidatePassword(scanner);
+                            String finalConfirmNewPassword = RegistrationValidator.getAndValidatePasswordAndConfirmPassword(scanner, newPassword, confirmNewPassword);
+                            System.out.println("New: " + newPassword);
+                            System.out.println("Confirmed: " + finalConfirmNewPassword);
+                            if(newPassword.equals(finalConfirmNewPassword)){
+                                System.out.println("Aama gayu!");
+                                User updatedUser = oldUser;
+                                updatedUser.setPassword(AuthenticationService.getHashedPassword(newPassword));
+                                userRepository.delete(oldUser.getUuid());
+                                userRepository.save(updatedUser);
+                            }
                         } else {
                             System.out.println("Incorrect security answer, please try again");
                         }
