@@ -95,31 +95,38 @@ public class FriendServiceTest {
     public void testAddFriendByContact() throws Exception {
         connection = dcms.getConnection(Environment.TEST);
 
-        User user1 = new User();
-        user1.setName("ADD_FRIEND_TEST_USER");
-        user1.setEmail("testUser1@gmail.com");
-        user1.setContact("1234567891");
-        user1.setPassword(AuthenticationService.getHashedPassword("Test@123"));
-        user1.setSecurityAnswer("test");
-        userDataManipulation.save(user1);
-
-        User user2 = new User();
-        user2.setName("ADD_FRIEND_TEST_USER");
-        user2.setEmail("testUser3@gmail.com");
-        user2.setContact("1232134891");
-        user2.setPassword(AuthenticationService.getHashedPassword("Test@123"));
-        user2.setSecurityAnswer("test");
-        userDataManipulation.save(user2);
-
         User user = userRepository.getByEmail("testUser1@gmail.com");
-        User friend = userRepository.getByEmail("testUser3@gmail.com");
+        if (user == null || user.getContact() == null) {
+            User user1 = new User();
+            user1.setName("ADD_FRIEND_TEST_USER");
+            user1.setEmail("testUser1@gmail.com");
+            user1.setContact("1234567891");
+            user1.setPassword(AuthenticationService.getHashedPassword("Test@123"));
+            user1.setSecurityAnswer("test");
+            userDataManipulation.save(user1);
+            user = userRepository.getByEmail("testUser1@gmail.com");
+        }
 
-        System.out.println("contact: " +friend.getContact());
+        User friend = userRepository.getByEmail("testUser3@gmail.com");
+        if (friend == null || friend.getContact() == null) {
+            User user2 = new User();
+            user2.setName("ADD_FRIEND_TEST_USER");
+            user2.setEmail("testUser3@gmail.com");
+            user2.setContact("1232134891");
+            user2.setPassword(AuthenticationService.getHashedPassword("Test@123"));
+            user2.setSecurityAnswer("test");
+            userDataManipulation.save(user2);
+            friend = userRepository.getByEmail("testuser33@gmail.com");
+        }
+
+        System.out.println("contact: " + friend.getContact());
         friendRepository.addFriendByContact(user, friend.getContact());
         PreparedStatement selectQuery = connection.prepareStatement("select * from Friend where user_id = ? and friend_id=?");
-        selectQuery.setString(1, String.valueOf(user.getUuid()));
-        selectQuery.setString(2, String.valueOf(friend.getUuid()));
+        selectQuery.setString(1, String.valueOf(user.getUuid().toString()));
+        selectQuery.setString(2, String.valueOf(friend.getUuid().toString()));
+        System.out.println("query==" + selectQuery);
         ResultSet result = selectQuery.executeQuery();
+
         Assertions.assertTrue(result.next());
     }
 
