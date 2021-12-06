@@ -258,7 +258,7 @@ public class ManageExpenseOption {
                         System.out.println("Your friend list is empty! Please add a friend first.");
                     }
                 }
-            } else if (option == 2) {
+            } else if (option.equals("2")) {
                 System.out.println("Your outstandings are:");
                 List<Expense> expenses = expenseRepository.getExpensesByUserId(user.getUuid().toString());
 
@@ -291,7 +291,7 @@ public class ManageExpenseOption {
                 } else {
                     System.out.println("You don't have any expense to settle");
                 }
-            }else {
+            } else {
                 System.out.println("Invalid choice. Please try again.");
             }
 
