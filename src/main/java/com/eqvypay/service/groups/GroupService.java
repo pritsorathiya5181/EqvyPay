@@ -5,7 +5,6 @@ import com.eqvypay.persistence.User;
 import com.eqvypay.service.database.DatabaseConnectionManagementService;
 import com.eqvypay.util.DtoUtils;
 import com.eqvypay.util.constants.DatabaseConstants;
-import com.eqvypay.util.constants.Environment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -67,7 +66,7 @@ public class GroupService implements GroupRepository {
     }
 
     @Override
-    public void leaveGroup(User user) throws Exception {
+    public void leaveGroup(User user, String groupName) throws Exception {
         if (dtoUtils.tableExist(dcms, "Groups")) {
             Connection connection = dcms.getConnection(dcms.parseEnvironment());
             Statement stmt = connection.createStatement();
@@ -86,14 +85,10 @@ public class GroupService implements GroupRepository {
             } else {
                 System.out.println("Group that you are currently part of: ");
                 System.out.println(Arrays.toString(joinedGroups.toArray()));
-                System.out.println("Enter the name of group you want to leave: ");
 
-                Scanner sc = new Scanner(System.in);
-                String deleteGroup = sc.nextLine();
-
-                if (joinedGroups.contains(deleteGroup)) {
-                    stmt.executeUpdate("DELETE FROM GroupMembers WHERE group_id ='" + ids.get(joinedGroups.indexOf(deleteGroup)) + "' AND uuid = '" + user.getUuid() + "'");
-                    System.out.println("Left from the group " + deleteGroup);
+                if (joinedGroups.contains(groupName)) {
+                    stmt.executeUpdate("DELETE FROM GroupMembers WHERE group_id ='" + ids.get(joinedGroups.indexOf(groupName)) + "' AND uuid = '" + user.getUuid() + "'");
+                    System.out.println("Left from the group " + groupName);
                 } else {
                     System.out.println("Invalid group name. Please try again");
                 }
@@ -107,27 +102,21 @@ public class GroupService implements GroupRepository {
     public void deleteGroup(String groupName, User user) throws Exception {
         if (dtoUtils.tableExist(dcms, "Groups")) {
             Connection connection = dcms.getConnection(dcms.parseEnvironment());
-            Statement stmt = connection.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT group_id FROM Groups WHERE group_name ='" + groupName + "'");
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT group_id FROM Groups WHERE group_name ='" + groupName + "'");
             String groupId = "";
-            while (rs.next()) {
-                groupId = rs.getString("group_id");
+            while (resultSet.next()) {
+                groupId = resultSet.getString("group_id");
             }
             if (groupId != "") {
                 String query = "SELECT * FROM GroupMembers WHERE group_id='" + groupId + "' AND uuid='" + user.getUuid() + "'";
-                rs = stmt.executeQuery(query);
-                int count = dtoUtils.getCountOfRecords(rs);
+                resultSet = statement.executeQuery(query);
+                int count = dtoUtils.getCountOfRecords(resultSet);
 
                 if (count == 1) {
-                    System.out.println("Are you sure you want to delete group " + groupName + " ?[Y/N]: ");
-                    Scanner sc = new Scanner(System.in);
-                    String choice = sc.nextLine();
-                    if (choice.equalsIgnoreCase("Y")) {
-                        stmt.executeUpdate("DELETE FROM Groups WHERE group_name ='" + groupName + "'");
-                        System.out.println("Group " + groupName + " deleted successfully.");
-                    } else {
-                        System.out.println("No changes made");
-                    }
+                    statement.executeUpdate("DELETE FROM Groups WHERE group_name ='" + groupName + "'");
+                    System.out.println("Group " + groupName + " deleted successfully.");
+
                 } else
                     System.out.println("You cannot delete this group as you are not a member of it.");
             } else {
@@ -144,12 +133,13 @@ public class GroupService implements GroupRepository {
         List<Group> groups = new ArrayList<>();
         Connection connection = dcms.getConnection(dcms.parseEnvironment());
         Statement stmt = connection.createStatement();
-        ResultSet rs = stmt.executeQuery("Select group_id, group_name from Groups");
+        ResultSet rs = stmt.executeQuery("Select * from Groups");
         while (rs.next()) {
             Group group = new Group();
 
             group.setGroupId(rs.getString("group_id"));
             group.setGroupName(rs.getString("group_name"));
+            group.setGroupDesc(rs.getString("group_desc"));
 
             groups.add(group);
         }
