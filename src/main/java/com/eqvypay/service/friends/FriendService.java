@@ -19,26 +19,26 @@ public class FriendService implements FriendRepository {
 
     @Autowired
     private DatabaseConnectionManagementService dcms;
-    
+
     @Autowired
     private UserDataManipulation userDataManipulation;
-    
+
     @Override
     public void addFriendByEmail(User user, String email) throws Exception {
         Connection connection = dcms.getConnection(Environment.DEV);
         ResultSet result = null;
         User friend = null;
-        try {
-            friend = userDataManipulation.getByEmail(email);
-        } catch (SQLException e) {
-            System.out.println("Enter a valid email id of a registered user!" + e);
-        }
+        friend = userDataManipulation.getByEmail(email);
 
-        String friendUuid = null;
-        PreparedStatement insertQuery = connection.prepareStatement("insert into Friend (user_id, friend_id) values (?, ?)");
-        insertQuery.setString(1, user.getUuid().toString());
-        insertQuery.setString(2, friend.getUuid().toString());
-        insertQuery.execute();
+        if (friend.getEmail() == null) {
+            System.out.println("No user with email '" + email + "' found.");
+        } else {
+            PreparedStatement insertQuery = connection.prepareStatement("insert into Friend (user_id, friend_id) values (?, ?)");
+            insertQuery.setString(1, user.getUuid().toString());
+            insertQuery.setString(2, friend.getUuid().toString());
+            insertQuery.execute();
+            System.out.println("Friend added successfully.");
+        }
     }
 
 
