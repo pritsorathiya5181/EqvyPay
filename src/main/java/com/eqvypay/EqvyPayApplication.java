@@ -1,9 +1,13 @@
 package com.eqvypay;
 
-import com.eqvypay.Service.ExpenseRepository;
-import com.eqvypay.Service.*;
-import com.eqvypay.Web.ManageExpenseOption;
-import com.eqvypay.Web.UserMenu;
+import com.eqvypay.service.user.UserRepository;
+import com.eqvypay.service.authentication.AuthenticationService;
+import com.eqvypay.service.database.DatabaseConnectionManagementService;
+import com.eqvypay.service.expense.ExpenseRepository;
+import com.eqvypay.service.moneymanager.MoneyManagerRepository;
+import com.eqvypay.service.user.UserDataManipulation;
+import com.eqvypay.util.validator.AuthenticationValidator;
+import com.eqvypay.web.UserMenu;
 
 import org.springframework.boot.CommandLineRunner;
 
@@ -16,9 +20,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.core.env.Environment;
 
-import com.eqvypay.Persistence.User;
+import com.eqvypay.persistence.User;
 
-@SpringBootApplication(scanBasePackages = {"com.eqvypay.Service", "com.eqvypay.Web"})
+@SpringBootApplication(scanBasePackages = {"com.eqvypay.service", "com.eqvypay.web"})
 public class EqvyPayApplication implements CommandLineRunner {
     @Autowired
     private Environment env;
@@ -38,6 +42,9 @@ public class EqvyPayApplication implements CommandLineRunner {
     @Autowired
     private DatabaseConnectionManagementService dcms;
 
+    @Autowired
+    private UserDataManipulation dataManipulation;
+
     public static void main(String[] args) {
         SpringApplication app = new SpringApplication(EqvyPayApplication.class);
         app.setBannerMode(Banner.Mode.OFF);
@@ -46,7 +53,6 @@ public class EqvyPayApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        // Welcome, Login and Registration
 
         boolean test = Arrays.stream(env.getActiveProfiles()).anyMatch(profile -> profile.equals("test"));
         if (!test) {
@@ -59,20 +65,18 @@ public class EqvyPayApplication implements CommandLineRunner {
                 System.out.println("[1] Login");
                 System.out.println("[2] Register");
                 System.out.println("[3] Forgot Password");
-                System.out.println("[0] for exit");
+                System.out.println("[0] Exit");
                 System.out.println("Select an option: ");
 
-                Integer option = scanner.nextInt();
+                String option = scanner.next();
+//                Integer option = scanner.nextInt();
                 User user = null;
                 switch (option) {
-                    case 0:
+                    case "0":
                         System.exit(0);
-                    case 1:
-                        System.out.println("Enter email");
-                        String email = scanner.next();
-                        System.out.println("Enter password");
-                        String password = scanner.next();
-//			System.out.println("Hashed password is "+AuthenticationService.getHashedPassword(password));
+                    case "1":
+                        String email = AuthenticationValidator.getAndValidateEmail(scanner);
+                        String password = AuthenticationValidator.getAndValidatePassword(scanner);
                         user = userRepository.getUserByEmailAndPassword(email, AuthenticationService.getHashedPassword(password));
                         if (!(user.getEmail() == null)) {
                             loggedIn = true;
@@ -82,19 +86,15 @@ public class EqvyPayApplication implements CommandLineRunner {
 //							main(args);
                         }
                         break;
-                    case 2:
-                        System.out.println("Enter your name");
-                        String name = scanner.next();
-                        System.out.println("Enter your email");
-                        String registrationEmail = scanner.next();
-                        System.out.println("Enter your phone number");
-                        String contact = scanner.next();
-                        System.out.println("Enter your password");
-                        String registrationPassword = scanner.next();
-                        System.out.println("Enter confirm password");
-                        String confirmPassword = scanner.next();
-                        System.out.println("What is your first school name");
-                        String securityAnswer = scanner.next();
+                    case "2":
+                        String name = AuthenticationValidator.getAndValidateName(scanner);
+                        String registrationEmail = AuthenticationValidator.getAndValidateEmail(scanner);
+                        String contact = AuthenticationValidator.getAndValidateContact(scanner);
+                        String registrationPassword = AuthenticationValidator.getAndValidatePassword(scanner);
+                        System.out.print("Confirm password: ");
+                        String confirmPassword = AuthenticationValidator.getAndValidatePassword(scanner);
+                        confirmPassword = AuthenticationValidator.getAndValidatePasswordAndConfirmPassword(scanner, registrationPassword, confirmPassword);
+                        String securityAnswer = AuthenticationValidator.getAndValidateSecurityAnswer(scanner);
                         User newUser = new User();
                         newUser.setName(name);
                         newUser.setEmail(registrationEmail);
@@ -102,21 +102,28 @@ public class EqvyPayApplication implements CommandLineRunner {
                         newUser.setPassword(AuthenticationService.getHashedPassword(registrationPassword));
                         newUser.setSecurityAnswer(securityAnswer);
                         userRepository.save(newUser);
-//                        main(args);
+//            			main(args);
                         break;
-                    case 3:
-                        System.out.println("Enter your email");
-                        String userEmail = scanner.next();
+                    case "3":
+                        String userEmail = AuthenticationValidator.getAndValidateEmail(scanner);
                         User oldUser = userRepository.getByEmail(userEmail);
-                        System.out.println("What is your first school name");
+                        System.out.println("What is your first school name?");
                         String providedSecurityAnswer = scanner.next();
                         if (providedSecurityAnswer.equals(oldUser.getSecurityAnswer())) {
-                            System.out.println("Enter passowrd");
-                            String newPassword = scanner.next();
-                            System.out.println("Enter confirm password");
-                            String confirmNewPassword = scanner.next();
-                            oldUser.setPassword(newPassword);
-                            userRepository.save(oldUser);
+//                            System.out.println("Enter passowrd");
+                            String newPassword = AuthenticationValidator.getAndValidatePassword(scanner);
+//                            String newPassword = scanner.next();
+                            System.out.println("Confirm password");
+                            String confirmNewPassword = AuthenticationValidator.getAndValidatePassword(scanner);
+                            String finalConfirmNewPassword = AuthenticationValidator.getAndValidatePasswordAndConfirmPassword(scanner, newPassword, confirmNewPassword);
+                            System.out.println("New: " + newPassword);
+                            System.out.println("Confirmed: " + finalConfirmNewPassword);
+                            if (newPassword.equals(finalConfirmNewPassword)) {
+                                User updatedUser = oldUser;
+                                updatedUser.setPassword(AuthenticationService.getHashedPassword(newPassword));
+                                userRepository.delete(oldUser.getUuid());
+                                userRepository.save(updatedUser);
+                            }
                         } else {
                             System.out.println("Incorrect security answer, please try again");
                         }
@@ -129,13 +136,7 @@ public class EqvyPayApplication implements CommandLineRunner {
                     if (ret == 8) {
                         loggedIn = false;
                     }
-                    // just testing manage expense
-                    //	ManageExpenseOption manageExpenseOption = new ManageExpenseOption();
-                    //System.out.println("Managing options for user "+user.getEmail());
-                    //boolean done = manageExpenseOption.expenseOptions(user,expenseRepository);
-
                 }
-                //                System.out.println("Started Application in Test Mode");
 
             }
 

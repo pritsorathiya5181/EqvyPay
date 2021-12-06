@@ -4,21 +4,16 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import com.eqvypay.Persistence.Expense;
-import com.eqvypay.Persistence.Group;
-import com.eqvypay.Persistence.PersonalActivity;
-import com.eqvypay.Persistence.User;
-import com.eqvypay.Service.DatabaseConnectionManagementService;
+import com.eqvypay.persistence.Expense;
+import com.eqvypay.persistence.Group;
+import com.eqvypay.persistence.PersonalActivity;
+import com.eqvypay.persistence.User;
+import com.eqvypay.service.database.DatabaseConnectionManagementService;
 import com.eqvypay.util.constants.Environment;
 import com.eqvypay.util.constants.enums.ExpenseType;
-import com.mysql.cj.protocol.ResultsetRow;
-
-import ch.qos.logback.core.encoder.ByteArrayUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 
 public class DtoUtils {
 
@@ -70,11 +65,13 @@ public class DtoUtils {
             String email = resultSet.getString("email");
             String contact = resultSet.getString("contact");
             String securityAnswer = resultSet.getString("security_answer");
+            String password = resultSet.getString("password");
             user.setUuid(UUID.fromString(id));
             user.setName(name);
             user.setEmail(email);
             user.setContact(contact);
             user.setSecurityAnswer(securityAnswer);
+            user.setPassword(password);
         }
         return user;
     }
@@ -131,17 +128,34 @@ public class DtoUtils {
             String userId = resultSet.getString("userId");
             String amount = resultSet.getString("amount");
             String description = resultSet.getString("description");
-            String expenseCate = resultSet.getString("expenseCate");
+            String expenseCategory = resultSet.getString("expenseCate");
             String date = resultSet.getString("date");
 
             activity.setUserId(userId);
             activity.setAmount(Float.parseFloat(amount));
             activity.setDescription(description);
-            activity.setExpenseCate(expenseCate);
+            activity.setExpenseCategory(expenseCategory);
             activity.setDate(date);
             activities.add(activity);
         }
         return activities;
     }
 
+    public static ArrayList<User> getAllFriendsFromResultSet(ResultSet resultSet) throws SQLException {
+        ArrayList<User> friends = new ArrayList<User>();
+        User friend;
+        while (resultSet.next()) {
+            friend = new User();
+            String friendId = resultSet.getString("friend_id");
+            String friendName = resultSet.getString("name");
+            String friendEmail = resultSet.getString("email");
+
+            friend.setUuid(UUID.fromString(friendId));
+            friend.setName(friendName);
+            friend.setEmail(friendEmail);
+
+            friends.add(friend);
+        }
+        return friends;
+    }
 }
