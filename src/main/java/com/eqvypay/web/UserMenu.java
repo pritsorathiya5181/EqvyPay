@@ -63,38 +63,40 @@ public class UserMenu {
             System.out.println("[6] Profile details");
             System.out.println("[7] Money manager");
             System.out.println("[8] Logout");
+            System.out.print("Select an option: ");
 
-            int option = sc.nextInt();
-            if (option == 8) {
+            String option = sc.next();
+            if (option.equals("8")) {
                 return 8;
             } else {
                 switch (option) {
-                    case 1:
+                    case "1":
                         System.out.println("Add friend option selected");
                         addFriendOption.friendOptions(user, friendRepository);
                         break;
-                    case 2:
+                    case "2":
                         System.out.println("Remove friend option selected");
                         removeFriendOption.friendOptions(user, friendRepository);
                         break;
-                    case 3:
+                    case "3":
                         System.out.println("Manage Groups");
                         manageGroupOption.groupOptions(user, groupRepository);
                         break;
-                    case 4:
+                    case "4":
                         System.out.println("Manage option selected");
                         manageExpenseOption.options(user, expenseRepository);
                         break;
-                    case 5:
+                    case "5":
+                        System.out.println("Integrate activity module here");
                         break;
-                    case 6:
+                    case "6":
                         profileOptions.updateProfileOption(user, profileRepository);
                         break;
-                    case 7:
+                    case "7":
                         System.out.println("Money manager option selected");
                         moneyManagerOption.handleOption(user, moneyManagerRepository);
                     default:
-                        System.out.println("Yet to implement");
+                        System.out.println("Invalid choice. Please try again");
                 }
             }
 

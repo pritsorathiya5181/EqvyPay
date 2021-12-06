@@ -53,31 +53,31 @@ public class ManageExpenseOption {
             System.out.println("[2] Settle expense");
             System.out.println("[3] Exit");
 
-            int option = sc.nextInt();
+            String option = sc.next();
 
-            if (option == 3) {
+            if (option.equals("3")) {
                 break;
             }
 
-            if (option == 1) {
+            if (option.equals("1")) {
                 System.out.println("[1] Add in the group");
                 System.out.println("[2] Add to the friend");
                 System.out.println("[3] Exit");
 
-                int payOption = sc.nextInt();
+                String payOption = sc.next();
 
-                if (payOption == 3) {
+                if (payOption.equals("3")) {
                     break;
                 }
 
-                if (payOption == 1) {
+                if (payOption.equals("1")) {
                     System.out.println("[1] Add in the existing group");
                     System.out.println("[2] Create a new group");
-                    System.out.println("Select one option from the above: ");
+                    System.out.print("Select am option: ");
 
-                    int groupOption = sc.nextInt();
+                    String groupOption = sc.next();
                     System.out.println("group option " + groupOption);
-                    if (groupOption == 1) {
+                    if (groupOption.equals("1")) {
                         System.out.println("List of available groups");
                         ArrayList<Group> groups = groupRepository.getAllJoinedGroups(user);
 
@@ -174,7 +174,7 @@ public class ManageExpenseOption {
                         } else {
                             System.out.println("You're not join in any group");
                         }
-                    } else {
+                    } else if (groupOption.equals("2")) {
                         Group group = new Group();
                         System.out.println("Enter group name");
                         sc.nextLine();
@@ -191,7 +191,8 @@ public class ManageExpenseOption {
                         }
                         break;
                     }
-                } else if (payOption == 2) {
+
+                } else if (payOption.equals("2")) {
                     List<Expense> friendExpenseList = new ArrayList<>();
                     List<User> friends = userRepository.findAllFriends(user.getUuid().toString());
                     int count = 1;
@@ -290,7 +291,11 @@ public class ManageExpenseOption {
                 } else {
                     System.out.println("You don't have any expense to settle");
                 }
+            }else {
+                System.out.println("Invalid choice. Please try again.");
             }
+
+
         }
     }
 }
