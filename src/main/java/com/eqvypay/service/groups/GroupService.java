@@ -27,9 +27,12 @@ public class GroupService implements GroupRepository {
     @Autowired
     private DatabaseConnectionManagementService dcms;
 
+    @Autowired
+    DtoUtils dtoUtils;
+
     @Override
     public void createGroup(Group group) throws Exception {
-        if (!DtoUtils.tableExist(dcms, "Groups")) {
+        if (!dtoUtils.tableExist(dcms, "Groups")) {
             dataManipulation.createTable();
         }
 
@@ -46,12 +49,12 @@ public class GroupService implements GroupRepository {
 
     @Override
     public void joinGroup(User user, String inputId) throws Exception {
-        if (DtoUtils.tableExist(dcms, "Groups")) {
+        if (dtoUtils.tableExist(dcms, "Groups")) {
             Connection connection = dcms.getConnection(dcms.parseEnvironment());
             Statement stmt = connection.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM Groups WHERE group_id ='" + inputId + "'");
-            if (DtoUtils.getCountOfRecords(rs) == 1) {
-                if (!DtoUtils.tableExist(dcms, "GroupMembers"))
+            if (dtoUtils.getCountOfRecords(rs) == 1) {
+                if (!dtoUtils.tableExist(dcms, "GroupMembers"))
                     dataManipulation.createGroupMembersTable();
                 stmt.executeUpdate("INSERT INTO GroupMembers VALUES ('" + inputId + "','" + user.getUuid() + "')");
                 System.out.println("Joined successfully.");
@@ -65,11 +68,11 @@ public class GroupService implements GroupRepository {
 
     @Override
     public void leaveGroup(User user) throws Exception {
-        if (DtoUtils.tableExist(dcms, "Groups")) {
+        if (dtoUtils.tableExist(dcms, "Groups")) {
             Connection connection = dcms.getConnection(dcms.parseEnvironment());
             Statement stmt = connection.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM GroupMembers WHERE uuid ='" + user.getUuid() + "'");
-            List<String> ids = DtoUtils.getIdFromResultSet(rs);
+            List<String> ids = dtoUtils.getIdFromResultSet(rs);
             List<String> joinedGroups = new ArrayList<>();
 
             for (String id : ids) {
@@ -102,7 +105,7 @@ public class GroupService implements GroupRepository {
 
     @Override
     public void deleteGroup(String groupName, User user) throws Exception {
-        if (DtoUtils.tableExist(dcms, "Groups")) {
+        if (dtoUtils.tableExist(dcms, "Groups")) {
             Connection connection = dcms.getConnection(dcms.parseEnvironment());
             Statement stmt = connection.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT group_id FROM Groups WHERE group_name ='" + groupName + "'");
@@ -113,7 +116,7 @@ public class GroupService implements GroupRepository {
             if (groupId != "") {
                 String query = "SELECT * FROM GroupMembers WHERE group_id='" + groupId + "' AND uuid='" + user.getUuid() + "'";
                 rs = stmt.executeQuery(query);
-                int count = DtoUtils.getCountOfRecords(rs);
+                int count = dtoUtils.getCountOfRecords(rs);
 
                 if (count == 1) {
                     System.out.println("Are you sure you want to delete group " + groupName + " ?[Y/N]: ");
@@ -155,7 +158,7 @@ public class GroupService implements GroupRepository {
 
     @Override
     public List<String> getMembersOfGroup(String groupId) throws Exception {
-        if (DtoUtils.tableExist(dcms, "GroupMembers")) {
+        if (dtoUtils.tableExist(dcms, "GroupMembers")) {
             List<String> members = new ArrayList<String>();
             Connection connection = dcms.getConnection(dcms.parseEnvironment());
             Statement stmt = connection.createStatement();
@@ -172,12 +175,12 @@ public class GroupService implements GroupRepository {
 
     @Override
     public ArrayList<Group> getAllJoinedGroups(User user) throws Exception {
-        if (DtoUtils.tableExist(dcms, "GroupMembers")) {
+        if (dtoUtils.tableExist(dcms, "GroupMembers")) {
             Connection connection = dcms.getConnection(dcms.parseEnvironment());
             Statement statement = connection.createStatement();
             String query = "SELECT * FROM Groups INNER JOIN GroupMembers on Groups.group_id = GroupMembers.group_id where uuid = '" + user.getUuid().toString() + "'";
             ResultSet resultSet = statement.executeQuery(query);
-            return DtoUtils.getGroupsFromResultSet(resultSet);
+            return dtoUtils.getGroupsFromResultSet(resultSet);
         }
        else {
             System.out.println("You are not joined in any groups");
@@ -187,8 +190,8 @@ public class GroupService implements GroupRepository {
 
     @Override
     public List<String> getFriendsGroupIds(User user) throws Exception {
-        boolean hasFriendTable = DtoUtils.tableExist(dcms, "Friend");
-        boolean hasGroupTable = DtoUtils.tableExist(dcms, "GroupMembers");
+        boolean hasFriendTable = dtoUtils.tableExist(dcms, "Friend");
+        boolean hasGroupTable = dtoUtils.tableExist(dcms, "GroupMembers");
 
         if (hasFriendTable && hasGroupTable) {
             List<String> friends_group_Id = new ArrayList<>();

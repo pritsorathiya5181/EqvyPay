@@ -30,6 +30,9 @@ public class FriendService implements FriendRepository {
     @Autowired
     private FriendDataManipulation friendDataManipulation;
 
+    @Autowired
+    DtoUtils dtoUtils;
+
     @Override
     public void addFriendByEmail(User user, String email) throws Exception {
         Connection connection = dcms.getConnection(dcms.parseEnvironment());
@@ -66,7 +69,7 @@ public class FriendService implements FriendRepository {
             result = selectQuery.executeQuery();
 
             String friendUuid = null;
-            int count = DtoUtils.getCountOfRecords(result);
+            int count = dtoUtils.getCountOfRecords(result);
             selectQuery = connection.prepareStatement("select * from Users where contact = ?");
             selectQuery.setString(1, contact);
             result = selectQuery.executeQuery();
@@ -96,7 +99,7 @@ public class FriendService implements FriendRepository {
         Connection connection = dcms.getConnection(dcms.parseEnvironment());
         ResultSet result = null;
         try {
-            if (DtoUtils.tableExist(dcms, "Friend")) {
+            if (dtoUtils.tableExist(dcms, "Friend")) {
                 PreparedStatement selectQuery = connection.prepareStatement("select * from Users where email = ?");
                 selectQuery.setString(1, email);
                 result = selectQuery.executeQuery();
@@ -122,7 +125,7 @@ public class FriendService implements FriendRepository {
         Connection connection = dcms.getConnection(dcms.parseEnvironment());
         ResultSet result = null;
         try {
-            if (DtoUtils.tableExist(dcms, "Friend")) {
+            if (dtoUtils.tableExist(dcms, "Friend")) {
                 PreparedStatement selectQuery = connection.prepareStatement("select * from Users where contact = ?");
                 selectQuery.setString(1, contact);
                 result = selectQuery.executeQuery();

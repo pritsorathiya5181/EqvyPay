@@ -15,6 +15,9 @@ public class MoneyManagerDataManipulation implements IMoneyManagerDataManipulati
     @Autowired
     DatabaseConnectionManagementService dcms;
 
+    @Autowired
+    DtoUtils dtoUtils;
+
     @Override
     public void createTable() throws Exception {
         String query = "CREATE TABLE PersonalActivities"
@@ -28,7 +31,7 @@ public class MoneyManagerDataManipulation implements IMoneyManagerDataManipulati
         Statement s = connection.createStatement();
         String tableName = "PersonalActivities";
 
-        if (!DtoUtils.tableExist(dcms, tableName)) {
+        if (!dtoUtils.tableExist(dcms, tableName)) {
             s.executeUpdate(query);
         }
     }

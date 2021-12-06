@@ -21,6 +21,9 @@ public class ExpenseDataManipulation implements IExpenseDataManipulation {
     @Autowired
     DatabaseConnectionManagementService dcms;
 
+    @Autowired
+    DtoUtils dtoUtils;
+
     @Override
     public void createTable() throws Exception {
         Connection connection = dcms.getConnection(dcms.parseEnvironment());
@@ -47,7 +50,7 @@ public class ExpenseDataManipulation implements IExpenseDataManipulation {
     @Override
     public boolean saveAll(List<Expense> expenses) throws Exception {
         Connection connection = dcms.getConnection(dcms.parseEnvironment());
-        if (!DtoUtils.tableExist(dcms, "Expenses")) {
+        if (!dtoUtils.tableExist(dcms, "Expenses")) {
             createTable();
         }
 

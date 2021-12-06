@@ -15,16 +15,19 @@ public class FriendDataManipulation implements IFriendDataManipulation {
     @Autowired
     private DatabaseConnectionManagementService dcms;
 
+    @Autowired
+    DtoUtils dtoUtils;
+
     @Override
     public void createTable() throws Exception {
         String query = "CREATE TABLE Friend"
-                + " ( user_id varchar(255) PRIMARY KEY"
+                + " ( user_id varchar(255) "
                 + " ,friend_id varchar(255) );";
         Connection connection = dcms.getConnection(dcms.parseEnvironment());
         Statement s = connection.createStatement();
         String tableName = "Friend";
 
-        if (!DtoUtils.tableExist(dcms, tableName)) {
+        if (!dtoUtils.tableExist(dcms, tableName)) {
             s.executeUpdate(query);
         }
     }

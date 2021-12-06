@@ -20,6 +20,9 @@ public class MoneyManagerService implements MoneyManagerRepository {
     @Autowired
     private DatabaseConnectionManagementService dcms;
 
+    @Autowired
+    DtoUtils dtoUtils;
+
     @Override
     public void addIncomeExpense(PersonalActivity activity) throws Exception {
         Connection connection = dcms.getConnection(dcms.parseEnvironment());
@@ -41,7 +44,7 @@ public class MoneyManagerService implements MoneyManagerRepository {
         Connection connection = dcms.getConnection(dcms.parseEnvironment());
         Statement statement = connection.createStatement();
         ResultSet resultSet = statement.executeQuery("SELECT * from PersonalActivities WHERE userId ='" + userId + "'");
-        return DtoUtils.getAllActivities(resultSet);
+        return dtoUtils.getAllActivities(resultSet);
     }
 
 }
