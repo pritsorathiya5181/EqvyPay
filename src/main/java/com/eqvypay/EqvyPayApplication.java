@@ -105,7 +105,7 @@ public class EqvyPayApplication implements CommandLineRunner {
                         newUser.setSecurityAnswer(securityAnswer);
                         dataManipulation.save(newUser);
                         break;
-                    case 3:
+                    case "3":
                         String userEmail = AuthenticationValidator.getAndValidateEmail(scanner);
                         User oldUser = userRepository.getByEmail(userEmail);
                         System.out.println("What is your first school name?");
