@@ -140,7 +140,6 @@ public class FriendService implements FriendRepository {
             } else {
                 System.out.println("No friend found");
             }
-
         } catch (SQLException e) {
             System.out.println("Enter a valid contact number of a registered user!");
         }
