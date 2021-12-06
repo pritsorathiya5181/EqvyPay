@@ -8,7 +8,6 @@ import com.eqvypay.service.groups.GroupRepository;
 import com.eqvypay.service.user.UserDataManipulation;
 import com.eqvypay.service.user.UserRepository;
 import com.eqvypay.util.constants.Environment;
-import org.junit.Ignore;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -16,8 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.util.List;
 
 @SpringBootTest
 public class GroupServiceTest {
@@ -42,57 +40,92 @@ public class GroupServiceTest {
     @Test
     @Order(1)
     public void testCreateGroup() throws Exception {
-        connection = dcms.getConnection(Environment.TEST);
+        Group testGroup = new Group();
+        testGroup.setGroupId("TEST_CREATE_GROUP_ID");
+        testGroup.setGroupName("TEST_CREATE_GROUP_NAME");
+        testGroup.setGroupDesc("TEST_CREATE_GROUP_DESC");
 
-        Group group = new Group();
-        group.setGroupId("groupid");
-        group.setGroupName("group1");
-        group.setGroupDesc("new group");
+        groupRepository.createGroup(testGroup);
+        List<Group> allGroups = groupRepository.getAllGroups();
 
-        groupRepository.createGroup(group);
-        PreparedStatement selectQuery = connection.prepareStatement("select * from Groups where group_id = ?");
-        selectQuery.setString(1, String.valueOf(group.getGroupId()));
-        ResultSet result = selectQuery.executeQuery();
-        Assertions.assertTrue(result.next());
+        boolean shouldBeTrue = false;
+        for (Group eachGroup : allGroups) {
+            System.out.println(eachGroup.getGroupId());
+            if (eachGroup.getGroupId().equals(testGroup.getGroupId())) {
+                shouldBeTrue = true;
+                break;
+            }
+        }
+        Assertions.assertTrue(shouldBeTrue);
     }
 
     @Test
     @Order(2)
     public void testJoinGroup() throws Exception {
-        connection = dcms.getConnection(Environment.TEST);
 
-        User user = userRepository.getByEmail("hirva@gmail.com");
-        String groupId = "groupid";
+        User testUser = new User();
+        Group testGroup = new Group();
+//        testGroup.setGroupId("TEST_JOIN_GROUP_ID");
+        testGroup.setGroupName("TEST_JOIN_GROUP_NAME");
+        testGroup.setGroupDesc("TEST_JOIN_GROUP_DESC");
 
-        groupRepository.joinGroup(user, groupId);
-        PreparedStatement selectQuery = connection.prepareStatement("select * from GroupMembers where group_id = ?");
-        selectQuery.setString(1, groupId);
-        ResultSet result = selectQuery.executeQuery();
-        while(result.next()){
-            Assertions.assertEquals(result.getString("uuid"), user.getUuid().toString());
+        groupRepository.createGroup(testGroup);
+        groupRepository.joinGroup(testUser, testGroup.getGroupId());
+
+        List<String> allMembersId = groupRepository.getMembersOfGroup(testGroup.getGroupId());
+
+        boolean shouldBeTrue = false;
+
+        for(String uuid: allMembersId){
+            System.out.println(uuid);
+            if(uuid.equals(testUser.getUuid().toString())){
+                shouldBeTrue = true;
+                break;
+            }
         }
+        Assertions.assertTrue(shouldBeTrue);
     }
 
     @Test
     @Order(3)
-    public void testLeaveGroup(){
-        //remaining as it needs user input
+    public void testLeaveGroup() {
+        try {
+            User testUser = new User();
+            Group testGroup = new Group();
+
+            testGroup.setGroupId("TEST_LEAVE_GROUP_ID");
+            testGroup.setGroupName("TEST_LEAVE_GROUP_NAME");
+            testGroup.setGroupDesc("TEST_LEAVE_GROUP_DESC");
+
+            groupRepository.createGroup(testGroup);
+            groupRepository.joinGroup(testUser, testGroup.getGroupId());
+            groupRepository.leaveGroup(testUser, testGroup.getGroupName());
+
+            boolean shouldBeFalse = groupRepository.getMembersOfGroup(testGroup.getGroupId()).contains(testUser.getUuid());
+
+            Assertions.assertFalse(shouldBeFalse);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
     @Order(4)
-    @Ignore
     public void testDeleteGroup() throws Exception {
-        //ignored as needs user input
-//        connection = dcms.getConnection(Environment.TEST);
-//
-//        User user = userDataManipulation.getByEmail("hirva@gmail.com");
-//        String groupName = "group1";
-//        groupRepository.deleteGroup(groupName, user);
-//        PreparedStatement selectQuery = connection.prepareStatement("select * from Groups where group_name = ?");
-//        selectQuery.setString(1, groupName);
-//        ResultSet result = selectQuery.executeQuery();
-//        Assertions.assertFalse(result.next());
-//
+        User testUser = new User();
+        Group testGroup = new Group();
+
+        testGroup.setGroupId("TEST_DELETE_GROUP_ID");
+        testGroup.setGroupName("TEST_DELETE_GROUP_NAME");
+        testGroup.setGroupDesc("TEST_DELETE_GROUP_DESC");
+
+        groupRepository.createGroup(testGroup);
+        groupRepository.joinGroup(testUser, testGroup.getGroupId());
+
+//        groupRepository.deleteGroup(testGroup.getGroupName(), testUser);
+
+        boolean shouldBeFalse = groupRepository.getAllGroups().contains(testGroup);
+        Assertions.assertFalse(shouldBeFalse);
     }
 }
