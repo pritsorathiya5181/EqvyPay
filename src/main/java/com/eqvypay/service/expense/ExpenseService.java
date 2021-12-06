@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.List;
+
 import com.eqvypay.persistence.Expense;
 import com.eqvypay.service.database.DatabaseConnectionManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,16 +21,20 @@ public class ExpenseService implements ExpenseRepository {
 
     @Override
     public List<Expense> getExpensesByUserId(String userId) throws Exception {
-        Connection connection = dcms.getConnection(Environment.DEV);
-        Statement statement = connection.createStatement();
-        ResultSet rs = statement.executeQuery("SELECT * from Expenses where sourceUserId = '" + userId + "'"
-                + " OR targetUserId = '" + userId + "'");
-        return DtoUtils.getExpenseFromResultSet(rs);
+        if (DtoUtils.tableExist(dcms, "Expenses")) {
+            Connection connection = dcms.getConnection(dcms.parseEnvironment());
+            Statement statement = connection.createStatement();
+            ResultSet rs = statement.executeQuery("SELECT * from Expenses where sourceUserId = '" + userId + "'"
+                    + " OR targetUserId = '" + userId + "'");
+            return DtoUtils.getExpenseFromResultSet(rs);
+        } else {
+            return null;
+        }
     }
 
     @Override
     public boolean settleExpense(Expense expense) throws Exception {
-        Connection connection = dcms.getConnection(Environment.DEV);
+        Connection connection = dcms.getConnection(dcms.parseEnvironment());
         Statement statement = connection.createStatement();
         int count = statement.executeUpdate("DELETE from Expenses where id = '" + expense.getId() + "'");
         if (count > 0) {

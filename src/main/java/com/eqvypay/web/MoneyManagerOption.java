@@ -113,6 +113,7 @@ public class MoneyManagerOption {
                             int maxExpenditureIndex = -1;
                             boolean activityFound = false;
                             boolean hasMaxExp = false;
+                            boolean hasMinExp = false;
 
                             if (monthNum > 0) {
                                 for (int i = 0; i < activities.size(); i++) {
@@ -143,6 +144,7 @@ public class MoneyManagerOption {
                                                 maxExpenditureIndex = i;
                                             } else if (minValue > amount) {
                                                 minExpenditureIndex = i;
+                                                hasMaxExp = true;
                                             }
                                         }
                                     }
@@ -154,7 +156,9 @@ public class MoneyManagerOption {
                             if (activityFound) {
                                 System.out.println("\nTotal income: $" + numberFormatter.formatNumber(totalIncome));
                                 System.out.println("Total balance: " + (totalIncome > totalExpenditure ? ("$" + numberFormatter.formatNumber(totalIncome - totalExpenditure)) : "you have spent more than your earnings of this " + month));
-                                System.out.println("Minimum expenditure is $" + activities.get(minExpenditureIndex).getAmount() + " - on " + activities.get(minExpenditureIndex).getExpenseCategory());
+                                if (hasMaxExp) {
+                                    System.out.println("Minimum expenditure is $" + activities.get(minExpenditureIndex).getAmount() + " - on " + activities.get(minExpenditureIndex).getExpenseCategory());
+                                }
 
                                 if (hasMaxExp) {
                                     System.out.println("Maximum expenditure is $" + activities.get(maxExpenditureIndex).getAmount() + " - on " + activities.get(maxExpenditureIndex).getExpenseCategory());

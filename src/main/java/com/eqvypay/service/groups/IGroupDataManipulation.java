@@ -10,12 +10,4 @@ public interface IGroupDataManipulation {
     public void createTable() throws Exception;
 
     public void createGroupMembersTable() throws Exception;
-
-    public boolean tableExist(String tableName) throws Exception;
-
-    public List<Group> getAllGroups() throws Exception;
-
-    public List<String> getFriendsGroupIds(User user) throws Exception;
-
-	ArrayList<Group> getAllJoinedGroups(User user) throws Exception;
 }

@@ -3,6 +3,7 @@ package com.eqvypay.service.database;
 import java.sql.Connection;
 
 import java.sql.DriverManager;
+import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -48,6 +49,19 @@ public class DatabaseConnectionManagementService {
             	return connection;
             default:
                 throw new Exception("Unable to get a connection object for env :" + env.getEnvironment());
+        }
+    }
+
+    public Environment parseEnvironment() {
+        boolean test = Arrays.stream(environment.getActiveProfiles()).anyMatch(profile -> profile.equals("test"));
+        boolean dev =  Arrays.stream(environment.getActiveProfiles()).anyMatch(profile -> profile.equals("dev"));
+        if(test) {
+            return Environment.TEST;
+        }else if(dev) {
+            return Environment.DEV;
+        }
+        else {
+            return Environment.PROD;
         }
     }
 }

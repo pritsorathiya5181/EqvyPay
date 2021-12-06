@@ -11,7 +11,7 @@ import com.eqvypay.util.validator.AuthenticationValidator;
 @Service
 public class UpdateProfileOption {
 
-    public void updateProfileOption(User user, ProfileRepository profileRepo) throws Exception {
+    public void updateProfileOption(User user, ProfileRepository profileRepository) throws Exception {
 
         showUserInfo(user);
         Scanner scanner = new Scanner(System.in);
@@ -48,13 +48,13 @@ public class UpdateProfileOption {
                     case 1:
                         System.out.println("Enter the new username");
                         String username = scanner.next();
-                        profileRepo.updateUsername(user, username);
+                        profileRepository.updateUsername(user, username);
                         System.out.println("Username updated successfully.");
                         break;
                     case 2:
                         System.out.println("Enter the new contact number");
                         String contact = scanner.next();
-                        profileRepo.updateContact(user, contact);
+                        profileRepository.updateContact(user, contact);
                         System.out.println("Username updated successfully.");
                         break;
                     case 3:
@@ -65,7 +65,7 @@ public class UpdateProfileOption {
                         if (currentPassword.equals(providedCurrentPassword)) {
                             System.out.print("New password: ");
                             providedNewPassword = AuthenticationValidator.getAndValidatePassword(scanner);
-                            profileRepo.updatePassword(user, providedNewPassword);
+                            profileRepository.updatePassword(user, providedNewPassword);
                         } else {
                             System.out.println("Incorrect current password.");
                         }
@@ -74,11 +74,7 @@ public class UpdateProfileOption {
                         break;
                 }
             }
-
-
         }
-
-
     }
 
     private void showUserInfo(User user) {

@@ -1,4 +1,4 @@
-package com.eqvypay.service.moneymanager;
+package com.eqvypay.service.friends;
 
 import com.eqvypay.service.database.DatabaseConnectionManagementService;
 import com.eqvypay.util.DtoUtils;
@@ -10,23 +10,19 @@ import java.sql.Connection;
 import java.sql.Statement;
 
 @Service
-public class MoneyManagerDataManipulation implements IMoneyManagerDataManipulation {
+public class FriendDataManipulation implements IFriendDataManipulation {
 
     @Autowired
-    DatabaseConnectionManagementService dcms;
+    private DatabaseConnectionManagementService dcms;
 
     @Override
     public void createTable() throws Exception {
-        String query = "CREATE TABLE PersonalActivities"
-                + " ( userId varchar(255)"
-                + ",amount float"
-                + ",description varchar(255)"
-                + ",expenseCate varchar(255)"
-                + " ,date varchar(255) );";
-
+        String query = "CREATE TABLE Friend"
+                + " ( user_id varchar(255) PRIMARY KEY"
+                + " ,friend_id varchar(255) );";
         Connection connection = dcms.getConnection(dcms.parseEnvironment());
         Statement s = connection.createStatement();
-        String tableName = "PersonalActivities";
+        String tableName = "Friend";
 
         if (!DtoUtils.tableExist(dcms, tableName)) {
             s.executeUpdate(query);

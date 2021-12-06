@@ -18,7 +18,7 @@ import com.eqvypay.util.constants.enums.ExpenseType;
 public class DtoUtils {
 
     public static boolean tableExist(DatabaseConnectionManagementService dcms, String tableName) throws Exception {
-        Connection connection = dcms.getConnection(Environment.DEV);
+        Connection connection = dcms.getConnection(dcms.parseEnvironment());
         boolean tableExists = false;
         try (ResultSet rs = connection.getMetaData().getTables(null, null, tableName, null)) {
             while (rs.next()) {

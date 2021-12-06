@@ -22,7 +22,7 @@ public class MoneyManagerService implements MoneyManagerRepository {
 
     @Override
     public void addIncomeExpense(PersonalActivity activity) throws Exception {
-        Connection connection = dcms.getConnection(Environment.DEV);
+        Connection connection = dcms.getConnection(dcms.parseEnvironment());
         PreparedStatement preparedStatement = connection.prepareStatement(DatabaseConstants.INSERT_PERSONAL_ACTIVITY);
 
         preparedStatement.setString(1, activity.getUserId());
@@ -38,7 +38,7 @@ public class MoneyManagerService implements MoneyManagerRepository {
 
     @Override
     public ArrayList<PersonalActivity> getActivities(String userId) throws Exception {
-        Connection connection = dcms.getConnection(Environment.DEV);
+        Connection connection = dcms.getConnection(dcms.parseEnvironment());
         Statement statement = connection.createStatement();
         ResultSet resultSet = statement.executeQuery("SELECT * from PersonalActivities WHERE userId ='" + userId + "'");
         return DtoUtils.getAllActivities(resultSet);
