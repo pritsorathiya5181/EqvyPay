@@ -19,12 +19,12 @@ public class ManageGroupOption {
     public void groupOptions(User user, GroupRepository groupRepository) throws Exception{
 
         Scanner sc = new Scanner(System.in);
-        int choice;
+        String option;
 
         while(true){
             System.out.println("----------------------------");
             System.out.println("\tManage Group");
-            System.out.println("----------------------------\n");
+            System.out.println("----------------------------");
             System.out.println("[1] Create group");
             System.out.println("[2] Join group");
             System.out.println("[3] Leave group");
@@ -32,14 +32,13 @@ public class ManageGroupOption {
             System.out.println("[5] Exit");
             System.out.println("Select an option: ");
 
-            choice = sc.nextInt();
+            option = sc.next();
 
-            if(choice == 5) {
+            if(option.equals("5")) {
             	break;
             }
-            
-            switch (choice){
-                case 1:
+            switch (option){
+                case "1":
                     Group group = new Group();
                     System.out.println("Enter group name");
                     sc.nextLine();
@@ -60,7 +59,7 @@ public class ManageGroupOption {
                     }
                     break;
 
-                case 2:
+                case "2":
                     try {
                         List<String> groupIds = dataManipulation.getFriendsGroupIds(user);
                         List<Group> all_groups = dataManipulation.getAllGroups();
@@ -85,7 +84,7 @@ public class ManageGroupOption {
 
                     break;
 
-                case 3:
+                case "3":
                     try {
                         groupRepository.leaveGroup(user);
                     }catch (Exception e){
@@ -93,7 +92,7 @@ public class ManageGroupOption {
                     }
                     break;
 
-                case 4:
+                case "4":
                     System.out.println("Enter group name");
                     String group_name = sc.next();
                     try {

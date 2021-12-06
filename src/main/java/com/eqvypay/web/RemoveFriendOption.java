@@ -4,6 +4,7 @@ import java.util.Scanner;
 
 import com.eqvypay.persistence.User;
 import com.eqvypay.service.friends.FriendRepository;
+import com.eqvypay.util.validator.AuthenticationValidator;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,26 +17,27 @@ public class RemoveFriendOption {
             System.out.println("[1] Remove friend by email");
 			System.out.println("[2] Remove friend by phone number");
 			System.out.println("[3] Exit");
-			
-			int option = sc.nextInt();
-			
-			if(option == 3) {
+			System.out.print("Select an option: ");
+
+			String option = sc.next();
+
+			if(option.equals("3")) {
 				break;
 			}
 			
 			switch(option) {
-			case 1:
+			case "1":
 				System.out.println("Enter your friend's email id");
-				sc.nextLine();
-				String friendEmail = sc.nextLine();
+				String friendEmail = AuthenticationValidator.getAndValidateEmail(sc);
 				friendRepository.removeFriendByEmail(user, friendEmail);
 				break;
-			case 2: 
+			case "2":
 				System.out.println("Enter your friend's contact number");
-				sc.nextLine();
-				String friendContact = sc.nextLine();
+				String friendContact = AuthenticationValidator.getAndValidateContact(sc);
 				friendRepository.removeFriendByContact(user, friendContact);
+				break;
 			default:
+				System.out.println("Invalid choice. Please try again.");
 				break;
 			}
         }

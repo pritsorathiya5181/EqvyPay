@@ -1,4 +1,4 @@
-package com.eqvypay.service;
+package com.eqvypay.service.user;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -57,7 +57,7 @@ public class UserService implements UserRepository {
 		preparedStatement.setString(6, user.getSecurityAnswer());
 		int count = preparedStatement.executeUpdate();
 		if(count>0) {
-			System.out.println("user inserted");
+//			System.out.println("user inserted");
 		}
 	}
 
@@ -68,7 +68,7 @@ public class UserService implements UserRepository {
 		statement.setString(1, userId.toString());
 		int count = statement.executeUpdate();
 		if(count>0) {
-			System.out.println("user deleted");
+//			System.out.println("user deleted");
 		}
 	}
 
