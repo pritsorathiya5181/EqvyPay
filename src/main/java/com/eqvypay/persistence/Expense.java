@@ -53,16 +53,20 @@ public class Expense {
         this.expenseDesc = expenseDesc;
     }
 
-    public String getCurrencyType() {
-        return currencyType;
-    }
-
-    public String getId() {
+	public String getId() {
 		return id;
 	}
 
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public String getCurrencyType() {
+		return currencyType;
+	}
+
+	public void setCurrencyType(String currencyType) {
+		this.currencyType = currencyType;
 	}
 
 	public ExpenseType getExpenseType() {
@@ -72,8 +76,4 @@ public class Expense {
 	public void setExpenseType(ExpenseType expenseType) {
 		this.expenseType = expenseType;
 	}
-
-	public void setCurrencyType(String currencyType) {
-        this.currencyType = currencyType;
-    }
 }

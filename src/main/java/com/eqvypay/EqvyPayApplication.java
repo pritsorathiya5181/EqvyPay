@@ -6,6 +6,7 @@ import com.eqvypay.service.database.DatabaseConnectionManagementService;
 import com.eqvypay.service.expense.ExpenseRepository;
 import com.eqvypay.service.moneymanager.MoneyManagerRepository;
 import com.eqvypay.service.user.UserDataManipulation;
+import com.eqvypay.util.DtoUtils;
 import com.eqvypay.util.validator.AuthenticationValidator;
 import com.eqvypay.web.UserMenu;
 import com.eqvypay.util.validator.RegistrationValidator;
@@ -54,7 +55,6 @@ public class EqvyPayApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-
         boolean test = Arrays.stream(env.getActiveProfiles()).anyMatch(profile -> profile.equals("test"));
         if (!test) {
             boolean loggedIn = false;
@@ -69,7 +69,7 @@ public class EqvyPayApplication implements CommandLineRunner {
                 System.out.println("[0] Exit");
                 System.out.println("Select an option: ");
 
-                Integer option = scanner.nextInt();
+                int option = scanner.nextInt();
                 User user = null;
                 switch (option) {
                     case 0:
@@ -77,53 +77,53 @@ public class EqvyPayApplication implements CommandLineRunner {
                     case 1:
                         String email = AuthenticationValidator.getAndValidateEmail(scanner);
                         String password = AuthenticationValidator.getAndValidatePassword(scanner);
-                        user = userRepository.getUserByEmailAndPassword(email, AuthenticationService.getHashedPassword(password));
-                        if (!(user.getEmail() == null)) {
-                            loggedIn = true;
-                            System.out.println(user.getName() + " successfully logged in");
+                        if (DtoUtils.tableExist(dcms, "Users")) {
+                            user = userRepository.getUserByEmailAndPassword(email, AuthenticationService.getHashedPassword(password));
+                            if (!(user.getEmail() == null)) {
+                                loggedIn = true;
+                                System.out.println(user.getName() + " successfully logged in");
+                            } else {
+                                System.out.println("Invalid login credentials. Please try again.");
+                            }
                         } else {
-                            System.out.println("Invalid login credentials. Please try again.");
-//							main(args);
+                            System.out.println("User not found.");
                         }
                         break;
                     case 2:
-                		String name = RegistrationValidator.getAndValidateName(scanner);
-            			String registrationEmail = AuthenticationValidator.getAndValidateEmail(scanner);
-            			String contact = RegistrationValidator.getAndValidateContact(scanner);
-            			String registrationPassword = AuthenticationValidator.getAndValidatePassword(scanner);
+                        String name = RegistrationValidator.getAndValidateName(scanner);
+                        String registrationEmail = AuthenticationValidator.getAndValidateEmail(scanner);
+                        String contact = RegistrationValidator.getAndValidateContact(scanner);
+                        String registrationPassword = AuthenticationValidator.getAndValidatePassword(scanner);
                         System.out.print("Confirm password: ");
-            			String confirmPassword = AuthenticationValidator.getAndValidatePassword(scanner);
-            			confirmPassword = RegistrationValidator.getAndValidatePasswordAndConfirmPassword(scanner,registrationPassword, confirmPassword);
-            			String securityAnswer = RegistrationValidator.getAndValidateSecurityAnswer(scanner);
-            			User newUser = new User();
-            			newUser.setName(name);
-            			newUser.setEmail(registrationEmail);
-            			newUser.setContact(contact);
-            			newUser.setPassword(AuthenticationService.getHashedPassword(registrationPassword));
-            			newUser.setSecurityAnswer(securityAnswer);
-            			userRepository.save(newUser);
-//            			main(args);
-            	        break;
+                        String confirmPassword = AuthenticationValidator.getAndValidatePassword(scanner);
+                        confirmPassword = RegistrationValidator.getAndValidatePasswordAndConfirmPassword(scanner, registrationPassword, confirmPassword);
+                        String securityAnswer = RegistrationValidator.getAndValidateSecurityAnswer(scanner);
+                        User newUser = new User();
+                        newUser.setName(name);
+                        newUser.setEmail(registrationEmail);
+                        newUser.setContact(contact);
+                        newUser.setPassword(AuthenticationService.getHashedPassword(registrationPassword));
+                        newUser.setSecurityAnswer(securityAnswer);
+                        dataManipulation.save(newUser);
+                        break;
                     case 3:
                         String userEmail = AuthenticationValidator.getAndValidateEmail(scanner);
                         User oldUser = userRepository.getByEmail(userEmail);
                         System.out.println("What is your first school name?");
                         String providedSecurityAnswer = scanner.next();
                         if (providedSecurityAnswer.equals(oldUser.getSecurityAnswer())) {
-//                            System.out.println("Enter passowrd");
                             String newPassword = AuthenticationValidator.getAndValidatePassword(scanner);
-//                            String newPassword = scanner.next();
                             System.out.println("Confirm password");
                             String confirmNewPassword = AuthenticationValidator.getAndValidatePassword(scanner);
                             String finalConfirmNewPassword = RegistrationValidator.getAndValidatePasswordAndConfirmPassword(scanner, newPassword, confirmNewPassword);
                             System.out.println("New: " + newPassword);
                             System.out.println("Confirmed: " + finalConfirmNewPassword);
-                            if(newPassword.equals(finalConfirmNewPassword)){
+                            if (newPassword.equals(finalConfirmNewPassword)) {
                                 System.out.println("Aama gayu!");
                                 User updatedUser = oldUser;
                                 updatedUser.setPassword(AuthenticationService.getHashedPassword(newPassword));
-                                userRepository.delete(oldUser.getUuid());
-                                userRepository.save(updatedUser);
+                                dataManipulation.delete(oldUser.getUuid());
+                                dataManipulation.save(updatedUser);
                             }
                         } else {
                             System.out.println("Incorrect security answer, please try again");

@@ -2,6 +2,7 @@ package com.eqvypay.service.expense;
 
 import com.eqvypay.persistence.Expense;
 import com.eqvypay.service.database.DatabaseConnectionManagementService;
+import com.eqvypay.util.DtoUtils;
 import com.eqvypay.util.constants.DatabaseConstants;
 import com.eqvypay.util.constants.Environment;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,7 @@ public class ExpenseDataManipulation implements IExpenseDataManipulation {
 
     @Override
     public void createTable() throws Exception {
-        Connection connection = dcms.getConnection(Environment.DEV);
+        Connection connection = dcms.getConnection(dcms.parseEnvironment());
         Statement s = connection.createStatement();
         s.executeUpdate("CREATE TABLE Expenses"
                 + " ( id varchar(255)"
@@ -44,24 +45,12 @@ public class ExpenseDataManipulation implements IExpenseDataManipulation {
     }
 
     @Override
-    public boolean tableExist(String tableName) throws Exception {
-        Connection connection = dcms.getConnection(Environment.DEV);
-        boolean tableExists = false;
-        try (ResultSet rs = connection.getMetaData().getTables(null, null, tableName, null)) {
-            while (rs.next()) {
-                String tName = rs.getString("TABLE_NAME");
-                if (tName != null && tName.equals(tableName)) {
-                    tableExists = true;
-                    break;
-                }
-            }
-        }
-        return tableExists;
-    }
-
-    @Override
     public boolean saveAll(List<Expense> expenses) throws Exception {
-        Connection connection = dcms.getConnection(Environment.DEV);
+        Connection connection = dcms.getConnection(dcms.parseEnvironment());
+        if (!DtoUtils.tableExist(dcms, "Expenses")) {
+            createTable();
+        }
+
         for (Expense expense : expenses) {
             PreparedStatement preparedStatement = connection.prepareStatement(DatabaseConstants.INSERT_EXPENSE);
             preparedStatement.setString(1, expense.getId());
@@ -75,9 +64,8 @@ public class ExpenseDataManipulation implements IExpenseDataManipulation {
             try {
                 int count = preparedStatement.executeUpdate();
                 if (count > 0) {
-                    System.out.println("Expense Added into Db");
+                    System.out.println("Expense added");
                 }
-
             } catch (Exception e) {
                 e.printStackTrace();
             }

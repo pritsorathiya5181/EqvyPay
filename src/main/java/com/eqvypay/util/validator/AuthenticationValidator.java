@@ -10,7 +10,6 @@ public class AuthenticationValidator {
             email = scanner.next();
             if (!email.matches("^[\\S]+\\@[\\w]+\\.[a-zA-Z]{2,4}$")) {
                 System.out.println("Email must be of proper format ( example@example.com )");
-                continue;
             } else {
                 break;
             }
@@ -26,10 +25,12 @@ public class AuthenticationValidator {
             if (password == null) {
                 System.out.println("Password must not be empty");
                 continue;
-            } else if (password.length() < 8) {
+            }
+            if (password.length() < 8) {
                 System.out.println("Password must contain atleast 8 characters");
                 continue;
-            } else if (password.replaceAll("[^\\w]", "").length() == password.length()) {
+            }
+            if (password.replaceAll("[^\\w]", "").length() == password.length()) {
                 System.out.println("Password must contain atleast one special character and one capital letter");
                 continue;
             } else {

@@ -4,7 +4,6 @@ import com.eqvypay.persistence.User;
 import com.eqvypay.service.database.DatabaseConnectionManagementService;
 import com.eqvypay.service.user.UserDataManipulation;
 import com.eqvypay.service.user.UserRepository;
-import com.eqvypay.util.constants.Environment;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.Connection;
@@ -20,10 +19,13 @@ public class ProfileDataManipulation implements IProfileDataManipulation{
     @Autowired
     private UserDataManipulation dataManipulation;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @Override
     public void getProfile(User user) throws Exception {
-        Connection connection = dcms.getConnection(Environment.DEV);
-        user = dataManipulation.getByEmail(user.getEmail());
+        Connection connection = dcms.getConnection(dcms.parseEnvironment());
+        user = userRepository.getByEmail(user.getEmail());
 
         System.out.println("\nProfile Details for " + user.getName());
         System.out.println("Username: " + user.getName());
