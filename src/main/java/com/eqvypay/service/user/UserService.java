@@ -34,10 +34,13 @@ public class UserService implements UserRepository {
 
     @Override
     public User getByEmail(String email) throws Exception {
-        Connection connection = dcms.getConnection(dcms.parseEnvironment());
-        Statement statement = connection.createStatement();
-        ResultSet resultSet = statement.executeQuery("SELECT * from Users WHERE email ="+"'"+email+"'");
-        return dtoUtils.getUserFromResultSet(resultSet);
+        if (dtoUtils.tableExist(dcms,"Users")) {
+            Connection connection = dcms.getConnection(dcms.parseEnvironment());
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT * from Users WHERE email ="+"'"+email+"'");
+            return dtoUtils.getUserFromResultSet(resultSet);
+        }
+        return null;
     }
     @Override
     public User getByUuid(UUID uuid) throws Exception {

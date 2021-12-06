@@ -9,5 +9,5 @@ public interface IExpenseDataManipulation {
 
     public Expense save(Expense expense) throws Exception;
 
-    public boolean saveAll(List<Expense> expenses) throws Exception;
+    public void saveAll(List<Expense> expenses) throws Exception;
 }

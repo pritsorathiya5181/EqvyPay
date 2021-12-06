@@ -1,6 +1,7 @@
 package com.eqvypay.service;
 
 import com.eqvypay.persistence.User;
+import com.eqvypay.service.authentication.AuthenticationService;
 import com.eqvypay.service.database.DatabaseConnectionManagementService;
 import com.eqvypay.service.friends.FriendDataManipulation;
 import com.eqvypay.service.friends.FriendRepository;
@@ -16,6 +17,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
 
 @SpringBootTest
 public class FriendServiceTest {
@@ -37,32 +40,47 @@ public class FriendServiceTest {
 
     private static Connection connection;
 
-//    @BeforeAll
-//    public static void config() throws Exception {
-//        userDataManipulation.createTable();
-//        friendDataManipulation.createTable();
-//
-//        DatabaseConnectionManagementService dcms = new DatabaseConnectionManagementService();
-//
-//        connection = dcms.getConnection(Environment.TEST);
-//
-//        UserRepository userRepository = null;
-//
-//        User user = new User();
-//        user.setName("Hirva");
-//        user.setEmail("hirva@gmail.com");
-//        user.setContact("7826404405");
-//        user.setPassword("hirva");
-//        userRepository.save(user);
-//    }
-
     @Test
     @Order(1)
+    public void testCreateTable() throws Exception {
+        Connection connection = dcms.getConnection(dcms.parseEnvironment());
+
+        friendDataManipulation.createTable();
+
+        Statement statement = connection.createStatement();
+        ResultSet resultSet = statement.executeQuery("SHOW tables;");
+        ArrayList<String> tables = new ArrayList<>();
+        while (resultSet.next()) {
+            String table = resultSet.getString("Tables_in_CSCI5308_11_TEST");
+            tables.add(table);
+        }
+
+        Assertions.assertTrue(tables.contains("Friend"));
+    }
+
+    @Test
+    @Order(2)
     public void testAddFriendByEmail() throws Exception {
         connection = dcms.getConnection(Environment.TEST);
 
-        User user = userRepository.getByEmail("hirva@gmail.com");
-        User friend = userRepository.getByEmail("prit@gmail.com");
+        User user1 = new User();
+        user1.setName("ADD_FRIEND_TEST_USER");
+        user1.setEmail("testUser1@gmail.com");
+        user1.setContact("1234567891");
+        user1.setPassword(AuthenticationService.getHashedPassword("Test@123"));
+        user1.setSecurityAnswer("test");
+        userDataManipulation.save(user1);
+
+        User user2 = new User();
+        user2.setName("ADD_FRIEND_TEST_USER");
+        user2.setEmail("testUser2@gmail.com");
+        user2.setContact("1232134891");
+        user2.setPassword(AuthenticationService.getHashedPassword("Test@123"));
+        user2.setSecurityAnswer("test");
+        userDataManipulation.save(user2);
+
+        User user = userRepository.getByEmail("testUser1@gmail.com");
+        User friend = userRepository.getByEmail("testUser2@gmail.com");
 
         friendRepository.addFriendByEmail(user, friend.getEmail());
         PreparedStatement selectQuery = connection.prepareStatement("select * from Friend where user_id = ? and friend_id=?");
@@ -73,12 +91,29 @@ public class FriendServiceTest {
     }
 
     @Test
-    @Order(2)
+    @Order(3)
     public void testAddFriendByContact() throws Exception {
         connection = dcms.getConnection(Environment.TEST);
 
-        User user = userRepository.getByEmail("hirva@gmail.com");
-        User friend = userRepository.getByEmail("jay@gmail.com");
+        User user1 = new User();
+        user1.setName("ADD_FRIEND_TEST_USER");
+        user1.setEmail("testUser1@gmail.com");
+        user1.setContact("1234567891");
+        user1.setPassword(AuthenticationService.getHashedPassword("Test@123"));
+        user1.setSecurityAnswer("test");
+        userDataManipulation.save(user1);
+
+        User user2 = new User();
+        user2.setName("ADD_FRIEND_TEST_USER");
+        user2.setEmail("testUser3@gmail.com");
+        user2.setContact("1232134891");
+        user2.setPassword(AuthenticationService.getHashedPassword("Test@123"));
+        user2.setSecurityAnswer("test");
+        userDataManipulation.save(user2);
+
+        User user = userRepository.getByEmail("testUser1@gmail.com");
+        User friend = userRepository.getByEmail("testUser3@gmail.com");
+
         System.out.println("contact: " +friend.getContact());
         friendRepository.addFriendByContact(user, friend.getContact());
         PreparedStatement selectQuery = connection.prepareStatement("select * from Friend where user_id = ? and friend_id=?");
@@ -89,12 +124,12 @@ public class FriendServiceTest {
     }
 
     @Test
-    @Order(3)
+    @Order(4)
     public void testRemoveFriendByEmail() throws Exception {
         connection = dcms.getConnection(Environment.TEST);
 
-        User user = userRepository.getByEmail("hirva@gmail.com");
-        User friend = userRepository.getByEmail("jay@gmail.com");
+        User user = userRepository.getByEmail("testUser1@gmail.com");
+        User friend = userRepository.getByEmail("testUser2@gmail.com");
 
         friendRepository.removeFriendByEmail(user, friend.getEmail());
         PreparedStatement selectQuery = connection.prepareStatement("select * from Friend where user_id = ? and friend_id=?");
@@ -105,12 +140,12 @@ public class FriendServiceTest {
     }
 
     @Test
-    @Order(4)
+    @Order(5)
     public void testRemoveFriendByContact() throws Exception {
         connection = dcms.getConnection(Environment.TEST);
 
-        User user = userRepository.getByEmail("hirva@gmail.com");
-        User friend = userRepository.getByEmail("prit@gmail.com");
+        User user = userRepository.getByEmail("testUser1@gmail.com");
+        User friend = userRepository.getByEmail("testUser3@gmail.com");
 
         friendRepository.removeFriendByContact(user, friend.getContact());
         PreparedStatement selectQuery = connection.prepareStatement("select * from Friend where user_id = ? and friend_id=?");

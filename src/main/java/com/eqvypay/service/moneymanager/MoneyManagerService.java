@@ -4,7 +4,6 @@ import com.eqvypay.persistence.*;
 import com.eqvypay.service.database.DatabaseConnectionManagementService;
 import com.eqvypay.util.DtoUtils;
 import com.eqvypay.util.constants.DatabaseConstants;
-import com.eqvypay.util.constants.Environment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,10 +40,12 @@ public class MoneyManagerService implements MoneyManagerRepository {
 
     @Override
     public ArrayList<PersonalActivity> getActivities(String userId) throws Exception {
-        Connection connection = dcms.getConnection(dcms.parseEnvironment());
-        Statement statement = connection.createStatement();
-        ResultSet resultSet = statement.executeQuery("SELECT * from PersonalActivities WHERE userId ='" + userId + "'");
-        return dtoUtils.getAllActivities(resultSet);
+        if(dtoUtils.tableExist(dcms, "PersonalActivities")) {
+            Connection connection = dcms.getConnection(dcms.parseEnvironment());
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT * from PersonalActivities WHERE userId ='" + userId + "'");
+            return dtoUtils.getAllActivities(resultSet);
+        }
+        return null;
     }
-
 }
