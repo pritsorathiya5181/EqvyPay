@@ -10,8 +10,8 @@ public interface GroupRepository {
 
     public void joinGroup(User user, String inputId) throws Exception;
 
-    public void createGroup(Group group) throws Exception;
-
     public void leaveGroup(User user) throws Exception;
+
+	void createGroup(User user, Group group) throws Exception;
 	
 }

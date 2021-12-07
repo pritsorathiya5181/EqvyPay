@@ -2,8 +2,10 @@ package com.eqvypay.service.groups;
 
 import com.eqvypay.persistence.Group;
 import com.eqvypay.persistence.User;
+import com.eqvypay.service.activity.ActivityHelper;
 import com.eqvypay.service.database.DatabaseConnectionManagementService;
 import com.eqvypay.util.DtoUtils;
+import com.eqvypay.util.constants.Constants;
 import com.eqvypay.util.constants.DatabaseConstants;
 import com.eqvypay.util.constants.Environment;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +30,7 @@ public class GroupService implements GroupRepository {
     private DatabaseConnectionManagementService dcms;
 
     @Override
-    public void createGroup(Group group) throws Exception {
+    public void createGroup(User user,Group group) throws Exception {
         Connection connection = dcms.getConnection(Environment.DEV);
         PreparedStatement preparedStatement = connection.prepareStatement(DatabaseConstants.INSERT_GROUP);
         preparedStatement.setString(1, group.getGroupId());
@@ -37,6 +39,8 @@ public class GroupService implements GroupRepository {
         int count = preparedStatement.executeUpdate();
         if(count>0) {
             System.out.println("Group " + group.getGroupName() + " inserted to the database");
+         	ActivityHelper.addActivity(user.getUuid().toString(), Constants.createGroup.formatted(group.getGroupName()));
+            
         }
     }
 
@@ -51,6 +55,7 @@ public class GroupService implements GroupRepository {
             if(!dataManipulation.tableExist("GroupMembers"))
                 dataManipulation.createGroupMembersTable();
             stmt.executeUpdate("INSERT INTO GroupMembers VALUES ('"+ inputId + "','" + user.getUuid() +"')");
+          	ActivityHelper.addActivity(user.getUuid().toString(), Constants.joinGroup.formatted(inputId));
             System.out.println("Joined successfully.");
         }else{
             System.out.println("Group does not exist. Please try again");
@@ -83,6 +88,7 @@ public class GroupService implements GroupRepository {
 
             if (joinedGroups.contains(deleteGroup)) {
                 stmt.executeUpdate("DELETE FROM GroupMembers WHERE group_id ='" + ids.get(joinedGroups.indexOf(deleteGroup)) + "' AND uuid = '" + user.getUuid() + "'");
+                ActivityHelper.addActivity(user.getUuid().toString(), Constants.leaveGroup.formatted(deleteGroup));
                 System.out.println("Left from the group " + deleteGroup);
             } else {
                 System.out.println("Invalid group name. Please try again");
@@ -110,6 +116,7 @@ public class GroupService implements GroupRepository {
                 String choice = sc.nextLine();
                 if(choice.equalsIgnoreCase("Y")){
                     stmt.executeUpdate("DELETE FROM Groups WHERE group_name ='" + groupName + "'");
+                    ActivityHelper.addActivity(user.getUuid().toString(), Constants.deleteGroup.formatted(groupName));
                     System.out.println("Group " + groupName + " deleted successfully.");
                 }else {
                     System.out.println("No changes made");

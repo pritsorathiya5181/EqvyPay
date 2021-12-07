@@ -3,6 +3,7 @@ package com.eqvypay.web;
 import com.eqvypay.persistence.Expense;
 import com.eqvypay.persistence.Group;
 import com.eqvypay.persistence.User;
+import com.eqvypay.service.activity.ActivityHelper;
 import com.eqvypay.service.expense.ExpenseDataManipulation;
 import com.eqvypay.service.groups.GroupDataManipulation;
 import com.eqvypay.service.expense.ExpenseRepository;
@@ -118,7 +119,6 @@ public class ManageExpenseOption {
 
                                     if (divideType == 1) {
                                         List<Expense> expenses = new ArrayList<Expense>();
-
                                         List<String> members = groupDataManipulation.getMembersOfGroup(newExpense.getGroupId());
                                         if (members.size() <= 1) {
                                             System.out.println("There are no members in the group, add them first");
@@ -129,6 +129,7 @@ public class ManageExpenseOption {
                                         System.out.println("PerShare " + share);
                                         for (String member : members) {
                                             if (!member.equalsIgnoreCase(expense.getTargetUserId())) {
+                                            	User groupMember = userDataManipulation.getByUuid(UUID.fromString(member));
                                                 Expense memberExpense = new Expense();
                                                 memberExpense.setId(UUID.randomUUID().toString());
                                                 memberExpense.setCurrencyType(expense.getCurrencyType());
@@ -139,15 +140,19 @@ public class ManageExpenseOption {
                                                 memberExpense.setSourceUserId(member);
                                                 memberExpense.setTargetUserId(user.getUuid().toString());
                                                 expenses.add(memberExpense);
+                                                ActivityHelper.addActivity(user.getUuid().toString(), Constants.settleTarget.formatted(groupMember.getName(),String.valueOf(expense.getExpenseAmt()).concat(expense.getCurrencyType())));
+                                                ActivityHelper.addActivity(member,Constants.settleSource.formatted(user.getName(),String.valueOf(expense.getExpenseAmt()).concat(expense.getCurrencyType())));
                                             }
                                         }
                                         dataManipulation.saveAll(expenses);
                                         System.out.println("option 1 select");
                                     } else if (divideType == 2) {
                                         List<Expense> expenses = new ArrayList<Expense>();
-                                        List<String> groupMembers = new ArrayList<>(Arrays.asList(expense.getTargetUserId(), "#user3", "#user4", "#user1"));
-                                        for (String member : groupMembers) {
+                                        List<String> members = groupDataManipulation.getMembersOfGroup(newExpense.getGroupId());
+
+                                        for (String member : members) {
                                             if (!member.equalsIgnoreCase(expense.getTargetUserId())) {
+                                               	User groupMember = userDataManipulation.getByUuid(UUID.fromString(member));
                                                 Expense memberExpense = new Expense();
                                                 memberExpense.setId(UUID.randomUUID().toString());
                                                 memberExpense.setCurrencyType(expense.getCurrencyType());
@@ -159,6 +164,8 @@ public class ManageExpenseOption {
                                                 memberExpense.setGroupId(expense.getGroupId());
                                                 memberExpense.setSourceUserId(member);
                                                 memberExpense.setTargetUserId(user.getUuid().toString());
+                                                ActivityHelper.addActivity(user.getUuid().toString(), Constants.settleTarget.formatted(groupMember.getName(),String.valueOf(expense.getExpenseAmt()).concat(expense.getCurrencyType())));
+                                                ActivityHelper.addActivity(member,Constants.settleSource.formatted(user.getName(),String.valueOf(expense.getExpenseAmt()).concat(expense.getCurrencyType())));
                                                 expenses.add(memberExpense);
                                             }
                                         }
@@ -184,15 +191,15 @@ public class ManageExpenseOption {
                             if (!dataManipulation.tableExist("Groups")) {
                                 dataManipulation.createTable();
                             }
-                            groupRepository.createGroup(group);
+                            groupRepository.createGroup(user,group);
+                            ActivityHelper.addActivity(user.getUuid().toString(), Constants.createGroup.formatted(groupName));
                             groupRepository.joinGroup(user, group.getGroupId());
-
+                            ActivityHelper.addActivity(user.getUuid().toString(), Constants.joinGroup.formatted(groupName));
+                            
                         } catch (Exception e) {
                             System.out.println("Error: " + e.toString());
                         }
                         break;
-
-
                     }
 
                 } else if (payOption.equals("2")) {
@@ -234,6 +241,8 @@ public class ManageExpenseOption {
                             expense.setSourceUserId(friend.getUuid().toString());
                             expense.setTargetUserId(user.getUuid().toString());
                             friendExpenseList.add(expense);
+                            ActivityHelper.addActivity(user.getUuid().toString(), Constants.settleTarget.formatted(friend.getName(),String.valueOf(expense.getExpenseAmt()).concat(expense.getCurrencyType())));
+                            ActivityHelper.addActivity(friend.getUuid().toString(),Constants.settleSource.formatted(user.getName(),String.valueOf(expense.getExpenseAmt()).concat(expense.getCurrencyType())));
                         }
                         dataManipulation.saveAll(friendExpenseList);
                     } else {
@@ -249,6 +258,8 @@ public class ManageExpenseOption {
                             expense.setSourceUserId(friend.getUuid().toString());
                             expense.setTargetUserId(user.getUuid().toString());
                             friendExpenseList.add(expense);
+                            ActivityHelper.addActivity(user.getUuid().toString(), Constants.settleTarget.formatted(friend.getName(),String.valueOf(expense.getExpenseAmt()).concat(expense.getCurrencyType())));
+                            ActivityHelper.addActivity(friend.getUuid().toString(),Constants.settleSource.formatted(user.getName(),String.valueOf(expense.getExpenseAmt()).concat(expense.getCurrencyType())));
                         }
                         dataManipulation.saveAll(friendExpenseList);
                     }
@@ -276,10 +287,12 @@ public class ManageExpenseOption {
                     List<Integer> settlementIndexes = Arrays.stream(settlements).map(p -> Integer.valueOf(p) - 1).collect(Collectors.toList());
                     for (int i = 0; i < settlementIndexes.size(); i++) {
                         Expense expenseToBeSettled = expenses.get(i);
+                        User targetUser = userDataManipulation.getByUuid(UUID.fromString( expenseToBeSettled.getTargetUserId()));
                         Currency currency = Currency.getInstance(expenseToBeSettled.getCurrencyType().toUpperCase());
                         boolean settled = expenseRepository2.settleExpense(expenseToBeSettled);
                         if (settled) {
                             System.out.println("Expense of :" + expenseToBeSettled.getExpenseAmt() + " settled!");
+                            ActivityHelper.addActivity(user.getUuid().toString(), Constants.expenseSettlement.formatted(user.getName(),targetUser.getName(),expenseToBeSettled.getExpenseAmt()));
                         }
                     }
                 } else {

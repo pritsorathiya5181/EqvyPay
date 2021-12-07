@@ -4,7 +4,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.UUID;
 
+import com.eqvypay.service.activity.ActivityHelper;
 import com.eqvypay.service.database.DatabaseConnectionManagementService;
 import com.eqvypay.service.user.UserDataManipulation;
 import com.eqvypay.util.DtoUtils;
@@ -12,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.eqvypay.persistence.User;
+import com.eqvypay.util.constants.Constants;
 import com.eqvypay.util.constants.Environment;
 
 @Service
@@ -39,6 +42,8 @@ public class FriendService implements FriendRepository {
             insertQuery.execute();
             System.out.println("Friend added successfully.");
         }
+        ActivityHelper.addActivity(user.getUuid().toString(), Constants.friends.formatted(friend.getName()));
+        ActivityHelper.addActivity(friend.getUuid().toString(), Constants.friends.formatted(user.getName()));
     }
 
 
@@ -55,6 +60,8 @@ public class FriendService implements FriendRepository {
         }
 
         String friendUuid = null;
+        User friend = null;
+        
         int count = DtoUtils.getCountOfRecords(result);
         PreparedStatement selectQuery = connection.prepareStatement("select * from Users where contact = ?");
         selectQuery.setString(1, contact);
@@ -66,6 +73,8 @@ public class FriendService implements FriendRepository {
 
             if (result.next()) {
                 friendUuid = result.getString("uuid");
+                friend = userDataManipulation.getByUuid(UUID.fromString(friendUuid));
+                
             }
             System.out.println("FID: " + friendUuid);
 
@@ -76,6 +85,10 @@ public class FriendService implements FriendRepository {
             System.out.println("Friend added successfully.");
 
         }
+        
+        ActivityHelper.addActivity(user.getUuid().toString(), Constants.friends.formatted(friend.getName()));
+        ActivityHelper.addActivity(friend.getUuid().toString(), Constants.friends.formatted(user.getName()));
+
     }
 
     @Override
@@ -91,13 +104,17 @@ public class FriendService implements FriendRepository {
         }
 
         String friendUuid = null;
+        User friend = null;
         while (result.next()) {
             friendUuid = result.getString("uuid");
+            friend = userDataManipulation.getByUuid(UUID.fromString(friendUuid));
         }
         PreparedStatement insertQuery = connection.prepareStatement("delete from Friend where friend_id = ?");
         insertQuery.setString(1, friendUuid);
         insertQuery.execute();
-
+        ActivityHelper.addActivity(user.getUuid().toString(), Constants.removeFriend.formatted(friend.getName()));
+        ActivityHelper.addActivity(friend.getUuid().toString(),Constants.removeFriend.formatted(user.getName()));
+  
     }
 
 
@@ -114,12 +131,18 @@ public class FriendService implements FriendRepository {
         }
 
         String friendUuid = null;
+        User friend = null;
         while (result.next()) {
             friendUuid = result.getString("uuid");
+            friend = userDataManipulation.getByUuid(UUID.fromString(friendUuid));
         }
         PreparedStatement insertQuery = connection.prepareStatement("delete from Friend where friend_id = ?");
         insertQuery.setString(1, friendUuid);
         insertQuery.execute();
+        
+        ActivityHelper.addActivity(user.getUuid().toString(), Constants.removeFriend.formatted(friend.getName()));
+        ActivityHelper.addActivity(friend.getUuid().toString(),Constants.removeFriend.formatted(user.getName()));
+  
     }
 
 }

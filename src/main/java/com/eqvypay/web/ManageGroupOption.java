@@ -51,7 +51,7 @@ public class ManageGroupOption {
                             dataManipulation.createTable();
                         }
                         //INSERT ROW TO GROUPS TABLE
-                        groupRepository.createGroup(group);
+                        groupRepository.createGroup(user,group);
                         groupRepository.joinGroup(user, group.getGroupId());
 
                     }catch (Exception e){

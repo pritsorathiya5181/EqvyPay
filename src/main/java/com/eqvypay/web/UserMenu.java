@@ -1,6 +1,7 @@
 package com.eqvypay.web;
 
 import com.eqvypay.persistence.User;
+import com.eqvypay.service.activity.ActivityHelper;
 import com.eqvypay.service.expense.ExpenseRepository;
 import com.eqvypay.service.friends.FriendRepository;
 import com.eqvypay.service.groups.GroupRepository;
@@ -36,6 +37,9 @@ public class UserMenu {
     @Autowired
     RemoveFriendOption removeFriendOption;
 
+    @Autowired
+    ActivityOption activityOption;
+    
     @Autowired
     ManageExpenseOption manageExpenseOption;
 
@@ -86,7 +90,8 @@ public class UserMenu {
                         manageExpenseOption.options(user, expenseRepository);
                         break;
                     case "5":
-                        System.out.println("Integrate activity module here");
+                    	System.out.println("Activity option selected");
+                    	activityOption.getActivity(user);
                         break;
                     case "6":
                         profileOptions.updateProfileOption(user, profileRepository);
