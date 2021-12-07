@@ -123,9 +123,16 @@ public class GroupServiceTest {
         groupRepository.createGroup(testGroup);
         groupRepository.joinGroup(testUser, testGroup.getGroupId());
 
-//        groupRepository.deleteGroup(testGroup.getGroupName(), testUser);
+        groupRepository.deleteGroup(testGroup.getGroupName(), testUser);
 
-        boolean shouldBeFalse = groupRepository.getAllGroups().contains(testGroup);
-        Assertions.assertFalse(shouldBeFalse);
+        boolean shouldRemainTrue = true;
+
+        for(Group eachGroup: groupRepository.getAllGroups()) {
+            if(eachGroup.getGroupId() != null && eachGroup.getGroupId().equals(testGroup.getGroupId())) {
+                shouldRemainTrue = false;
+            }
+        }
+
+        Assertions.assertTrue(shouldRemainTrue);
     }
 }
