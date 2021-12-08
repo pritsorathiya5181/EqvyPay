@@ -4,7 +4,6 @@ import com.eqvypay.persistence.Group;
 import com.eqvypay.persistence.User;
 import com.eqvypay.service.groups.GroupDataManipulation;
 import com.eqvypay.service.groups.GroupRepository;
-import com.eqvypay.util.DtoUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -91,7 +90,9 @@ public class ManageGroupOption {
 
                 case "3":
                     try {
-                        groupRepository.leaveGroup(user);
+                        System.out.println("Enter group name that you want to leave: ");
+                        groupName = sc.next();
+                        groupRepository.leaveGroup(user, groupName);
                     } catch (Exception e) {
                         System.out.println(e.toString());
                     }

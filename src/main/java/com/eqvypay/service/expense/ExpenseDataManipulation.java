@@ -21,11 +21,14 @@ public class ExpenseDataManipulation implements IExpenseDataManipulation {
     @Autowired
     DatabaseConnectionManagementService dcms;
 
+    @Autowired
+    DtoUtils dtoUtils;
+
     @Override
     public void createTable() throws Exception {
         Connection connection = dcms.getConnection(dcms.parseEnvironment());
         Statement s = connection.createStatement();
-        s.executeUpdate("CREATE TABLE Expenses"
+        String query = "CREATE TABLE Expenses"
                 + " ( id varchar(255)"
                 + ",sourceUserId varchar(255)"
                 + ",targetUserId varchar(266)"
@@ -33,8 +36,11 @@ public class ExpenseDataManipulation implements IExpenseDataManipulation {
                 + " ,expenseType varchar(255)"
                 + " ,expenseAmt float"
                 + " ,expenseDesc varchar(255)"
-                + " ,currencyType varchar(255) );"
-        );
+                + " ,currencyType varchar(255) );";
+
+        if (!dtoUtils.tableExist(dcms, "Expenses")) {
+            s.executeUpdate(query);
+        }
     }
 
     @Override
@@ -45,9 +51,9 @@ public class ExpenseDataManipulation implements IExpenseDataManipulation {
     }
 
     @Override
-    public boolean saveAll(List<Expense> expenses) throws Exception {
+    public void saveAll(List<Expense> expenses) throws Exception {
         Connection connection = dcms.getConnection(dcms.parseEnvironment());
-        if (!DtoUtils.tableExist(dcms, "Expenses")) {
+        if (!dtoUtils.tableExist(dcms, "Expenses")) {
             createTable();
         }
 
@@ -70,7 +76,6 @@ public class ExpenseDataManipulation implements IExpenseDataManipulation {
                 e.printStackTrace();
             }
         }
-        return true;
     }
 
 }

@@ -19,14 +19,17 @@ public class ExpenseService implements ExpenseRepository {
     @Autowired
     private DatabaseConnectionManagementService dcms;
 
+    @Autowired
+    DtoUtils dtoUtils;
+
     @Override
     public List<Expense> getExpensesByUserId(String userId) throws Exception {
-        if (DtoUtils.tableExist(dcms, "Expenses")) {
+        if (dtoUtils.tableExist(dcms, "Expenses")) {
             Connection connection = dcms.getConnection(dcms.parseEnvironment());
             Statement statement = connection.createStatement();
             ResultSet rs = statement.executeQuery("SELECT * from Expenses where sourceUserId = '" + userId + "'"
                     + " OR targetUserId = '" + userId + "'");
-            return DtoUtils.getExpenseFromResultSet(rs);
+            return dtoUtils.getExpenseFromResultSet(rs);
         } else {
             return null;
         }

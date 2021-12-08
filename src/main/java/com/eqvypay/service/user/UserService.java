@@ -21,37 +21,42 @@ public class UserService implements UserRepository {
     @Autowired
     private DatabaseConnectionManagementService dcms;
 
+    @Autowired
+    DtoUtils dtoUtils;
 
     @Override
     public User getUserByEmailAndPassword(String email, String password) throws Exception {
         Connection connection = dcms.getConnection(dcms.parseEnvironment());
         Statement statement = connection.createStatement();
         ResultSet resultSet = statement.executeQuery("SELECT * from Users WHERE email ="+"'"+email+"'"+"AND password="+"'"+password+"'");
-        return DtoUtils.getUserFromResultSet(resultSet);
+        return dtoUtils.getUserFromResultSet(resultSet);
     }
 
     @Override
     public User getByEmail(String email) throws Exception {
-        Connection connection = dcms.getConnection(dcms.parseEnvironment());
-        Statement statement = connection.createStatement();
-        ResultSet resultSet = statement.executeQuery("SELECT * from Users WHERE email ="+"'"+email+"'");
-        return DtoUtils.getUserFromResultSet(resultSet);
+        if (dtoUtils.tableExist(dcms,"Users")) {
+            Connection connection = dcms.getConnection(dcms.parseEnvironment());
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT * from Users WHERE email ="+"'"+email+"'");
+            return dtoUtils.getUserFromResultSet(resultSet);
+        }
+        return null;
     }
     @Override
     public User getByUuid(UUID uuid) throws Exception {
         Connection connection = dcms.getConnection(dcms.parseEnvironment());
         Statement statement = connection.createStatement();
         ResultSet resultSet = statement.executeQuery("SELECT * from Users WHERE uuid = '"+uuid+"'");
-        return DtoUtils.getUserFromResultSet(resultSet);
+        return dtoUtils.getUserFromResultSet(resultSet);
     }
 
     @Override
     public List<User> findAllFriends(String userId) throws Exception {
-        if(DtoUtils.tableExist(dcms, "Friend")) {
+        if(dtoUtils.tableExist(dcms, "Friend")) {
             Connection connection = dcms.getConnection(dcms.parseEnvironment());
             Statement statement = connection.createStatement();
             ResultSet rs = statement.executeQuery("select * from Friend inner join Users on Friend.friend_id = Users.uuid where Friend.user_id ='" + userId + "'");
-            return DtoUtils.getAllFriendsFromResultSet(rs);
+            return dtoUtils.getAllFriendsFromResultSet(rs);
         } else {
             System.out.println("Your friend list is empty! Please add a friend first.");
             return null;

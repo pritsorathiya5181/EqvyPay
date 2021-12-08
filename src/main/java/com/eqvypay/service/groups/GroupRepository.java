@@ -15,7 +15,7 @@ public interface GroupRepository {
 
     public void createGroup(Group group) throws Exception;
 
-    public void leaveGroup(User user) throws Exception;
+    public void leaveGroup(User user, String groupName) throws Exception;
 
     public List<Group> getAllGroups() throws Exception;
 

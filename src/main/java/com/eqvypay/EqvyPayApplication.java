@@ -23,7 +23,7 @@ import org.springframework.core.env.Environment;
 
 import com.eqvypay.persistence.User;
 
-@SpringBootApplication(scanBasePackages = {"com.eqvypay.service", "com.eqvypay.web"})
+@SpringBootApplication(scanBasePackages = {"com.eqvypay.service", "com.eqvypay.web", "com.eqvypay.util"})
 public class EqvyPayApplication implements CommandLineRunner {
     @Autowired
     private Environment env;
@@ -45,6 +45,9 @@ public class EqvyPayApplication implements CommandLineRunner {
 
     @Autowired
     private UserDataManipulation dataManipulation;
+
+    @Autowired
+    DtoUtils dtoUtils;
 
     public static void main(String[] args) {
         SpringApplication app = new SpringApplication(EqvyPayApplication.class);
@@ -76,7 +79,7 @@ public class EqvyPayApplication implements CommandLineRunner {
                     case "1":
                         String email = AuthenticationValidator.getAndValidateEmail(scanner);
                         String password = AuthenticationValidator.getAndValidatePassword(scanner);
-                        if (DtoUtils.tableExist(dcms, "Users")) {
+                        if (dtoUtils.tableExist(dcms, "Users")) {
                             user = userRepository.getUserByEmailAndPassword(email, AuthenticationService.getHashedPassword(password));
                             if (!(user.getEmail() == null)) {
                                 loggedIn = true;

@@ -19,6 +19,9 @@ public class UserDataManipulation implements IUserDataManipulation {
     @Autowired
     private DatabaseConnectionManagementService dcms;
 
+    @Autowired
+    DtoUtils dtoUtils;
+
     @Override
     public void createTable() throws Exception {
         String query = "CREATE TABLE Users"
@@ -32,7 +35,7 @@ public class UserDataManipulation implements IUserDataManipulation {
 
         Statement s = connection.createStatement();
         String tableName = "Users";
-        if (!DtoUtils.tableExist(dcms, tableName)) {
+        if (!dtoUtils.tableExist(dcms, tableName)) {
             s.executeUpdate(query);
         }
     }
@@ -57,7 +60,7 @@ public class UserDataManipulation implements IUserDataManipulation {
 
     @Override
     public void delete(UUID userId) throws Exception {
-        if (DtoUtils.tableExist(dcms, "Users")) {
+        if (dtoUtils.tableExist(dcms, "Users")) {
             Connection connection = dcms.getConnection(dcms.parseEnvironment());
             PreparedStatement statement = connection.prepareStatement("DELETE from Users where uuid = ?");
             statement.setString(1, userId.toString());

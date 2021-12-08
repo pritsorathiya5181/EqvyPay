@@ -14,10 +14,12 @@ import com.eqvypay.persistence.User;
 import com.eqvypay.service.database.DatabaseConnectionManagementService;
 import com.eqvypay.util.constants.Environment;
 import com.eqvypay.util.constants.enums.ExpenseType;
+import org.springframework.stereotype.Component;
 
+@Component
 public class DtoUtils {
 
-    public static boolean tableExist(DatabaseConnectionManagementService dcms, String tableName) throws Exception {
+    public boolean tableExist(DatabaseConnectionManagementService dcms, String tableName) throws Exception {
         Connection connection = dcms.getConnection(dcms.parseEnvironment());
         boolean tableExists = false;
         try (ResultSet rs = connection.getMetaData().getTables(null, null, tableName, null)) {
@@ -30,34 +32,33 @@ public class DtoUtils {
             }
         }
         return tableExists;
+
     }
 
-	public static int getCountOfRecords(ResultSet rs){
-		int count = 0;
-//		System.out.println(rs);
-		try {
-			while (rs.next())
-				count++;
-		}catch (Exception e){
-			System.out.println(e.toString());
-		}
-		return count;
-	}
-	
+    public int getCountOfRecords(ResultSet rs){
+        int count = 0;
+        try {
+            while (rs.next())
+                count++;
+        }catch (Exception e){
+            System.out.println(e.toString());
+        }
+        return count;
 
-	public static List<String> getIdFromResultSet(ResultSet resultSet) {
-		List<String> ids = new ArrayList<>();
-		try {
-			while (resultSet.next()){
-				ids.add(resultSet.getString("group_id"));
-			}
-		}catch (Exception e){
-			System.out.println(e.toString());
-		}
-		return ids;
+    }
 
-	}
-    public static User getUserFromResultSet(ResultSet resultSet) throws SQLException {
+    public List<String> getIdFromResultSet(ResultSet resultSet) {
+        List<String> ids = new ArrayList<>();
+        try {
+            while (resultSet.next()){
+                ids.add(resultSet.getString("group_id"));
+            }
+        }catch (Exception e){
+            System.out.println(e.toString());
+        }
+        return ids;
+    }
+    public User getUserFromResultSet(ResultSet resultSet) throws SQLException {
         User user = new User();
         while (resultSet.next()) {
             String id = resultSet.getString("uuid");
@@ -74,9 +75,10 @@ public class DtoUtils {
             user.setPassword(password);
         }
         return user;
+
     }
 
-    public static List<Expense> getExpenseFromResultSet(ResultSet resultSet) throws Exception {
+    public List<Expense> getExpenseFromResultSet(ResultSet resultSet) throws Exception {
 
         List<Expense> expenses = new ArrayList<>();
         while (resultSet.next()) {
@@ -104,7 +106,7 @@ public class DtoUtils {
         return expenses;
     }
 
-    public static ArrayList<Group> getGroupsFromResultSet(ResultSet resultSet) throws SQLException {
+    public ArrayList<Group> getGroupsFromResultSet(ResultSet resultSet) throws SQLException {
         ArrayList<Group> groups = new ArrayList<Group>();
         Group group;
         while (resultSet.next()) {
@@ -120,7 +122,7 @@ public class DtoUtils {
         return groups;
     }
 
-    public static ArrayList<PersonalActivity> getAllActivities(ResultSet resultSet) throws SQLException {
+    public ArrayList<PersonalActivity> getAllActivities(ResultSet resultSet) throws SQLException {
         ArrayList<PersonalActivity> activities = new ArrayList<PersonalActivity>();
         PersonalActivity activity;
         while (resultSet.next()) {
@@ -141,7 +143,7 @@ public class DtoUtils {
         return activities;
     }
 
-    public static ArrayList<User> getAllFriendsFromResultSet(ResultSet resultSet) throws SQLException {
+    public ArrayList<User> getAllFriendsFromResultSet(ResultSet resultSet) throws SQLException {
         ArrayList<User> friends = new ArrayList<User>();
         User friend;
         while (resultSet.next()) {
