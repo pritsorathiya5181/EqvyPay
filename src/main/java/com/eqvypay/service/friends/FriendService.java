@@ -42,8 +42,8 @@ public class FriendService implements FriendRepository {
             insertQuery.execute();
             System.out.println("Friend added successfully.");
         }
-        ActivityHelper.addActivity(user.getUuid().toString(), Constants.friends.formatted(friend.getName()));
-        ActivityHelper.addActivity(friend.getUuid().toString(), Constants.friends.formatted(user.getName()));
+        ActivityHelper.addActivity(user.getUuid().toString(), String.format(Constants.friends,friend.getName()));
+        ActivityHelper.addActivity(friend.getUuid().toString(), String.format(Constants.friends,user.getName()));
     }
 
 
@@ -86,8 +86,8 @@ public class FriendService implements FriendRepository {
 
         }
         
-        ActivityHelper.addActivity(user.getUuid().toString(), Constants.friends.formatted(friend.getName()));
-        ActivityHelper.addActivity(friend.getUuid().toString(), Constants.friends.formatted(user.getName()));
+        ActivityHelper.addActivity(user.getUuid().toString(), String.format(Constants.friends,friend.getName()));
+        ActivityHelper.addActivity(friend.getUuid().toString(), String.format(Constants.friends,user.getName()));
 
     }
 
@@ -112,8 +112,8 @@ public class FriendService implements FriendRepository {
         PreparedStatement insertQuery = connection.prepareStatement("delete from Friend where friend_id = ?");
         insertQuery.setString(1, friendUuid);
         insertQuery.execute();
-        ActivityHelper.addActivity(user.getUuid().toString(), Constants.removeFriend.formatted(friend.getName()));
-        ActivityHelper.addActivity(friend.getUuid().toString(),Constants.removeFriend.formatted(user.getName()));
+        ActivityHelper.addActivity(user.getUuid().toString(), String.format(Constants.removeFriend,friend.getName()));
+        ActivityHelper.addActivity(friend.getUuid().toString(),String.format(Constants.removeFriend,user.getName()));
   
     }
 
@@ -140,8 +140,8 @@ public class FriendService implements FriendRepository {
         insertQuery.setString(1, friendUuid);
         insertQuery.execute();
         
-        ActivityHelper.addActivity(user.getUuid().toString(), Constants.removeFriend.formatted(friend.getName()));
-        ActivityHelper.addActivity(friend.getUuid().toString(),Constants.removeFriend.formatted(user.getName()));
+        ActivityHelper.addActivity(user.getUuid().toString(), String.format(Constants.removeFriend,friend.getName()));
+        ActivityHelper.addActivity(friend.getUuid().toString(),String.format(Constants.removeFriend,user.getName()));
   
     }
 

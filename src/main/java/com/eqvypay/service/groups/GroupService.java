@@ -39,7 +39,7 @@ public class GroupService implements GroupRepository {
         int count = preparedStatement.executeUpdate();
         if(count>0) {
             System.out.println("Group " + group.getGroupName() + " inserted to the database");
-         	ActivityHelper.addActivity(user.getUuid().toString(), Constants.createGroup.formatted(group.getGroupName()));
+         	ActivityHelper.addActivity(user.getUuid().toString(), String.format(Constants.createGroup,group.getGroupName()));
             
         }
     }
@@ -55,7 +55,7 @@ public class GroupService implements GroupRepository {
             if(!dataManipulation.tableExist("GroupMembers"))
                 dataManipulation.createGroupMembersTable();
             stmt.executeUpdate("INSERT INTO GroupMembers VALUES ('"+ inputId + "','" + user.getUuid() +"')");
-          	ActivityHelper.addActivity(user.getUuid().toString(), Constants.joinGroup.formatted(inputId));
+          	ActivityHelper.addActivity(user.getUuid().toString(), String.format(Constants.joinGroup,inputId));
             System.out.println("Joined successfully.");
         }else{
             System.out.println("Group does not exist. Please try again");
@@ -88,7 +88,7 @@ public class GroupService implements GroupRepository {
 
             if (joinedGroups.contains(deleteGroup)) {
                 stmt.executeUpdate("DELETE FROM GroupMembers WHERE group_id ='" + ids.get(joinedGroups.indexOf(deleteGroup)) + "' AND uuid = '" + user.getUuid() + "'");
-                ActivityHelper.addActivity(user.getUuid().toString(), Constants.leaveGroup.formatted(deleteGroup));
+                ActivityHelper.addActivity(user.getUuid().toString(), String.format(Constants.leaveGroup,deleteGroup));
                 System.out.println("Left from the group " + deleteGroup);
             } else {
                 System.out.println("Invalid group name. Please try again");
@@ -116,7 +116,7 @@ public class GroupService implements GroupRepository {
                 String choice = sc.nextLine();
                 if(choice.equalsIgnoreCase("Y")){
                     stmt.executeUpdate("DELETE FROM Groups WHERE group_name ='" + groupName + "'");
-                    ActivityHelper.addActivity(user.getUuid().toString(), Constants.deleteGroup.formatted(groupName));
+                    ActivityHelper.addActivity(user.getUuid().toString(), String.format(Constants.deleteGroup,groupName));
                     System.out.println("Group " + groupName + " deleted successfully.");
                 }else {
                     System.out.println("No changes made");
