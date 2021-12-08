@@ -4,7 +4,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.UUID;
 
+import com.eqvypay.service.activity.ActivityHelper;
 import com.eqvypay.service.database.DatabaseConnectionManagementService;
 import com.eqvypay.service.user.UserDataManipulation;
 import com.eqvypay.service.user.UserRepository;
@@ -13,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.eqvypay.persistence.User;
+import com.eqvypay.util.constants.Constants;
 import com.eqvypay.util.constants.Environment;
 
 @Service
@@ -63,6 +66,7 @@ public class FriendService implements FriendRepository {
     public void addFriendByContact(User user, String contact) throws Exception {
         Connection connection = dcms.getConnection(dcms.parseEnvironment());
         ResultSet result = null;
+        User friend = null;
         try {
             PreparedStatement selectQuery = connection.prepareStatement("select * from Users where contact = ?");
             selectQuery.setString(1, contact);
@@ -80,6 +84,7 @@ public class FriendService implements FriendRepository {
 
                 if (result.next()) {
                     friendUuid = result.getString("uuid");
+                    friend = userRepository.getByUuid(UUID.fromString(friendUuid));
                 }
                 friendDataManipulation.createTable();
 
@@ -92,6 +97,10 @@ public class FriendService implements FriendRepository {
         } catch (SQLException e) {
             System.out.println("Enter a valid contact number of a registered user!");
         }
+
+        ActivityHelper.addActivity(user.getUuid().toString(), String.format(Constants.friends,friend.getName()));
+        ActivityHelper.addActivity(friend.getUuid().toString(), String.format(Constants.friends,user.getName()));
+
     }
 
     @Override

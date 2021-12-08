@@ -51,7 +51,7 @@ public class ManageGroupOption {
                     group.setGroupDesc(sc.nextLine());
                     try {
                         //INSERT ROW TO GROUPS TABLE
-                        groupRepository.createGroup(group);
+                        groupRepository.createGroup(user,group);
                         groupRepository.joinGroup(user, group.getGroupId());
                     } catch (Exception e) {
                         System.out.println("Error: " + e.toString());

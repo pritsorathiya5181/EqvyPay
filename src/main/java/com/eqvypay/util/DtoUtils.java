@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import com.eqvypay.persistence.Activity;
 import com.eqvypay.persistence.Expense;
 import com.eqvypay.persistence.Group;
 import com.eqvypay.persistence.PersonalActivity;
@@ -160,4 +161,20 @@ public class DtoUtils {
         }
         return friends;
     }
+    
+	public static List<Activity> getActivityFromResultSet(ResultSet resultSet) throws SQLException {
+		List<Activity> activities = new ArrayList<>();
+		while(resultSet.next()) {
+			String uuid = resultSet.getString("uuid");
+			String userId = resultSet.getString("userId");
+			String message = resultSet.getString("message");
+			Activity activity = new Activity();
+			activity.setMessage(message);
+			activity.setUserId(userId);
+			activity.setUuid(uuid);
+			activities.add(activity);
+		}
+		return activities;
+	}
+
 }

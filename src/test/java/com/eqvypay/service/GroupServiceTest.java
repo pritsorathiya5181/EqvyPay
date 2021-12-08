@@ -2,6 +2,7 @@ package com.eqvypay.service;
 
 import com.eqvypay.persistence.Group;
 import com.eqvypay.persistence.User;
+import com.eqvypay.service.authentication.AuthenticationService;
 import com.eqvypay.service.database.DatabaseConnectionManagementService;
 import com.eqvypay.service.groups.GroupDataManipulation;
 import com.eqvypay.service.groups.GroupRepository;
@@ -41,11 +42,20 @@ public class GroupServiceTest {
     @Order(1)
     public void testCreateGroup() throws Exception {
         Group testGroup = new Group();
+
+        User user = new User();
+        user.setName("ADD_FRIEND_TEST_USER");
+        user.setEmail("testUser1@gmail.com");
+        user.setContact("1234567891");
+        user.setPassword(AuthenticationService.getHashedPassword("Test@123"));
+        user.setSecurityAnswer("test");
+        userDataManipulation.save(user);
+
         testGroup.setGroupId("TEST_CREATE_GROUP_ID");
         testGroup.setGroupName("TEST_CREATE_GROUP_NAME");
         testGroup.setGroupDesc("TEST_CREATE_GROUP_DESC");
 
-        groupRepository.createGroup(testGroup);
+        groupRepository.createGroup(user, testGroup);
         List<Group> allGroups = groupRepository.getAllGroups();
 
         boolean shouldBeTrue = false;
@@ -69,7 +79,7 @@ public class GroupServiceTest {
         testGroup.setGroupName("TEST_JOIN_GROUP_NAME");
         testGroup.setGroupDesc("TEST_JOIN_GROUP_DESC");
 
-        groupRepository.createGroup(testGroup);
+        groupRepository.createGroup(testUser, testGroup);
         groupRepository.joinGroup(testUser, testGroup.getGroupId());
 
         List<String> allMembersId = groupRepository.getMembersOfGroup(testGroup.getGroupId());
@@ -97,7 +107,7 @@ public class GroupServiceTest {
             testGroup.setGroupName("TEST_LEAVE_GROUP_NAME");
             testGroup.setGroupDesc("TEST_LEAVE_GROUP_DESC");
 
-            groupRepository.createGroup(testGroup);
+            groupRepository.createGroup(testUser, testGroup);
             groupRepository.joinGroup(testUser, testGroup.getGroupId());
             groupRepository.leaveGroup(testUser, testGroup.getGroupName());
 
@@ -120,7 +130,7 @@ public class GroupServiceTest {
         testGroup.setGroupName("TEST_DELETE_GROUP_NAME");
         testGroup.setGroupDesc("TEST_DELETE_GROUP_DESC");
 
-        groupRepository.createGroup(testGroup);
+        groupRepository.createGroup(testUser, testGroup);
         groupRepository.joinGroup(testUser, testGroup.getGroupId());
 
         groupRepository.deleteGroup(testGroup.getGroupName(), testUser);

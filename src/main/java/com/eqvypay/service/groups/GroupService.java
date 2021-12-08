@@ -2,8 +2,10 @@ package com.eqvypay.service.groups;
 
 import com.eqvypay.persistence.Group;
 import com.eqvypay.persistence.User;
+import com.eqvypay.service.activity.ActivityHelper;
 import com.eqvypay.service.database.DatabaseConnectionManagementService;
 import com.eqvypay.util.DtoUtils;
+import com.eqvypay.util.constants.Constants;
 import com.eqvypay.util.constants.DatabaseConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,7 +32,7 @@ public class GroupService implements GroupRepository {
     DtoUtils dtoUtils;
 
     @Override
-    public void createGroup(Group group) throws Exception {
+    public void createGroup(User user, Group group) throws Exception {
         if (!dtoUtils.tableExist(dcms, "Groups")) {
             dataManipulation.createTable();
         }
@@ -43,6 +45,8 @@ public class GroupService implements GroupRepository {
         int count = preparedStatement.executeUpdate();
         if (count > 0) {
             System.out.println("Group " + group.getGroupName() + " inserted to the database");
+         	ActivityHelper.addActivity(user.getUuid().toString(), String.format(Constants.createGroup,group.getGroupName()));
+
         }
     }
 
