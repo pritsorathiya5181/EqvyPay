@@ -1,5 +1,6 @@
 package com.eqvypay.service.profile;
 
+import com.eqvypay.persistence.IUser;
 import com.eqvypay.persistence.User;
 import com.eqvypay.service.database.DatabaseConnectionManagementService;
 import com.eqvypay.service.user.UserDataManipulation;
@@ -21,7 +22,7 @@ public class ProfileDataManipulation implements IProfileDataManipulation{
     private UserDataManipulation dataManipulation;
 
     @Override
-    public void getProfile(User user) throws Exception {
+    public void getProfile(IUser user) throws Exception {
         Connection connection = dcms.getConnection(Environment.DEV);
         user = dataManipulation.getByEmail(user.getEmail());
 

@@ -10,9 +10,17 @@ import java.util.UUID;
 import com.eqvypay.persistence.Activity;
 import com.eqvypay.persistence.Expense;
 import com.eqvypay.persistence.Group;
+import com.eqvypay.persistence.IExpense;
+import com.eqvypay.persistence.IGroup;
+import com.eqvypay.persistence.IPersonalActivity;
+import com.eqvypay.persistence.IUser;
 import com.eqvypay.persistence.PersonalActivity;
 import com.eqvypay.persistence.User;
 import com.eqvypay.service.database.DatabaseConnectionManagementService;
+import com.eqvypay.service.expense.ExpenseFactory;
+import com.eqvypay.service.groups.GroupFactory;
+import com.eqvypay.service.moneymanager.MoneyManagerFactory;
+import com.eqvypay.service.user.UserFactory;
 import com.eqvypay.util.constants.Environment;
 import com.eqvypay.util.constants.enums.ExpenseType;
 
@@ -58,8 +66,8 @@ public class DtoUtils {
 		return ids;
 
 	}
-    public static User getUserFromResultSet(ResultSet resultSet) throws SQLException {
-        User user = new User();
+    public static IUser getUserFromResultSet(ResultSet resultSet) throws SQLException {
+        IUser user = UserFactory.getInstance().getUser();
         while (resultSet.next()) {
             String id = resultSet.getString("uuid");
             String name = resultSet.getString("name");
@@ -77,9 +85,9 @@ public class DtoUtils {
         return user;
     }
 
-    public static List<Expense> getExpenseFromResultSet(ResultSet resultSet) throws Exception {
+    public static List<IExpense> getExpenseFromResultSet(ResultSet resultSet) throws Exception {
 
-        List<Expense> expenses = new ArrayList<>();
+        List<IExpense> expenses = new ArrayList<>();
         while (resultSet.next()) {
             String id = resultSet.getString("id");
             String targetUserId = resultSet.getString("targetUserId");
@@ -90,7 +98,7 @@ public class DtoUtils {
             String currencyType = resultSet.getString("currencyType");
             String sourceUserId = resultSet.getString("sourceUserId");
 
-            Expense expense = new Expense();
+            IExpense expense = ExpenseFactory.getInstance().getExpense();
             expense.setId(id);
             expense.setCurrencyType(currencyType);
             expense.setExpenseAmt(expenseAmt);
@@ -99,17 +107,16 @@ public class DtoUtils {
             expense.setSourceUserId(sourceUserId);
             expense.setTargetUserId(targetUserId);
             expense.setExpenseDesc(expenseDesc);
-
             expenses.add(expense);
         }
         return expenses;
     }
 
-    public static ArrayList<Group> getGroupsFromResultSet(ResultSet resultSet) throws SQLException {
-        ArrayList<Group> groups = new ArrayList<Group>();
-        Group group;
+    public static ArrayList<IGroup> getGroupsFromResultSet(ResultSet resultSet) throws SQLException {
+        ArrayList<IGroup> groups = new ArrayList<IGroup>();
+        IGroup group;
         while (resultSet.next()) {
-            group = new Group();
+            group = GroupFactory.getInstance().getGroup();
             String groupId = resultSet.getString("group_id");
             String groupName = resultSet.getString("group_name");
             String groupDesc = resultSet.getString("group_desc");
@@ -121,11 +128,11 @@ public class DtoUtils {
         return groups;
     }
 
-    public static ArrayList<PersonalActivity> getAllActivities(ResultSet resultSet) throws SQLException {
-        ArrayList<PersonalActivity> activities = new ArrayList<PersonalActivity>();
-        PersonalActivity activity;
+    public static ArrayList<IPersonalActivity> getAllActivities(ResultSet resultSet) throws SQLException {
+        ArrayList<IPersonalActivity> activities = new ArrayList<IPersonalActivity>();
+        IPersonalActivity activity;
         while (resultSet.next()) {
-            activity = new PersonalActivity();
+            activity = MoneyManagerFactory.getInstance().getPersonalActivity();
             String userId = resultSet.getString("userId");
             String amount = resultSet.getString("amount");
             String description = resultSet.getString("description");
@@ -142,8 +149,8 @@ public class DtoUtils {
         return activities;
     }
 
-    public static ArrayList<User> getAllFriendsFromResultSet(ResultSet resultSet) throws SQLException {
-        ArrayList<User> friends = new ArrayList<User>();
+    public static ArrayList<IUser> getAllFriendsFromResultSet(ResultSet resultSet) throws SQLException {
+        ArrayList<IUser> friends = new ArrayList<IUser>();
         User friend;
         while (resultSet.next()) {
             friend = new User();

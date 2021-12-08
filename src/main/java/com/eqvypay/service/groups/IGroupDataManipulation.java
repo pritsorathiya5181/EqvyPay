@@ -1,7 +1,7 @@
 package com.eqvypay.service.groups;
 
-import com.eqvypay.persistence.Group;
-import com.eqvypay.persistence.User;
+import com.eqvypay.persistence.IGroup;
+import com.eqvypay.persistence.IUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,9 +13,11 @@ public interface IGroupDataManipulation {
 
     public boolean tableExist(String tableName) throws Exception;
 
-    public List<Group> getAllGroups() throws Exception;
+    public List<IGroup> getAllGroups() throws Exception;
 
-    public List<String> getFriendsGroupIds(User user) throws Exception;
+    public List<String> getFriendsGroupIds(IUser user) throws Exception;
 
-	ArrayList<Group> getAllJoinedGroups(User user) throws Exception;
+	ArrayList<IGroup> getAllJoinedGroups(IUser user) throws Exception;
+
+	List<String> getMembersOfGroup(String groupId) throws Exception;
 }

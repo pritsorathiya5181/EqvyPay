@@ -5,7 +5,9 @@ import com.eqvypay.service.authentication.AuthenticationService;
 import com.eqvypay.service.database.DatabaseConnectionManagementService;
 import com.eqvypay.service.expense.ExpenseRepository;
 import com.eqvypay.service.moneymanager.MoneyManagerRepository;
+import com.eqvypay.service.user.IUserDataManipulation;
 import com.eqvypay.service.user.UserDataManipulation;
+import com.eqvypay.service.user.UserFactory;
 import com.eqvypay.util.validator.AuthenticationValidator;
 import com.eqvypay.web.UserMenu;
 
@@ -20,15 +22,13 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.core.env.Environment;
 
+import com.eqvypay.persistence.IUser;
 import com.eqvypay.persistence.User;
 
 @SpringBootApplication(scanBasePackages = {"com.eqvypay.service", "com.eqvypay.web"})
 public class EqvyPayApplication implements CommandLineRunner {
     @Autowired
     private Environment env;
-
-    @Autowired
-    private UserRepository userRepository;
 
     @Autowired
     private UserMenu userMenu;
@@ -43,7 +43,7 @@ public class EqvyPayApplication implements CommandLineRunner {
     private DatabaseConnectionManagementService dcms;
 
     @Autowired
-    private UserDataManipulation dataManipulation;
+    private UserFactory userFactory;
 
     public static void main(String[] args) {
         SpringApplication app = new SpringApplication(EqvyPayApplication.class);
@@ -53,7 +53,8 @@ public class EqvyPayApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-
+    	IUserDataManipulation  userDataManipulaion = userFactory.getUserDataManipuation();
+    	UserRepository userRepository = userFactory.getUserRepository();
         boolean test = Arrays.stream(env.getActiveProfiles()).anyMatch(profile -> profile.equals("test"));
         if (!test) {
             boolean loggedIn = false;
@@ -70,7 +71,7 @@ public class EqvyPayApplication implements CommandLineRunner {
 
                 String option = scanner.next();
 //                Integer option = scanner.nextInt();
-                User user = null;
+                IUser user = null;
                 switch (option) {
                     case "0":
                         System.exit(0);
@@ -95,7 +96,7 @@ public class EqvyPayApplication implements CommandLineRunner {
                         String confirmPassword = AuthenticationValidator.getAndValidatePassword(scanner);
                         confirmPassword = AuthenticationValidator.getAndValidatePasswordAndConfirmPassword(scanner, registrationPassword, confirmPassword);
                         String securityAnswer = AuthenticationValidator.getAndValidateSecurityAnswer(scanner);
-                        User newUser = new User();
+                        IUser newUser = UserFactory.getInstance().getUser();
                         newUser.setName(name);
                         newUser.setEmail(registrationEmail);
                         newUser.setContact(contact);
@@ -106,7 +107,7 @@ public class EqvyPayApplication implements CommandLineRunner {
                         break;
                     case "3":
                         String userEmail = AuthenticationValidator.getAndValidateEmail(scanner);
-                        User oldUser = userRepository.getByEmail(userEmail);
+                        IUser oldUser = userRepository.getByEmail(userEmail);
                         System.out.println("What is your first school name?");
                         String providedSecurityAnswer = scanner.next();
                         if (providedSecurityAnswer.equals(oldUser.getSecurityAnswer())) {
@@ -119,7 +120,7 @@ public class EqvyPayApplication implements CommandLineRunner {
                             System.out.println("New: " + newPassword);
                             System.out.println("Confirmed: " + finalConfirmNewPassword);
                             if (newPassword.equals(finalConfirmNewPassword)) {
-                                User updatedUser = oldUser;
+                                IUser updatedUser = oldUser;
                                 updatedUser.setPassword(AuthenticationService.getHashedPassword(newPassword));
                                 userRepository.delete(oldUser.getUuid());
                                 userRepository.save(updatedUser);

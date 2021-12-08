@@ -1,17 +1,17 @@
 package com.eqvypay.service.user;
 
 import java.sql.Connection;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.UUID;
 
 import com.eqvypay.service.database.DatabaseConnectionManagementService;
-import com.eqvypay.service.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.eqvypay.persistence.User;
+import com.eqvypay.persistence.IUser;
 import com.eqvypay.util.DtoUtils;
 import com.eqvypay.util.constants.DatabaseConstants;
 import com.eqvypay.util.constants.Environment;
@@ -23,7 +23,7 @@ public class UserService implements UserRepository {
 	private DatabaseConnectionManagementService dcms;
 
 	@Override
-	public User getUserByEmailAndPassword(String email, String password) throws Exception {
+	public IUser getUserByEmailAndPassword(String email, String password) throws Exception {
 		Connection connection = dcms.getConnection(Environment.DEV);
 		Statement statement = connection.createStatement();
 		ResultSet resultSet = statement.executeQuery("SELECT * from Users WHERE email ="+"'"+email+"'"+"AND password="+"'"+password+"'");
@@ -31,14 +31,14 @@ public class UserService implements UserRepository {
 	}
 
 	@Override
-	public User getByEmail(String email) throws Exception {
+	public IUser getByEmail(String email) throws Exception {
 		Connection connection = dcms.getConnection(Environment.DEV);
 		Statement statement = connection.createStatement();
 		ResultSet resultSet = statement.executeQuery("SELECT * from Users WHERE email ="+"'"+email+"'");
 		return DtoUtils.getUserFromResultSet(resultSet);
 	}
 	@Override
-	public User getByUuid(UUID uuid) throws Exception {
+	public IUser getByUuid(UUID uuid) throws Exception {
 		Connection connection = dcms.getConnection(Environment.DEV);
 		Statement statement = connection.createStatement();
 		ResultSet resultSet = statement.executeQuery("SELECT * from Users WHERE uuid ="+"'"+uuid.toString());
@@ -46,7 +46,7 @@ public class UserService implements UserRepository {
 	}
 
 	@Override
-	public void save(User user) throws Exception {
+	public void save(IUser user) throws Exception {
 		Connection connection = dcms.getConnection(Environment.DEV);
 		PreparedStatement preparedStatement = connection.prepareStatement(DatabaseConstants.INSERT_USER);
 		preparedStatement.setString(1, user.getUuid().toString());

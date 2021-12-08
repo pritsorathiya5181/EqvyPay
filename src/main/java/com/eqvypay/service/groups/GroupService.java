@@ -1,6 +1,8 @@
 package com.eqvypay.service.groups;
 
 import com.eqvypay.persistence.Group;
+import com.eqvypay.persistence.IGroup;
+import com.eqvypay.persistence.IUser;
 import com.eqvypay.persistence.User;
 import com.eqvypay.service.activity.ActivityHelper;
 import com.eqvypay.service.database.DatabaseConnectionManagementService;
@@ -24,13 +26,16 @@ import java.util.Scanner;
 public class GroupService implements GroupRepository {
 
     @Autowired
-    GroupDataManipulation dataManipulation;
+    private GroupFactory groupFactory;
 
     @Autowired
     private DatabaseConnectionManagementService dcms;
-
+    
+   
     @Override
-    public void createGroup(User user,Group group) throws Exception {
+    public void createGroup(IUser user,IGroup group) throws Exception {
+    	IGroupDataManipulation dataManipulation = groupFactory.getGroupDataManipulation();
+
         Connection connection = dcms.getConnection(Environment.DEV);
         PreparedStatement preparedStatement = connection.prepareStatement(DatabaseConstants.INSERT_GROUP);
         preparedStatement.setString(1, group.getGroupId());
@@ -47,7 +52,9 @@ public class GroupService implements GroupRepository {
 
     
     @Override
-    public void joinGroup(User user, String inputId) throws Exception {
+    public void joinGroup(IUser user, String inputId) throws Exception {
+    	IGroupDataManipulation dataManipulation = groupFactory.getGroupDataManipulation();
+
         Connection connection = dcms.getConnection(Environment.DEV);
         Statement stmt = connection.createStatement();
         ResultSet rs = stmt.executeQuery("SELECT * FROM Groups WHERE group_id ='"+inputId+"'");
@@ -63,7 +70,7 @@ public class GroupService implements GroupRepository {
     }
 
     @Override
-    public void leaveGroup(User user) throws Exception {
+    public void leaveGroup(IUser user) throws Exception {
         Connection connection = dcms.getConnection(Environment.DEV);
         Statement stmt = connection.createStatement();
         ResultSet rs = stmt.executeQuery("SELECT * FROM GroupMembers WHERE uuid ='" + user.getUuid() + "'");
@@ -97,7 +104,7 @@ public class GroupService implements GroupRepository {
     }
 
     @Override
-    public void deleteGroup(String groupName, User user) throws Exception {
+    public void deleteGroup(String groupName, IUser user) throws Exception {
         Connection connection = dcms.getConnection(Environment.DEV);
         Statement stmt = connection.createStatement();
         ResultSet rs = stmt.executeQuery("SELECT group_id FROM Groups WHERE group_name ='" + groupName + "'");

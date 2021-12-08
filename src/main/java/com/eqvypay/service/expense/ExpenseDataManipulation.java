@@ -1,6 +1,7 @@
 package com.eqvypay.service.expense;
 
 import com.eqvypay.persistence.Expense;
+import com.eqvypay.persistence.IExpense;
 import com.eqvypay.service.database.DatabaseConnectionManagementService;
 import com.eqvypay.util.constants.DatabaseConstants;
 import com.eqvypay.util.constants.Environment;
@@ -37,7 +38,7 @@ public class ExpenseDataManipulation implements IExpenseDataManipulation {
     }
 
     @Override
-    public Expense save(Expense expense) throws Exception {
+    public IExpense save(IExpense expense) throws Exception {
         System.out.println("trying to save expense");
         expense.setId(UUID.randomUUID().toString());
         return expense;
@@ -60,9 +61,9 @@ public class ExpenseDataManipulation implements IExpenseDataManipulation {
     }
 
     @Override
-    public boolean saveAll(List<Expense> expenses) throws Exception {
+    public boolean saveAll(List<IExpense> expenses) throws Exception {
         Connection connection = dcms.getConnection(Environment.DEV);
-        for (Expense expense : expenses) {
+        for (IExpense expense : expenses) {
             PreparedStatement preparedStatement = connection.prepareStatement(DatabaseConstants.INSERT_EXPENSE);
             preparedStatement.setString(1, expense.getId());
             preparedStatement.setString(2, expense.getSourceUserId());

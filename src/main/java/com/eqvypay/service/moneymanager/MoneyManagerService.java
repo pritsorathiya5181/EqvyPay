@@ -1,6 +1,7 @@
 package com.eqvypay.service.moneymanager;
 
 import com.eqvypay.persistence.*;
+
 import com.eqvypay.service.database.DatabaseConnectionManagementService;
 import com.eqvypay.util.DtoUtils;
 import com.eqvypay.util.constants.DatabaseConstants;
@@ -21,7 +22,7 @@ public class MoneyManagerService implements MoneyManagerRepository {
     private DatabaseConnectionManagementService dcms;
 
     @Override
-    public void addIncomeExpense(PersonalActivity activity) throws Exception {
+    public void addIncomeExpense(IPersonalActivity activity) throws Exception {
         Connection connection = dcms.getConnection(Environment.DEV);
         PreparedStatement preparedStatement = connection.prepareStatement(DatabaseConstants.INSERT_PERSONAL_ACTIVITY);
 
@@ -37,7 +38,7 @@ public class MoneyManagerService implements MoneyManagerRepository {
     }
 
     @Override
-    public ArrayList<PersonalActivity> getActivities(String userId) throws Exception {
+    public ArrayList<IPersonalActivity> getActivities(String userId) throws Exception {
         Connection connection = dcms.getConnection(Environment.DEV);
         Statement statement = connection.createStatement();
         ResultSet resultSet = statement.executeQuery("SELECT * from PersonalActivities WHERE userId ='" + userId + "'");

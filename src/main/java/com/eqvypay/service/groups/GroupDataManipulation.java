@@ -1,6 +1,7 @@
 package com.eqvypay.service.groups;
 
-import com.eqvypay.persistence.Group;
+import com.eqvypay.persistence.IGroup;
+import com.eqvypay.persistence.IUser;
 import com.eqvypay.persistence.User;
 import com.eqvypay.service.database.DatabaseConnectionManagementService;
 import com.eqvypay.util.DtoUtils;
@@ -62,22 +63,21 @@ public class GroupDataManipulation implements IGroupDataManipulation {
     }
 
     @Override
-    public List<Group> getAllGroups() throws Exception {
-        List<Group> groups = new ArrayList<>();
+    public List<IGroup> getAllGroups() throws Exception {
+        List<IGroup> groups = new ArrayList<>();
         Connection connection = dcms.getConnection(Environment.DEV);
         Statement stmt = connection.createStatement();
         ResultSet rs = stmt.executeQuery("Select group_id, group_name from Groups");
         while(rs.next()) {
-            Group group = new Group();
-
+            IGroup group = GroupFactory.getInstance().getGroup();
             group.setGroupId(rs.getString("group_id"));
             group.setGroupName(rs.getString("group_name"));
-
             groups.add(group);
         }
         return groups;
     }
     
+    @Override
     public List<String> getMembersOfGroup(String groupId) throws Exception {
     	List<String> members = new ArrayList<String>();
     	Connection connection = dcms.getConnection(Environment.DEV);
@@ -90,7 +90,7 @@ public class GroupDataManipulation implements IGroupDataManipulation {
     }
 
     @Override
-    public ArrayList<Group> getAllJoinedGroups(User user) throws Exception {
+    public ArrayList<IGroup> getAllJoinedGroups(IUser user) throws Exception {
         Connection connection = dcms.getConnection(Environment.DEV);
         Statement statement = connection.createStatement();
         String query = "SELECT * FROM Groups INNER JOIN GroupMembers on Groups.group_id = GroupMembers.group_id where uuid = '" + user.getUuid().toString() + "'";
@@ -99,7 +99,7 @@ public class GroupDataManipulation implements IGroupDataManipulation {
     }
 
     @Override
-    public List<String> getFriendsGroupIds(User user) throws Exception {
+    public List<String> getFriendsGroupIds(IUser user) throws Exception {
 
         List<String> friends_group_Id = new ArrayList<>();
 

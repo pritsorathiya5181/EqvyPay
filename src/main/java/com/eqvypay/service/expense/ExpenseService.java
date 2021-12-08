@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.List;
 import com.eqvypay.persistence.Expense;
+import com.eqvypay.persistence.IExpense;
 import com.eqvypay.service.database.DatabaseConnectionManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,7 +20,7 @@ public class ExpenseService implements ExpenseRepository {
     private DatabaseConnectionManagementService dcms;
 
     @Override
-    public List<Expense> getExpensesByUserId(String userId) throws Exception {
+    public List<IExpense> getExpensesByUserId(String userId) throws Exception {
         Connection connection = dcms.getConnection(Environment.DEV);
         Statement statement = connection.createStatement();
         ResultSet rs = statement.executeQuery("SELECT * from Expenses where sourceUserId = '" + userId + "'"
@@ -28,7 +29,7 @@ public class ExpenseService implements ExpenseRepository {
     }
 
     @Override
-    public boolean settleExpense(Expense expense) throws Exception {
+    public boolean settleExpense(IExpense expense) throws Exception {
         Connection connection = dcms.getConnection(Environment.DEV);
         Statement statement = connection.createStatement();
         int count = statement.executeUpdate("DELETE from Expenses where id = '" + expense.getId() + "'");

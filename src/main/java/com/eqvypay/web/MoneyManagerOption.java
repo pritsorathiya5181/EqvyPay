@@ -1,8 +1,12 @@
 package com.eqvypay.web;
 
+import com.eqvypay.persistence.IPersonalActivity;
+import com.eqvypay.persistence.IUser;
 import com.eqvypay.persistence.PersonalActivity;
 import com.eqvypay.persistence.User;
+import com.eqvypay.service.moneymanager.IMoneyManagerDataManipulation;
 import com.eqvypay.service.moneymanager.MoneyManagerDataManipulation;
+import com.eqvypay.service.moneymanager.MoneyManagerFactory;
 import com.eqvypay.service.moneymanager.MoneyManagerRepository;
 import com.eqvypay.util.formatter.NumberFormatUsingFormatter;
 import com.eqvypay.util.formatter.NumberFormatter;
@@ -18,10 +22,14 @@ import java.util.Scanner;
 @Service
 public class MoneyManagerOption {
 
-    @Autowired
-    MoneyManagerDataManipulation dataManipulation;
+	@Autowired
+	private MoneyManagerFactory moneyManagerFactory;
 
-    public void handleOption(User user, MoneyManagerRepository moneyManagerRepository) throws Exception {
+    public void handleOption(IUser user) throws Exception {
+    	
+    	MoneyManagerRepository moneyManagerRepository = moneyManagerFactory.getMoneyManagerRepository();
+    	IMoneyManagerDataManipulation dataManipulation = moneyManagerFactory.getManagerDataManipulation();
+    	
         Scanner sc = new Scanner(System.in);
 
         while (true) {
@@ -39,7 +47,7 @@ public class MoneyManagerOption {
                 break;
             }
             DateValidator validator = new DateValidatorUsingDateFormat("MM/dd/yyyy");
-            PersonalActivity newActivity;
+            IPersonalActivity newActivity;
 
             switch (option) {
                 case "1":
@@ -55,7 +63,7 @@ public class MoneyManagerOption {
                         break;
                     }
 
-                    newActivity = new PersonalActivity();
+                    newActivity = MoneyManagerFactory.getInstance().getPersonalActivity();
 
                     newActivity.setUserId(user.getUuid().toString());
                     newActivity.setAmount(incomeValue);
@@ -109,7 +117,7 @@ public class MoneyManagerOption {
                         String month = sc.nextLine();
 
                         int monthNum = validator.getMonth(month);
-                        ArrayList<PersonalActivity> activities = moneyManagerRepository.getActivities(user.getUuid().toString());
+                        ArrayList<IPersonalActivity> activities = moneyManagerRepository.getActivities(user.getUuid().toString());
                         float totalIncome = 0;
                         float totalExpenditure = 0;
                         int minExpenditureIndex = -1;
@@ -119,7 +127,7 @@ public class MoneyManagerOption {
 
                         if (monthNum > 0) {
                             for (int i = 0; i < activities.size(); i++) {
-                                PersonalActivity activity = activities.get(i);
+                                IPersonalActivity activity = activities.get(i);
 
                                 if (monthNum == Integer.parseInt(activity.getDate().split("/")[0])) {
                                     if (!activityFound) {
@@ -169,7 +177,7 @@ public class MoneyManagerOption {
                         System.out.println("Enter a category");
                         sc.nextLine();
                         String category = sc.nextLine();
-                        ArrayList<PersonalActivity> activities = moneyManagerRepository.getActivities(user.getUuid().toString());
+                        ArrayList<IPersonalActivity> activities = moneyManagerRepository.getActivities(user.getUuid().toString());
 
                         float totalExpenditure = 0;
                         int minExpenditureIndex = 0;
@@ -179,7 +187,7 @@ public class MoneyManagerOption {
                         boolean hasMaxExp = false;
 
                         for (int i = 0; i < activities.size(); i++) {
-                            PersonalActivity activity = activities.get(i);
+                            IPersonalActivity activity = activities.get(i);
 
                             if (category.equals(activity.getExpenseCategory())) {
                                 if (!activityFound) {

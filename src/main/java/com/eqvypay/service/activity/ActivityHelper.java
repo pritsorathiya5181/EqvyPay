@@ -21,9 +21,6 @@ public class ActivityHelper {
 	
 	public static void addActivity(String userId,String message) throws Exception {
 		Activity activity = new Activity();
-		activity.setUuid(UUID.randomUUID().toString());
-		activity.setMessage(message);
-		activity.setUserId(userId);
 		activityRepository.addActivity(activity);
 	}
 	

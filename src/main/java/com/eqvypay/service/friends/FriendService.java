@@ -1,6 +1,7 @@
 package com.eqvypay.service.friends;
 
 import java.sql.Connection;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -8,12 +9,13 @@ import java.util.UUID;
 
 import com.eqvypay.service.activity.ActivityHelper;
 import com.eqvypay.service.database.DatabaseConnectionManagementService;
-import com.eqvypay.service.user.UserDataManipulation;
+import com.eqvypay.service.user.IUserDataManipulation;
+import com.eqvypay.service.user.UserFactory;
 import com.eqvypay.util.DtoUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.eqvypay.persistence.User;
+import com.eqvypay.persistence.IUser;
 import com.eqvypay.util.constants.Constants;
 import com.eqvypay.util.constants.Environment;
 
@@ -24,13 +26,14 @@ public class FriendService implements FriendRepository {
     private DatabaseConnectionManagementService dcms;
 
     @Autowired
-    private UserDataManipulation userDataManipulation;
-
+    private UserFactory userFactory;
+    
     @Override
-    public void addFriendByEmail(User user, String email) throws Exception {
+    public void addFriendByEmail(IUser user, String email) throws Exception {
+    	IUserDataManipulation userDataManipulation = userFactory.getUserDataManipuation();
         Connection connection = dcms.getConnection(Environment.DEV);
         ResultSet result = null;
-        User friend = null;
+        IUser friend = null;
         friend = userDataManipulation.getByEmail(email);
 
         if (friend.getEmail() == null) {
@@ -48,7 +51,9 @@ public class FriendService implements FriendRepository {
 
 
     @Override
-    public void addFriendByContact(User user, String contact) throws Exception {
+    public void addFriendByContact(IUser user, String contact) throws Exception {
+    	IUserDataManipulation userDataManipulation = userFactory.getUserDataManipuation();
+        
         Connection connection = dcms.getConnection(Environment.DEV);
         ResultSet result = null;
         try {
@@ -60,7 +65,7 @@ public class FriendService implements FriendRepository {
         }
 
         String friendUuid = null;
-        User friend = null;
+        IUser friend = null;
         
         int count = DtoUtils.getCountOfRecords(result);
         PreparedStatement selectQuery = connection.prepareStatement("select * from Users where contact = ?");
@@ -92,7 +97,8 @@ public class FriendService implements FriendRepository {
     }
 
     @Override
-    public void removeFriendByEmail(User user, String email) throws Exception {
+    public void removeFriendByEmail(IUser user, String email) throws Exception {
+    	IUserDataManipulation userDataManipulation = userFactory.getUserDataManipuation();
         Connection connection = dcms.getConnection(Environment.DEV);
         ResultSet result = null;
         try {
@@ -104,7 +110,7 @@ public class FriendService implements FriendRepository {
         }
 
         String friendUuid = null;
-        User friend = null;
+        IUser friend = null;
         while (result.next()) {
             friendUuid = result.getString("uuid");
             friend = userDataManipulation.getByUuid(UUID.fromString(friendUuid));
@@ -119,7 +125,8 @@ public class FriendService implements FriendRepository {
 
 
     @Override
-    public void removeFriendByContact(User user, String contact) throws Exception {
+    public void removeFriendByContact(IUser user, String contact) throws Exception {
+    	IUserDataManipulation userDataManipulation = userFactory.getUserDataManipuation();
         Connection connection = dcms.getConnection(Environment.DEV);
         ResultSet result = null;
         try {
@@ -131,7 +138,7 @@ public class FriendService implements FriendRepository {
         }
 
         String friendUuid = null;
-        User friend = null;
+        IUser friend = null;
         while (result.next()) {
             friendUuid = result.getString("uuid");
             friend = userDataManipulation.getByUuid(UUID.fromString(friendUuid));

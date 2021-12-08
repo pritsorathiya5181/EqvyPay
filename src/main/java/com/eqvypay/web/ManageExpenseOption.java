@@ -1,13 +1,16 @@
 package com.eqvypay.web;
 
-import com.eqvypay.persistence.Expense;
-import com.eqvypay.persistence.Group;
+import com.eqvypay.persistence.IExpense;
+import com.eqvypay.persistence.IGroup;
+import com.eqvypay.persistence.IUser;
 import com.eqvypay.persistence.User;
 import com.eqvypay.service.activity.ActivityHelper;
-import com.eqvypay.service.expense.ExpenseDataManipulation;
-import com.eqvypay.service.groups.GroupDataManipulation;
+import com.eqvypay.service.expense.ExpenseFactory;
+import com.eqvypay.service.groups.GroupFactory;
 import com.eqvypay.service.expense.ExpenseRepository;
+import com.eqvypay.service.expense.IExpenseDataManipulation;
 import com.eqvypay.service.groups.GroupRepository;
+import com.eqvypay.service.groups.IGroupDataManipulation;
 import com.eqvypay.service.user.UserDataManipulation;
 import com.eqvypay.util.constants.Constants;
 import com.eqvypay.util.constants.enums.ExpenseType;
@@ -26,20 +29,22 @@ import java.util.stream.Collectors;
 public class ManageExpenseOption {
 
     @Autowired
-    ExpenseDataManipulation dataManipulation;
-
-    @Autowired
     UserDataManipulation userDataManipulation;
 
     @Autowired
-    GroupDataManipulation groupDataManipulation;
-
+    GroupFactory groupFactory;
+    
     @Autowired
-    GroupRepository groupRepository;
+    ExpenseFactory expenseFactory;
 
-    public void options(User user, ExpenseRepository expenseRepository) throws Exception {
+    public void options(IUser user) throws Exception {
 
-        Scanner sc = new Scanner(System.in);
+    	IExpenseDataManipulation dataManipulation = expenseFactory.getExpenseDataManipulation();
+    	ExpenseRepository expenseRepository = expenseFactory.getExpenseRepository();
+    	IGroupDataManipulation groupDataManipulation = groupFactory.getGroupDataManipulation();
+    	GroupRepository groupRepository = groupFactory.getGroupRepository();
+    	
+    	Scanner sc = new Scanner(System.in);
 
         while (true) {
             System.out.println("----------------------------");
@@ -75,7 +80,7 @@ public class ManageExpenseOption {
                     System.out.println("group option " + groupOption);
                     if (groupOption.equals("1")) {
                         System.out.println("List of available groups");
-                        ArrayList<Group> groups = groupDataManipulation.getAllJoinedGroups(user);
+                        ArrayList<IGroup> groups = groupDataManipulation.getAllJoinedGroups(user);
 
                         if (groups.size() > 0) {
                             for (int i = 0; i < groups.size(); i++) {
@@ -93,9 +98,9 @@ public class ManageExpenseOption {
                             sc.nextLine();
                             String currencyType = sc.nextLine();
 
-                            for (Group group : groups) {
+                            for (IGroup group : groups) {
                                 if (group.getGroupName().equals(groupNameInput)) {
-                                    Expense newExpense = new Expense();
+                                    IExpense newExpense = expenseFactory.getExpense();
                                     newExpense.setGroupId(group.getGroupId());
                                     newExpense.setExpenseDesc(expenseDesc);
                                     newExpense.setExpenseAmt(expenseAmt);
@@ -103,13 +108,12 @@ public class ManageExpenseOption {
                                     newExpense.setExpenseType(ExpenseType.GROUP);
                                     newExpense.setTargetUserId(user.getUuid().toString());
 
-
-                                    boolean isTableExists = dataManipulation.tableExist("Expenses");
+                                    boolean isTableExists = expenseFactory.getExpenseDataManipulation().tableExist("Expenses");
 
                                     if (!isTableExists) {
                                         dataManipulation.createTable();
                                     }
-                                    Expense expense = dataManipulation.save(newExpense);
+                                    IExpense expense = dataManipulation.save(newExpense);
                                     System.out.println("Expense target user is " + expense.getTargetUserId());
                                     System.out.println("Expense " + expense.getExpenseAmt());
 
@@ -118,7 +122,7 @@ public class ManageExpenseOption {
                                     int divideType = sc.nextInt();
 
                                     if (divideType == 1) {
-                                        List<Expense> expenses = new ArrayList<Expense>();
+                                        List<IExpense> expenses = new ArrayList<IExpense>();
                                         List<String> members = groupDataManipulation.getMembersOfGroup(newExpense.getGroupId());
                                         if (members.size() <= 1) {
                                             System.out.println("There are no members in the group, add them first");
@@ -129,8 +133,8 @@ public class ManageExpenseOption {
                                         System.out.println("PerShare " + share);
                                         for (String member : members) {
                                             if (!member.equalsIgnoreCase(expense.getTargetUserId())) {
-                                            	User groupMember = userDataManipulation.getByUuid(UUID.fromString(member));
-                                                Expense memberExpense = new Expense();
+                                            	IUser groupMember = userDataManipulation.getByUuid(UUID.fromString(member));
+                                                IExpense memberExpense = expenseFactory.getExpense();
                                                 memberExpense.setId(UUID.randomUUID().toString());
                                                 memberExpense.setCurrencyType(expense.getCurrencyType());
                                                 memberExpense.setExpenseAmt(share);
@@ -147,13 +151,13 @@ public class ManageExpenseOption {
                                         dataManipulation.saveAll(expenses);
                                         System.out.println("option 1 select");
                                     } else if (divideType == 2) {
-                                        List<Expense> expenses = new ArrayList<Expense>();
+                                        List<IExpense> expenses = new ArrayList<IExpense>();
                                         List<String> members = groupDataManipulation.getMembersOfGroup(newExpense.getGroupId());
 
                                         for (String member : members) {
                                             if (!member.equalsIgnoreCase(expense.getTargetUserId())) {
-                                               	User groupMember = userDataManipulation.getByUuid(UUID.fromString(member));
-                                                Expense memberExpense = new Expense();
+                                               	IUser groupMember = userDataManipulation.getByUuid(UUID.fromString(member));
+                                                IExpense memberExpense = expenseFactory.getExpense();
                                                 memberExpense.setId(UUID.randomUUID().toString());
                                                 memberExpense.setCurrencyType(expense.getCurrencyType());
                                                 System.out.println("Please add share of user: " + member);
@@ -180,7 +184,7 @@ public class ManageExpenseOption {
                             System.out.println("You're not join in any group");
                         }
                     } else if (groupOption.equals("2")) {
-                        Group group = new Group();
+                        IGroup group = groupFactory.getGroup();
                         System.out.println("Enter group name");
                         sc.nextLine();
                         String groupName = sc.nextLine();
@@ -203,7 +207,7 @@ public class ManageExpenseOption {
                     }
 
                 } else if (payOption.equals("2")) {
-                    List<Expense> friendExpenseList = new ArrayList<>();
+                    List<IExpense> friendExpenseList = new ArrayList<>();
                     String groupNameInput = sc.nextLine();
                     System.out.println("Enter expense description: ");
                     String expenseDesc = sc.nextLine();
@@ -214,25 +218,25 @@ public class ManageExpenseOption {
                     String currencyType = sc.nextLine();
                     System.out.println("Friend option selected");
 
-                    List<User> friends = userDataManipulation.findAllFriends(user.getUuid().toString());
+                    List<IUser> friends = userDataManipulation.findAllFriends(user.getUuid().toString());
                     int count = 1;
                     System.out.printf("%s%n", "Your added friends list is below");
                     System.out.format("%-15s%-15s%-15s%n", "sr.no", "name", "email");
-                    for (User friend : friends) {
+                    for (IUser friend : friends) {
                         System.out.format("%-15s%-15s%-15s%n", count, friend.getName(), friend.getEmail());
                     }
                     System.out.println("Enter friend index numbers with spaces \n e.g. 1 2 (for friend 1 and 2)");
                     String requestedFriends[] = sc.next().split(" ");
                     List<Integer> selectedFriends = Arrays.stream(requestedFriends).map(p -> Integer.valueOf(p) - 1).collect(Collectors.toList());
-                    List<User> selectedFriendIds = selectedFriends.stream().map(p -> friends.get(p)).collect(Collectors.toList());
+                    List<IUser> selectedFriendIds = selectedFriends.stream().map(p -> friends.get(p)).collect(Collectors.toList());
 
                     System.out.println("1. Split Equally");
                     System.out.println("2. Split Unequally");
                     int choice = sc.nextInt();
                     if (choice == 1) {
                         float share = expenseAmt / selectedFriendIds.size();
-                        for (User friend : selectedFriendIds) {
-                            Expense expense = new Expense();
+                        for (IUser friend : selectedFriendIds) {
+                            IExpense expense = expenseFactory.getExpense();
                             expense.setCurrencyType(currencyType);
                             expense.setExpenseAmt(share);
                             expense.setExpenseDesc(expenseDesc);
@@ -246,8 +250,8 @@ public class ManageExpenseOption {
                         }
                         dataManipulation.saveAll(friendExpenseList);
                     } else {
-                        for (User friend : selectedFriendIds) {
-                            Expense expense = new Expense();
+                        for (IUser friend : selectedFriendIds) {
+                            IExpense expense = expenseFactory.getExpense();
                             expense.setCurrencyType(currencyType);
                             System.out.println("Enter share for friend :" + friend.getEmail());
                             float share = sc.nextFloat();
@@ -266,15 +270,14 @@ public class ManageExpenseOption {
                 }
             } else if (option.equals("2")) {
                 System.out.println("Your outstandings are");
-                ExpenseRepository expenseRepository2 = (ExpenseRepository) expenseRepository;
-                List<Expense> expenses = expenseRepository2.getExpensesByUserId(user.getUuid().toString());
-                for (Expense expense : expenses) {
+                List<IExpense> expenses = expenseRepository.getExpensesByUserId(user.getUuid().toString());
+                for (IExpense expense : expenses) {
                     Currency currency = Currency.getInstance(expense.getCurrencyType().toUpperCase());
                     if (expense.getSourceUserId().equals(user.getUuid().toString())) {
-                        User targetUser = userDataManipulation.getByUuid(UUID.fromString(expense.getTargetUserId()));
+                        IUser targetUser = userDataManipulation.getByUuid(UUID.fromString(expense.getTargetUserId()));
                         System.out.format(Constants.settleSource, targetUser.getName().concat("( " + targetUser.getEmail() + " )"), String.valueOf(expense.getExpenseAmt()).concat(currency.getSymbol()));
                     } else {
-                        User sourceUser = userDataManipulation.getByUuid(UUID.fromString(expense.getSourceUserId()));
+                        IUser sourceUser = userDataManipulation.getByUuid(UUID.fromString(expense.getSourceUserId()));
                         System.out.format(Constants.settleTarget, sourceUser.getName().concat("( " + sourceUser.getEmail() + " )"), String.valueOf(expense.getExpenseAmt()).concat(currency.getSymbol()));
                     }
                     System.out.println();
@@ -286,10 +289,10 @@ public class ManageExpenseOption {
                     String[] settlements = settlementString.split(" ");
                     List<Integer> settlementIndexes = Arrays.stream(settlements).map(p -> Integer.valueOf(p) - 1).collect(Collectors.toList());
                     for (int i = 0; i < settlementIndexes.size(); i++) {
-                        Expense expenseToBeSettled = expenses.get(i);
-                        User targetUser = userDataManipulation.getByUuid(UUID.fromString( expenseToBeSettled.getTargetUserId()));
+                        IExpense expenseToBeSettled = expenses.get(i);
+                        IUser targetUser = userDataManipulation.getByUuid(UUID.fromString( expenseToBeSettled.getTargetUserId()));
                         Currency currency = Currency.getInstance(expenseToBeSettled.getCurrencyType().toUpperCase());
-                        boolean settled = expenseRepository2.settleExpense(expenseToBeSettled);
+                        boolean settled = expenseRepository.settleExpense(expenseToBeSettled);
                         if (settled) {
                             System.out.println("Expense of :" + expenseToBeSettled.getExpenseAmt() + " settled!");
                             ActivityHelper.addActivity(user.getUuid().toString(), Constants.expenseSettlement.formatted(user.getName(),targetUser.getName(),expenseToBeSettled.getExpenseAmt()));

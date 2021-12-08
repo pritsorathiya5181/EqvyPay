@@ -1,9 +1,14 @@
 package com.eqvypay.web;
 
 import com.eqvypay.persistence.Group;
+import com.eqvypay.persistence.IGroup;
+import com.eqvypay.persistence.IUser;
 import com.eqvypay.persistence.User;
 import com.eqvypay.service.groups.GroupDataManipulation;
+import com.eqvypay.service.groups.GroupFactory;
 import com.eqvypay.service.groups.GroupRepository;
+import com.eqvypay.service.groups.IGroupDataManipulation;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,10 +19,13 @@ import java.util.Scanner;
 public class ManageGroupOption {
 
     @Autowired
-    GroupDataManipulation dataManipulation;
+    private GroupFactory groupFactory;
 
-    public void groupOptions(User user, GroupRepository groupRepository) throws Exception{
+    public void groupOptions(IUser user) throws Exception{
 
+    	IGroupDataManipulation groupDataManipulation = groupFactory.getGroupDataManipulation();
+    	GroupRepository groupRepository = groupFactory.getGroupRepository();
+    	
         Scanner sc = new Scanner(System.in);
         String option;
 
@@ -39,7 +47,7 @@ public class ManageGroupOption {
             }
             switch (option){
                 case "1":
-                    Group group = new Group();
+                    IGroup group = groupFactory.getGroup();
                     System.out.println("Enter group name");
                     sc.nextLine();
                     String groupName = sc.nextLine();
@@ -47,8 +55,8 @@ public class ManageGroupOption {
                     System.out.println("Enter group description");
                     group.setGroupDesc(sc.nextLine());
                     try{
-                        if (!dataManipulation.tableExist("Groups")) {
-                            dataManipulation.createTable();
+                        if (!groupDataManipulation.tableExist("Groups")) {
+                            groupDataManipulation.createTable();
                         }
                         //INSERT ROW TO GROUPS TABLE
                         groupRepository.createGroup(user,group);
@@ -61,11 +69,11 @@ public class ManageGroupOption {
 
                 case "2":
                     try {
-                        List<String> groupIds = dataManipulation.getFriendsGroupIds(user);
-                        List<Group> all_groups = dataManipulation.getAllGroups();
+                        List<String> groupIds = groupDataManipulation.getFriendsGroupIds(user);
+                        List<IGroup> all_groups = groupDataManipulation.getAllGroups();
 
                         System.out.println("List of groups that your friends are member of:");
-                        for(Group each_group: all_groups){
+                        for(IGroup each_group: all_groups){
                             if(groupIds.contains(each_group.getGroupId())){
                                 System.out.println("Group ID: " + each_group.getGroupId() + "\tGroup Name: " + each_group.getGroupName());
                             }

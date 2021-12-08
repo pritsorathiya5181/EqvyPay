@@ -2,6 +2,7 @@ package com.eqvypay.web;
 
 import java.util.Scanner;
 
+import com.eqvypay.persistence.IUser;
 import com.eqvypay.persistence.User;
 import com.eqvypay.service.profile.ProfileRepository;
 import org.springframework.stereotype.Service;
@@ -12,7 +13,7 @@ import com.eqvypay.util.validator.AuthenticationValidator;
 public class UpdateProfileOption {
 
 
-    public void updateProfileOption(User user, ProfileRepository profileRepo) throws Exception {
+    public void updateProfileOption(IUser user, ProfileRepository profileRepo) throws Exception {
 
         String input = "";
         String menuInput = "";
@@ -77,7 +78,7 @@ public class UpdateProfileOption {
 
     }
 
-    private void showUserInfo(User user) {
+    private void showUserInfo(IUser user) {
         System.out.println("------------------------------");
         System.out.println("\tMy Account");
         System.out.println("------------------------------");

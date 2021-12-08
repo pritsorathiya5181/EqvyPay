@@ -1,5 +1,6 @@
 package com.eqvypay.service.user;
 
+import com.eqvypay.persistence.IUser;
 import com.eqvypay.persistence.User;
 import com.eqvypay.service.database.DatabaseConnectionManagementService;
 import com.eqvypay.util.DtoUtils;
@@ -34,7 +35,7 @@ public class UserDataManipulation implements IUserDataManipulation {
     }
 
     @Override
-    public User getUserByEmailAndPassword(String email, String password) throws Exception {
+    public IUser getUserByEmailAndPassword(String email, String password) throws Exception {
         Connection connection = dcms.getConnection(Environment.DEV);
         Statement statement = connection.createStatement();
         ResultSet resultSet = statement.executeQuery("SELECT * from Users WHERE email ="+"'"+email+"'"+"AND password="+"'"+password+"'");
@@ -42,14 +43,14 @@ public class UserDataManipulation implements IUserDataManipulation {
     }
 
     @Override
-    public User getByEmail(String email) throws Exception {
+    public IUser getByEmail(String email) throws Exception {
         Connection connection = dcms.getConnection(Environment.DEV);
         Statement statement = connection.createStatement();
         ResultSet resultSet = statement.executeQuery("SELECT * from Users WHERE email ="+"'"+email+"'");
         return DtoUtils.getUserFromResultSet(resultSet);
     }
     @Override
-    public User getByUuid(UUID uuid) throws Exception {
+    public IUser getByUuid(UUID uuid) throws Exception {
         Connection connection = dcms.getConnection(Environment.DEV);
         Statement statement = connection.createStatement();
         ResultSet resultSet = statement.executeQuery("SELECT * from Users WHERE uuid = '"+uuid+"'");
@@ -57,7 +58,7 @@ public class UserDataManipulation implements IUserDataManipulation {
     }
     
     @Override
-    public List<User> findAllFriends(String userId) throws Exception {
+    public List<IUser> findAllFriends(String userId) throws Exception {
        Connection connection = dcms.getConnection(Environment.DEV);
        Statement statement = connection.createStatement();
        ResultSet rs = statement.executeQuery("select * from Friend inner join Users on Friend.friend_id = Users.uuid where Friend.user_id ='" + userId + "'");
