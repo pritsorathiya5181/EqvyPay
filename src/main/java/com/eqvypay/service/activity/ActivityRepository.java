@@ -10,8 +10,8 @@ import com.eqvypay.persistence.IActivity;
 @Repository
 public interface ActivityRepository {
 
-	void addActivity(IActivity activity) throws Exception;
+	boolean addActivity(IActivity activity) throws Exception;
 	List<IActivity> getUserActivity(String userId) throws Exception;
-	void deleteActivity(String uuid) throws Exception;
+	boolean deleteActivity(String uuid) throws Exception;
 	void createTable() throws Exception;
 }
