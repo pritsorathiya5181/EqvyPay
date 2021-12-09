@@ -86,6 +86,7 @@ public class UserMenu {
                     case "7":
                         System.out.println("Money manager option selected");
                         moneyManagerOption.handleOption(user);
+                        break;
                     default:
                         System.out.println("Invalid choice. Please try again");
                 }

@@ -90,9 +90,10 @@ public class ManageExpenseOption {
                             System.out.println("Enter a group name: ");
                             //sc.nextLine();
                             String groupNameInput = sc.nextLine();
-
+                            boolean validGroup = false;
                             for (IGroup group : groups) {
                                 if (group.getGroupName().equals(groupNameInput)) {
+                                    validGroup = true;
                                     System.out.println("Enter expense description: ");
                                     String expenseDesc = sc.nextLine();
                                     System.out.println("Enter amount");
@@ -149,7 +150,7 @@ public class ManageExpenseOption {
                                             }
                                         }
                                         dataManipulation.saveAll(expenses);
-                                        System.out.println("option 1 select");
+//                                        System.out.println("option 1 select");
                                     } else if (divideType == 2) {
                                         List<IExpense> expenses = new ArrayList<IExpense>();
 //                                      List<String> groupMembers = new ArrayList<>(Arrays.asList(expense.getTargetUserId(), "#user3", "#user4", "#user1"));
@@ -175,12 +176,13 @@ public class ManageExpenseOption {
                                             }
                                         }
                                         dataManipulation.saveAll(expenses);
-                                        System.out.println("option 2 select");
+//                                        System.out.println("option 2 select");
                                     }
                                     System.out.println("Succeed! Expenses added");
-                                } else {
-                                    System.out.println("Failed! Invalid entry! please enter valid group name");
                                 }
+                            }
+                            if(!validGroup){
+                                System.out.println("Failed! Invalid entry! please enter valid group name");
                             }
                         } else {
                             System.out.println("You're not join in any group");
@@ -188,7 +190,6 @@ public class ManageExpenseOption {
                     } else if (groupOption.equals("2")) {
                         IGroup group = GroupFactory.getInstance().getGroup();
                         System.out.println("Enter group name");
-                        sc.nextLine();
                         String groupName = sc.nextLine();
                         group.setGroupName(groupName);
                         System.out.println("Enter group description");
@@ -200,7 +201,7 @@ public class ManageExpenseOption {
                         } catch (Exception e) {
                             System.out.println("Error: " + e.toString());
                         }
-                        break;
+                        continue;
                     }
 
                 } else if (payOption.equals("2")) {
@@ -211,7 +212,6 @@ public class ManageExpenseOption {
                     if (friends.size() > 0) {
                         System.out.println("Enter expense description: ");
                         String expenseDesc = sc.nextLine();
-                        sc.nextLine();
                         System.out.println("Enter amount");
                         String expenseAmtString = sc.nextLine();
                         float expenseAmt = Float.valueOf(expenseAmtString);
@@ -254,12 +254,13 @@ public class ManageExpenseOption {
                                 friendExpenseList.add(expense);
                             }
                             dataManipulation.saveAll(friendExpenseList);
-                        } else {
+                        }
+                        else if(choice == 2){
                             for (IUser friend : selectedFriendIds) {
                                 IExpense expense = ExpenseFactory.getInstance().getExpense();
                                 expense.setCurrencyType(currencyType);
-                                System.out.println("Enter share for friend :" + friend.getEmail());
-                                
+                                System.out.println("Enter " + currencyType + " amount share for friend :" + friend.getEmail());
+
                                 String shareString = sc.nextLine();
                                 float share = Float.valueOf(shareString);
                                 expense.setExpenseAmt(share);
@@ -271,13 +272,14 @@ public class ManageExpenseOption {
                                 friendExpenseList.add(expense);
                             }
                             dataManipulation.saveAll(friendExpenseList);
+                            System.out.println("Succeed! Expenses added");
                         }
                     } else {
                         System.out.println("Your friend list is empty! Please add a friend first.");
                     }
                 }
             } else if (option.equals("2")) {
-                System.out.println("Your outstandings are:");
+                System.out.println("Your outstanding are:");
                 List<IExpense> expenses = expenseRepository.getExpensesByUserId(user.getUuid().toString());
 
                 if (expenses != null && expenses.size() > 0) {
@@ -293,20 +295,19 @@ public class ManageExpenseOption {
                         System.out.println();
                     }
 
-                    System.out.println("Enter expense to settle, for multiple settlements, enter by spaces \n e.g. 10 20.5 (for first and second expenses)");
-                   // sc.nextLine();
+                    System.out.println("\nEnter expense to settle, for multiple settlements, enter by spaces \n e.g. 1 2 (to select first and second expenses)");
+
                     String settlementString = sc.nextLine();
                     String[] settlements = settlementString.trim().split(" ");
-                    List<Float> settlementIndexes = Arrays.stream(settlements).map(p -> Float.valueOf(p) - 1).collect(Collectors.toList());
+                    List<Integer> settlementIndexes = Arrays.stream(settlements).map(p -> Integer.parseInt(p) - 1).collect(Collectors.toList());
                     for (int i = 0; i < settlementIndexes.size(); i++) {
-                        IExpense expenseToBeSettled = expenses.get(i);
-                        IUser targetUser = userRepository.getByUuid(UUID.fromString( expenseToBeSettled.getTargetUserId()));
+                        IExpense expenseToBeSettled = expenses.get(settlementIndexes.get(i));
+                        IUser targetUser = userRepository.getByUuid(UUID.fromString( expenseToBeSettled.getSourceUserId()));
                         Currency currency = Currency.getInstance(expenseToBeSettled.getCurrencyType().toUpperCase());
                         boolean settled = expenseRepository.settleExpense(expenseToBeSettled);
                         if (settled) {
-                        	System.out.println("Settled "+user.getName());
-                        	System.out.println("NOt "+targetUser.getName());
-                            System.out.println("Expense of :" + expenseToBeSettled.getExpenseAmt() + " settled!");
+                            System.out.println("Expense between :" + user.getName() + " and " + targetUser.getName() + " of "
+                                    + expenseToBeSettled.getExpenseAmt() + " amount is settled!");
                             ActivityHelper.addActivity(user.getUuid().toString(), String.format(Constants.expenseSettlement,user.getName(),targetUser.getName(),expenseToBeSettled.getExpenseAmt()));
                         }
                     }

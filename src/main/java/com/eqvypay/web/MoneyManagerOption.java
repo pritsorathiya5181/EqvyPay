@@ -37,25 +37,29 @@ public class MoneyManagerOption {
             System.out.println("----------------------------");
             System.out.println("\tMoney Manager");
             System.out.println("----------------------------\n");
-            System.out.println("1. Add income");
-            System.out.println("2. Add personal expense");
-            System.out.println("3. Show monthly statistics");
+            System.out.println("[1] Add income");
+            System.out.println("[2] Add personal expense");
+            System.out.println("[3] Show monthly statistics");
+            System.out.println("[4] Exit");
             System.out.println("Select one option from the above");
 
-            int option = sc.nextInt();
+            int option = Integer.parseInt(sc.nextLine());
             DateValidator validator = new DateValidatorUsingDateFormat("MM/dd/yyyy");
             IPersonalActivity newActivity;
+
+            if(option == 4){
+                break;
+            }
 
             try {
                 switch (option) {
                     case 1:
                         System.out.println("Enter your income amount");
-                        float incomeValue = sc.nextFloat();
+                        float incomeValue = Float.parseFloat(sc.nextLine());
                         System.out.println("Enter description about your income");
-                        sc.nextLine();
                         String incDesc = sc.nextLine();
                         System.out.println("Enter date of income (MM/DD/YYYY)");
-                        String incomeDate = sc.next();
+                        String incomeDate = sc.nextLine();
                         if (!validator.isDateValid(incomeDate)) {
                             System.out.println("Date format is not valid. Enter valid date");
                             break;
@@ -74,14 +78,13 @@ public class MoneyManagerOption {
                         break;
                     case 2:
                         System.out.println("Enter expense amount");
-                        Float personalExpense = sc.nextFloat();
+                        Float personalExpense = Float.parseFloat(sc.nextLine());
                         System.out.println("Enter expense description");
-                        sc.nextLine();
                         String expenseDesc = sc.nextLine();
                         System.out.println("Enter expense category");
-                        String expenseCat = sc.next();
+                        String expenseCat = sc.nextLine();
                         System.out.println("Enter date of expenses (MM/DD/YYYY)");
-                        String expenseDate = sc.next();
+                        String expenseDate = sc.nextLine();
                         if (!validator.isDateValid(expenseDate)) {
                             System.out.println("Date format is not valid. Enter valid date");
                             break;
@@ -107,14 +110,13 @@ public class MoneyManagerOption {
                         System.out.println("Select an option:");
 
                         int selectOption = 0;
-                        selectOption = sc.nextInt();
+                        selectOption = Integer.parseInt(sc.nextLine());
                         ArrayList<IPersonalActivity> activities = moneyManagerRepository.getActivities(user.getUuid().toString());
 
                         if (activities != null) {
 
                             if (selectOption == 1) {
                                 System.out.println("Enter a month");
-                                sc.nextLine();
                                 String month = sc.nextLine();
 
                                 int monthNum = validator.getMonth(month);
@@ -178,7 +180,6 @@ public class MoneyManagerOption {
                                 }
                             } else if (selectOption == 2) {
                                 System.out.println("Enter a category");
-                                sc.nextLine();
                                 String category = sc.nextLine();
 
                                 float totalExpenditure = 0;
@@ -233,7 +234,6 @@ public class MoneyManagerOption {
                 }
 
             } catch (InputMismatchException e) {
-                sc.next();
                 System.out.println("Input Mismatch! please add valid input");
             }
 

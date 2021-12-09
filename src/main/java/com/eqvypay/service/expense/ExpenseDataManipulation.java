@@ -70,9 +70,6 @@ public class ExpenseDataManipulation implements IExpenseDataManipulation {
             preparedStatement.setString(8, expense.getCurrencyType());
             try {
                 int count = preparedStatement.executeUpdate();
-                if (count > 0) {
-                    System.out.println("Expense added");
-                }
             } catch (Exception e) {
                 e.printStackTrace();
             }

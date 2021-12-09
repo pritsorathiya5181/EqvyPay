@@ -21,9 +21,7 @@ public class Expense implements IExpense{
 		this.sourceUserId = sourceUserId;
 	}
 
-	public String getTargetUserId() {
-		return targetUserId;
-	}
+	public String getTargetUserId() { return targetUserId; }
 
 	public void setTargetUserId(String targetUserId) {
 		this.targetUserId = targetUserId;

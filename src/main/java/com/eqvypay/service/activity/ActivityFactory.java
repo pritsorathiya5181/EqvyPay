@@ -9,31 +9,28 @@ import com.eqvypay.persistence.IActivity;
 @Service
 public class ActivityFactory {
 
-	private static ActivityFactory activityFactory = null;
-	
-	@Autowired
-	private ActivityRepository activityRepository;
-	
-	private IActivity activity;
-	
-	public static ActivityFactory getInstance() {
-		if(activityFactory == null) {
-			activityFactory = new ActivityFactory();
-		}
-		return activityFactory;
-	}
+    private static ActivityFactory activityFactory = null;
 
-	public ActivityRepository getActivityRepository() {
-		return activityRepository;
-	}
+    @Autowired
+    private ActivityRepository activityRepository;
 
-	public IActivity getActivity() {
-		if(activity==null) {
-			activity = new Activity();
-		}
-		return activity;
-	}
-	
-	
-	
+    private IActivity activity;
+
+    public static ActivityFactory getInstance() {
+        if (activityFactory == null) {
+            activityFactory = new ActivityFactory();
+        }
+        return activityFactory;
+    }
+
+    public ActivityRepository getActivityRepository() {
+        return activityRepository;
+    }
+
+    public IActivity getActivity() {
+        activity = new Activity();
+        return activity;
+    }
+
+
 }
