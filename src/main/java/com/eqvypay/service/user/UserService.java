@@ -12,19 +12,34 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.eqvypay.persistence.IUser;
-import com.eqvypay.persistence.User;
 import com.eqvypay.util.DtoUtils;
-import com.eqvypay.util.constants.DatabaseConstants;
 
+/**
+ * {@code UserService} implements the
+ * {@code UserRepository} to provide a concrete
+ * implementation for fetching user information
+ * from the database table.
+ *
+ */
 @Service
 public class UserService implements UserRepository {
 
+    // reference of the database connection service class.
     @Autowired
     private DatabaseConnectionManagementService dcms;
 
+    // reference of the DtoUtils class.
     @Autowired
     DtoUtils dtoUtils;
 
+    /**
+     * @param email emailId of the user.
+     * @param password password of the user.
+     * @return IUser Object of the user.
+     * @throws Exception if any error occurs while performing
+     *                   operation of fetching user information
+     *                   from the Users table.
+     */
     @Override
     public IUser getUserByEmailAndPassword(String email, String password) throws Exception {
         Connection connection = dcms.getConnection(dcms.parseEnvironment());
@@ -33,6 +48,13 @@ public class UserService implements UserRepository {
         return dtoUtils.getUserFromResultSet(resultSet);
     }
 
+    /**
+     * @param email emailId of the user.
+     * @return IUser Object of the user.
+     * @throws Exception if any error occurs while performing
+     *                   operation of fetching user information
+     *                   from the Users table.
+     */
     @Override
     public IUser getByEmail(String email) throws Exception {
         if (dtoUtils.tableExist(dcms,"Users")) {
@@ -43,6 +65,14 @@ public class UserService implements UserRepository {
         }
         return null;
     }
+
+    /**
+     * @param uuid unique id of the user.
+     * @return IUser Object of the user.
+     * @throws Exception if any error occurs while performing
+     *                   operation of fetching user information
+     *                   from the Users table.
+     */
     @Override
     public IUser getByUuid(UUID uuid) throws Exception {
         Connection connection = dcms.getConnection(dcms.parseEnvironment());
@@ -51,6 +81,14 @@ public class UserService implements UserRepository {
         return dtoUtils.getUserFromResultSet(resultSet);
     }
 
+    /**
+     * @param userId unique id of the user.
+     * @return List of IUser Object of the user.
+     * @throws Exception if any error occurs while performing
+     *                   operation of fetching information of
+     *                   all the friends from the Users table
+     *                   in the database.
+     */
     @Override
     public List<IUser> findAllFriends(String userId) throws Exception {
         if(dtoUtils.tableExist(dcms, "Friend")) {

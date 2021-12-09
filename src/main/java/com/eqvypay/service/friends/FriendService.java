@@ -15,28 +15,45 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.eqvypay.persistence.IUser;
-import com.eqvypay.persistence.User;
 import com.eqvypay.util.constants.Constants;
-import com.eqvypay.util.constants.Environment;
 
+/**
+ * {@code FriendService} implements the
+ * {@code FriendRepository} to provide a concrete implementation
+ * for making and removing friend of this user.
+ */
 @Service
 public class FriendService implements FriendRepository {
 
+    // reference of the database connection service class.
     @Autowired
     private DatabaseConnectionManagementService dcms;
 
+    // reference of the user data manipulation class.
     @Autowired
     private UserDataManipulation userDataManipulation;
 
+    // reference of the user repository class.
     @Autowired
     private UserRepository userRepository;
 
+    // reference of the friend data manipulation class.
     @Autowired
     private FriendDataManipulation friendDataManipulation;
 
+    // reference of the DtoUtils class.
     @Autowired
     DtoUtils dtoUtils;
 
+    /**
+     * Implement the query to perform insert record of making
+     * friend of the user in the Friend table.
+     *
+     * @param user  object of the user.
+     * @param email registered email address of the friend.
+     * @throws Exception if any error occurs while performing
+     *                   operation to make friend of this user.
+     */
     @Override
     public void addFriendByEmail(IUser user, String email) throws Exception {
         Connection connection = dcms.getConnection(dcms.parseEnvironment());
@@ -62,7 +79,15 @@ public class FriendService implements FriendRepository {
 
     }
 
-
+    /**
+     * Implement the query to perform insert record of making
+     * friend of the user in the Friend table.
+     *
+     * @param user    object of the user.
+     * @param contact registered contact number of the friend.
+     * @throws Exception if any error occurs while performing
+     *                   operation to make friend of this user.
+     */
     @Override
     public void addFriendByContact(IUser user, String contact) throws Exception {
         Connection connection = dcms.getConnection(dcms.parseEnvironment());
@@ -99,11 +124,20 @@ public class FriendService implements FriendRepository {
             System.out.println("Enter a valid contact number of a registered user!");
         }
 
-        ActivityHelper.addActivity(user.getUuid().toString(), String.format(Constants.friends,friend.getName()));
-        ActivityHelper.addActivity(friend.getUuid().toString(), String.format(Constants.friends,user.getName()));
+        ActivityHelper.addActivity(user.getUuid().toString(), String.format(Constants.friends, friend.getName()));
+        ActivityHelper.addActivity(friend.getUuid().toString(), String.format(Constants.friends, user.getName()));
 
     }
 
+    /**
+     * Implement the query to perform delete record of the
+     * friend of the user from the Friend table.
+     *
+     * @param user  object of the user.
+     * @param email registered email address of the friend.
+     * @throws Exception if any error occurs while performing
+     *                   operation to remove friend of this user.
+     */
     @Override
     public void removeFriendByEmail(IUser user, String email) throws Exception {
         Connection connection = dcms.getConnection(dcms.parseEnvironment());
@@ -129,7 +163,15 @@ public class FriendService implements FriendRepository {
         }
     }
 
-
+    /**
+     * Implement the query to perform delete record of the
+     * friend of the user from the Friend table.
+     *
+     * @param user    object of the user.
+     * @param contact registered contact number of the friend.
+     * @throws Exception if any error occurs while performing
+     *                   operation to remove friend of this user.
+     */
     @Override
     public void removeFriendByContact(IUser user, String contact) throws Exception {
         Connection connection = dcms.getConnection(dcms.parseEnvironment());

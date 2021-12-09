@@ -1,13 +1,26 @@
 package com.eqvypay.service.groups;
 
-import com.eqvypay.persistence.Group;
-import com.eqvypay.persistence.User;
-
-import java.util.ArrayList;
-import java.util.List;
-
+/**
+ * {@code IGroupDataManipulation} provides a contract
+ * for performing operation related to data manipulation.
+ */
 public interface IGroupDataManipulation {
-    public void createTable() throws Exception;
 
-    public void createGroupMembersTable() throws Exception;
+    /**
+     * Perform the operation to create
+     * Groups table in the database.
+     *
+     * @throws Exception if any error occurs while creating
+     *                   the table in the database.
+     */
+    void createTable() throws Exception;
+
+    /**
+     * Perform the operation to create
+     * GroupMembers table in the database.
+     *
+     * @throws Exception if any error occurs while creating
+     *                   the table in the database.
+     */
+    void createGroupMembersTable() throws Exception;
 }

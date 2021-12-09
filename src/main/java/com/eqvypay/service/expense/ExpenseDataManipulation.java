@@ -1,30 +1,42 @@
 package com.eqvypay.service.expense;
 
-import com.eqvypay.persistence.Expense;
 import com.eqvypay.persistence.IExpense;
 import com.eqvypay.service.database.DatabaseConnectionManagementService;
 import com.eqvypay.util.DtoUtils;
 import com.eqvypay.util.constants.DatabaseConstants;
-import com.eqvypay.util.constants.Environment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * {@code ExpenseDataManipulation} implements the
+ * {@code IExpenseDataManipulation} to provide a concrete
+ * implementation for performing the queries related to
+ * updating the Expense table in the database.
+ */
 @Service
 public class ExpenseDataManipulation implements IExpenseDataManipulation {
 
+    // reference of the database connection service class.
     @Autowired
     DatabaseConnectionManagementService dcms;
 
+    // reference of the DtoUtils class.
     @Autowired
     DtoUtils dtoUtils;
 
+    /**
+     * Perform the operation to create
+     * expense table in the database.
+     *
+     * @throws Exception if any error occurs while creating
+     *                   the table in the database.
+     */
     @Override
     public void createTable() throws Exception {
         Connection connection = dcms.getConnection(dcms.parseEnvironment());
@@ -44,6 +56,15 @@ public class ExpenseDataManipulation implements IExpenseDataManipulation {
         }
     }
 
+    /**
+     * Perform the operation to save expense
+     * in the expense database table.
+     *
+     * @param expense object of the IExpense.
+     * @return saved object of the IExpense.
+     * @throws Exception if any error occurs while
+     *                   saving expense object.
+     */
     @Override
     public IExpense save(IExpense expense) throws Exception {
         System.out.println("trying to save expense");
@@ -51,6 +72,14 @@ public class ExpenseDataManipulation implements IExpenseDataManipulation {
         return expense;
     }
 
+    /**
+     * Perform the operation to save all the
+     * expense in the expense database table.
+     *
+     * @param expenses List of the expenses.
+     * @throws Exception if any error occurs while saving
+     *                   all the expenses in the database.
+     */
     @Override
     public void saveAll(List<IExpense> expenses) throws Exception {
         Connection connection = dcms.getConnection(dcms.parseEnvironment());
@@ -59,7 +88,8 @@ public class ExpenseDataManipulation implements IExpenseDataManipulation {
         }
 
         for (IExpense expense : expenses) {
-            PreparedStatement preparedStatement = connection.prepareStatement(DatabaseConstants.INSERT_EXPENSE);
+            PreparedStatement preparedStatement = connection
+                    .prepareStatement(DatabaseConstants.INSERT_EXPENSE);
             preparedStatement.setString(1, expense.getId());
             preparedStatement.setString(2, expense.getSourceUserId());
             preparedStatement.setString(3, expense.getTargetUserId());

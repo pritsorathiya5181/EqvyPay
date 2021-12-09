@@ -19,18 +19,33 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * {@code GroupService} implements the
+ * {@code GroupRepository} to provide a concrete implementation
+ * for creating, joining, leaving, and deleting the group,
+ * also, get all the groups and members of the group.
+ */
 @Service
 public class GroupService implements GroupRepository {
 
+    // reference of the group data manipulation class.
     @Autowired
     GroupDataManipulation dataManipulation;
 
+    // reference of the database connection service class.
     @Autowired
     private DatabaseConnectionManagementService dcms;
 
+    // reference of the DtoUtils class.
     @Autowired
     DtoUtils dtoUtils;
 
+    /**
+     * @param user object of the user.
+     * @param group object of the group.
+     * @throws Exception if any error occurs while performing
+     *                   operation to create group of this user.
+     */
     @Override
     public void createGroup(IUser user, IGroup group) throws Exception {
         if (!dtoUtils.tableExist(dcms, "Groups")) {
@@ -50,6 +65,12 @@ public class GroupService implements GroupRepository {
         }
     }
 
+    /**
+     * @param user object of the user.
+     * @param inputId id of the group.
+     * @throws Exception if any error occurs while performing
+     *                   operation to join group of this user.
+     */
     @Override
     public void joinGroup(IUser user, String inputId) throws Exception {
         if (dtoUtils.tableExist(dcms, "Groups")) {
@@ -69,6 +90,11 @@ public class GroupService implements GroupRepository {
         }
     }
 
+    /**
+     * @return List of group name in which user joined.
+     * @throws Exception if any error occurs while performing
+     *                   operation to get all joined groups.
+     */
     @Override
     public List<String> getJoinedGroups(IUser user) throws Exception {
         if (dtoUtils.tableExist(dcms, "Groups")) {
@@ -96,6 +122,12 @@ public class GroupService implements GroupRepository {
         }
     }
 
+    /**
+     * @param user object of the user.
+     * @param groupName name of the group.
+     * @throws Exception if any error occurs while performing
+     *                   operation to leave group of this user.
+     */
     @Override
     public void leaveGroup(IUser user, String groupName) throws Exception {
         if (dtoUtils.tableExist(dcms, "Groups")) {
@@ -120,6 +152,12 @@ public class GroupService implements GroupRepository {
         }
     }
 
+    /**
+     * @param user object of the user.
+     * @param group_name name of group.
+     * @throws Exception if any error occurs while performing
+     *                   operation to delete group of the user.
+     */
     @Override
     public void deleteGroup(String groupName, IUser user) throws Exception {
         if (dtoUtils.tableExist(dcms, "Groups")) {
@@ -150,6 +188,12 @@ public class GroupService implements GroupRepository {
 
     }
 
+    /**
+     * @return list of groups.
+     * @throws Exception if any error occurs while performing
+     *                   operation to get all the groups from
+     *                   the database.
+     */
     @Override
     public List<IGroup> getAllGroups() throws Exception {
         List<IGroup> groups = new ArrayList<>();
@@ -172,6 +216,14 @@ public class GroupService implements GroupRepository {
         return null;
     }
 
+    /**
+     * @return list of name of the user who are the member
+     *         of the group.
+     * @param groupId id of the group.
+     * @throws Exception if any error occurs while performing
+     *                   operation to get the member of the
+     *                   specific group.
+     */
     @Override
     public List<String> getMembersOfGroup(String groupId) throws Exception {
         if (dtoUtils.tableExist(dcms, "GroupMembers")) {
@@ -189,6 +241,11 @@ public class GroupService implements GroupRepository {
         }
     }
 
+    /**
+     * @return list of all joined groups object.
+     * @throws Exception if any error occurs while performing
+     *                   operation to get all joined groups.
+     */
     @Override
     public ArrayList<IGroup> getAllJoinedGroups(IUser user) throws Exception {
         if (dtoUtils.tableExist(dcms, "GroupMembers")) {
@@ -204,6 +261,12 @@ public class GroupService implements GroupRepository {
         }
     }
 
+    /**
+     * @return list of all joined friends' group id.
+     * @throws Exception if any error occurs while performing
+     *                   operation to get group ids of the friends'
+     *                   joined groups.
+     */
     @Override
     public List<String> getFriendsGroupIds(IUser user) throws Exception {
         boolean hasFriendTable = dtoUtils.tableExist(dcms, "Friend");

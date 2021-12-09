@@ -10,17 +10,32 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.eqvypay.persistence.IUser;
-import com.eqvypay.persistence.User;
 
+/**
+ * {@code ProfileService} implements the
+ * {@code ProfileRepository} to provide a concrete
+ * implementation for updating user information
+ * in the Users table.
+ *
+ */
 @Service
 public class ProfileService implements ProfileRepository {
-	
+
+	// reference of the database connection service class.
 	@Autowired
 	DatabaseConnectionManagementService dcms;
 
+    // reference of the user repository class.
     @Autowired
     private UserRepository userRepo;
-	
+
+	/**
+	 * @param user object of the user.
+	 * @param username name of the user.
+	 * @throws Exception if any error occurs while performing
+	 *                   operation of update username in the
+	 *                   User table of the database.
+	 */
 	@Override
 	public void updateUsername(IUser user, String username) throws Exception {
 		Connection connection = dcms.getConnection(dcms.parseEnvironment());
@@ -32,6 +47,13 @@ public class ProfileService implements ProfileRepository {
 		boolean update = updateStatement.execute();				
 	}
 
+	/**
+	 * @param user object of the user.
+	 * @param contact contact number of the user.
+	 * @throws Exception if any error occurs while performing
+	 *                   operation of update contact number in the
+	 *                   User table of the database.
+	 */
 	@Override
 	public void updateContact(IUser user, String contact) throws Exception {
 		Connection connection = dcms.getConnection(dcms.parseEnvironment());
@@ -43,6 +65,13 @@ public class ProfileService implements ProfileRepository {
 		boolean update = updateStatement.execute();
 	}
 
+	/**
+	 * @param user object of the user.
+	 * @param password password of the user.
+	 * @throws Exception if any error occurs while performing
+	 *                   operation of update password in the
+	 *                   User table of the database.
+	 */
 	@Override
 	public void updatePassword(IUser user, String password) throws Exception {
 		Connection connection = dcms.getConnection(dcms.parseEnvironment());

@@ -9,38 +9,48 @@ import com.eqvypay.persistence.PersonalActivity;
 @Service
 public class MoneyManagerFactory {
 
-	private static MoneyManagerFactory moneyManagerFactory = null;
-	
-	@Autowired
-	private IMoneyManagerDataManipulation managerDataManipulation;
-	
-	@Autowired
-	private MoneyManagerRepository moneyManagerRepository;
-	
-	private IPersonalActivity personalActivity;
-	
-	public static MoneyManagerFactory getInstance() {
-		if(moneyManagerFactory==null) {
-			moneyManagerFactory = new MoneyManagerFactory();
-		}
-		return moneyManagerFactory;
-	}
+    // static instance of MoneyManage factory class.
+    private static MoneyManagerFactory moneyManagerFactory = null;
 
-	public static MoneyManagerFactory getMoneyManagerFactory() {
-		return moneyManagerFactory;
-	}
+    // reference of the money manager data manipulation interface.
+    @Autowired
+    private IMoneyManagerDataManipulation managerDataManipulation;
 
-	public IMoneyManagerDataManipulation getManagerDataManipulation() {
-		return managerDataManipulation;
-	}
+    // reference of the money manager repository class.
+    @Autowired
+    private MoneyManagerRepository moneyManagerRepository;
 
-	public MoneyManagerRepository getMoneyManagerRepository() {
-		return moneyManagerRepository;
-	}
+    // reference of the personal activity class.
+    private IPersonalActivity personalActivity;
 
-	public IPersonalActivity getPersonalActivity() {
-		personalActivity = new PersonalActivity();
-		return personalActivity;
-	}
-	
+    // returns the instance of the MoneyManagerFactory class.
+    public static MoneyManagerFactory getInstance() {
+        if (moneyManagerFactory == null) {
+            moneyManagerFactory = new MoneyManagerFactory();
+        }
+        return moneyManagerFactory;
+    }
+
+    // return the reference of the MoneyManageFactory class.
+    // this is the lazy method.
+    public static MoneyManagerFactory getMoneyManagerFactory() {
+        return moneyManagerFactory;
+    }
+
+    // return the reference of the IMoneyManagerDataManipulation interface.
+    public IMoneyManagerDataManipulation getManagerDataManipulation() {
+        return managerDataManipulation;
+    }
+
+    // return the reference of the MoneyManagerRepository class.
+    public MoneyManagerRepository getMoneyManagerRepository() {
+        return moneyManagerRepository;
+    }
+
+    // return the reference of the IPersonalActivity.
+    public IPersonalActivity getPersonalActivity() {
+        personalActivity = new PersonalActivity();
+        return personalActivity;
+    }
+
 }

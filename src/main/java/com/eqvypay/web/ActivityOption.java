@@ -19,11 +19,16 @@ public class ActivityOption {
 	private ActivityFactory activityFactory;
 	
 	public void getActivity(IUser user) throws Exception {
-		ActivityRepository activityRepository = activityFactory.getActivityRepository();
-		List<IActivity> activities = activityRepository.getUserActivity(user.getUuid().toString());
+		ActivityRepository activityRepository =
+				activityFactory.getActivityRepository();
+		List<IActivity> activities = activityRepository
+				.getUserActivity(user.getUuid().toString());
 		Integer count = 1;
+
 		for(IActivity activity:activities) {
-			System.out.format("%-10s%-30s\n", count.toString().concat("."),activity.getMessage());
+			System.out.format("%-10s%-30s\n",
+					count.toString().concat("."),
+					activity.getMessage());
 			count++;
 		}
 	}

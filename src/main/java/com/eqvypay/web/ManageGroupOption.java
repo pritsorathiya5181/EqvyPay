@@ -1,10 +1,7 @@
 package com.eqvypay.web;
 
-import com.eqvypay.persistence.Group;
 import com.eqvypay.persistence.IGroup;
 import com.eqvypay.persistence.IUser;
-import com.eqvypay.persistence.User;
-import com.eqvypay.service.groups.GroupDataManipulation;
 import com.eqvypay.service.groups.GroupFactory;
 import com.eqvypay.service.groups.GroupRepository;
 import com.eqvypay.service.groups.IGroupDataManipulation;
@@ -56,7 +53,6 @@ public class ManageGroupOption {
                     System.out.println("Enter group description");
                     group.setGroupDesc(sc.nextLine());
                     try {
-                        //INSERT ROW TO GROUPS TABLE
                         groupRepository.createGroup(user,group);
                         groupRepository.joinGroup(user, group.getGroupId());
                     } catch (Exception e) {
@@ -74,7 +70,8 @@ public class ManageGroupOption {
                                 System.out.println("List of groups that your friends are member of:");
                                 for (IGroup each_group : all_groups) {
                                     if (groupIds.contains(each_group.getGroupId())) {
-                                        System.out.println("Group ID: " + each_group.getGroupId() + "\tGroup Name: " + each_group.getGroupName());
+                                        System.out.println("Group ID: " + each_group.getGroupId() +
+                                                "\tGroup Name: " + each_group.getGroupName());
                                     }
                                 }
 
@@ -83,7 +80,8 @@ public class ManageGroupOption {
                                 if (groupIds.contains(groupId)) {
                                     groupRepository.joinGroup(user, groupId);
                                 } else {
-                                    System.out.println("Enter group id from list given only. Please try again.");
+                                    System.out.println("Enter group id from list given only. " +
+                                            "Please try again.");
                                 }
                             }
                         }
@@ -119,17 +117,12 @@ public class ManageGroupOption {
                     } catch (Exception e) {
                         System.out.println("Error: " + e.toString());
                     }
-
                     break;
 
                 default:
                     System.out.println("Invalid choice. Please try again");
                     break;
             }
-
-
         }
-
-
     }
 }

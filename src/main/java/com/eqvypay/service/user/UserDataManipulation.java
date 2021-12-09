@@ -17,12 +17,21 @@ import java.util.UUID;
 @Service
 public class UserDataManipulation implements IUserDataManipulation {
 
+    // reference of the database connection service class.
     @Autowired
     private DatabaseConnectionManagementService dcms;
 
+    // reference of the DtoUtils class.
     @Autowired
     DtoUtils dtoUtils;
 
+    /**
+     * Perform the operation to create
+     * Users table in the database.
+     *
+     * @throws Exception if any error occurs while creating
+     *                   the table in the database.
+     */
     @Override
     public void createTable() throws Exception {
         String query = "CREATE TABLE Users"
@@ -41,6 +50,14 @@ public class UserDataManipulation implements IUserDataManipulation {
         }
     }
 
+    /**
+     * Perform the operation to save the user
+     * in the Users table in the database.
+     *
+     * @param user object of the User.
+     * @throws Exception if any error occurs while
+     *                   saving user object.
+     */
     @Override
     public void save(IUser user) throws Exception {
         createTable();
@@ -59,6 +76,14 @@ public class UserDataManipulation implements IUserDataManipulation {
         }
     }
 
+    /**
+     * Perform the operation to delete the user
+     * from the Users table in the database.
+     *
+     * @param userId unique id of the user.
+     * @throws Exception if any error occurs while
+     *                   deleting user object.
+     */
     @Override
     public void delete(UUID userId) throws Exception {
         if (dtoUtils.tableExist(dcms, "Users")) {

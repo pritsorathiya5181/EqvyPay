@@ -2,17 +2,19 @@ package com.eqvypay.util.constants;
 
 public class DatabaseConstants {
 
+    // test environment
+
     public static final String TEST_URL = "db.test_url";
     public static final String TEST_USERNAME = "db.test_username";
     public static final String TEST_PASSWORD = "db.test_password";
 
-    //
+    // development environment
 
     public static final String DEV_URL = "db.dev_url";
     public static final String DEV_USERNAME = "db.dev_username";
     public static final String DEV_PASSWORD = "db.dev_password";
 
-    //
+    // deployment environment
 
     public static final String PROD_URL = "db.prod_url";
     public static final String PROD_USERNAME = "db.prod_username";

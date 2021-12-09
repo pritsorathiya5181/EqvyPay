@@ -3,42 +3,45 @@ package com.eqvypay.service.friends;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-@Service 
+
+@Service
 public class FriendFactory {
 
-	private static FriendFactory friendFactory = null;
-	private FriendRepository friendRepository;
-	private IFriendDataManipulation friendDataManipulation;
-	
-	
-	public IFriendDataManipulation getFriendDataManipulation() {
-		return friendDataManipulation;
-	}
+    // static instance of FriendFactory class
+    private static FriendFactory friendFactory = null;
 
-	@Autowired
-	public void setFriendDataManipulation(IFriendDataManipulation friendDataManipulation) {
-		this.friendDataManipulation = friendDataManipulation;
-	}
+    // reference of the friend repository.
+    private FriendRepository friendRepository;
 
-	public FriendFactory() {
-		
-	}
-	
-	public static FriendFactory getInstance() {
-		if(friendFactory == null) {
-			friendFactory = new FriendFactory();
-		}
-		return friendFactory;
-	}
+    // reference of the friend data manipulation.
+    private IFriendDataManipulation friendDataManipulation;
 
-	public FriendRepository getFriendRepository() {
-		return friendRepository;
-	}
+    // set reference of the friend data manipulation
+    @Autowired
+    public void setFriendDataManipulation(IFriendDataManipulation friendDataManipulation) {
+        this.friendDataManipulation = friendDataManipulation;
+    }
 
-	@Autowired
-	public void setFriendRepository(FriendRepository friendRepository) {
-		this.friendRepository = friendRepository;
-	}
+    public FriendFactory() {
 
-	
+    }
+
+    // returns the instance of the friend factory.
+    public static FriendFactory getInstance() {
+        if (friendFactory == null) {
+            friendFactory = new FriendFactory();
+        }
+        return friendFactory;
+    }
+
+    // returns the reference of the friend repository.
+    public FriendRepository getFriendRepository() {
+        return friendRepository;
+    }
+
+    // set the reference of the friend repository.
+    @Autowired
+    public void setFriendRepository(FriendRepository friendRepository) {
+        this.friendRepository = friendRepository;
+    }
 }

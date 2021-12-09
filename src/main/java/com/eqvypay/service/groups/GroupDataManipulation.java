@@ -1,25 +1,32 @@
 package com.eqvypay.service.groups;
 
-import com.eqvypay.persistence.Group;
-import com.eqvypay.persistence.User;
 import com.eqvypay.service.database.DatabaseConnectionManagementService;
-import com.eqvypay.util.DtoUtils;
-import com.eqvypay.util.constants.Environment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
 
+/**
+ * {@code GroupDataManipulation} implements the
+ * {@code IGroupDataManipulation} to provide a concrete
+ * implementation for performing the queries operations related
+ * to updating the Groups and GroupMembers table in the database.
+ */
 @Service
 public class GroupDataManipulation implements IGroupDataManipulation {
 
+    // reference of the database connection service class.
     @Autowired
     DatabaseConnectionManagementService dcms;
 
+    /**
+     * Perform the operation to create
+     * Groups table in the database.
+     *
+     * @throws Exception if any error occurs while creating
+     *                   the table in the database.
+     */
     @Override
     public void createTable() throws Exception {
         Connection connection = dcms.getConnection(dcms.parseEnvironment());
@@ -33,6 +40,13 @@ public class GroupDataManipulation implements IGroupDataManipulation {
 
     }
 
+    /**
+     * Perform the operation to create
+     * GroupMembers table in the database.
+     *
+     * @throws Exception if any error occurs while creating
+     *                   the table in the database.
+     */
     @Override
     public void createGroupMembersTable() throws Exception {
         Connection connection = dcms.getConnection(dcms.parseEnvironment());

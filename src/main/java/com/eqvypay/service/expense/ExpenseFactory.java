@@ -9,41 +9,45 @@ import com.eqvypay.persistence.IExpense;
 @Service
 public class ExpenseFactory {
 
-	private static ExpenseFactory expenseFactory = null;
-	
-	@Autowired
-	IExpenseDataManipulation expenseDataManipulation;
-	
-	@Autowired
-	ExpenseRepository expenseRepository;
-	
-	IExpense expense;
-	
-	public ExpenseFactory() {
-//		expenseDataManipulation = new ExpenseDataManipulation();
-	//	expenseRepository = new ExpenseService();
-		expense = new Expense();
-	}
-	
-	public static ExpenseFactory getInstance() {
-		if(expenseFactory==null) {
-			expenseFactory = new ExpenseFactory();
-		}
-		return expenseFactory;
-	}
-	
-	public IExpenseDataManipulation getExpenseDataManipulation() {
-		return expenseDataManipulation;
-	}
+    // static instance of ExpenseFactory class
+    private static ExpenseFactory expenseFactory = null;
 
-	public ExpenseRepository getExpenseRepository() {
-		return expenseRepository;
-	}
+    // reference of the expense data manipulation.
+    @Autowired
+    IExpenseDataManipulation expenseDataManipulation;
 
-	public IExpense getExpense() {
-		expense = new Expense();
-		return expense;
-	}
-	
-	
+    // reference of the expense repository.
+    @Autowired
+    ExpenseRepository expenseRepository;
+
+    // reference of the expense.
+    IExpense expense;
+
+    public ExpenseFactory() {
+        expense = new Expense();
+    }
+
+    // returns the instance of the expense factory.
+    public static ExpenseFactory getInstance() {
+        if (expenseFactory == null) {
+            expenseFactory = new ExpenseFactory();
+        }
+        return expenseFactory;
+    }
+
+    // returns the reference of the expense data manipulation.
+    public IExpenseDataManipulation getExpenseDataManipulation() {
+        return expenseDataManipulation;
+    }
+
+    // returns the reference of the expense repository.
+    public ExpenseRepository getExpenseRepository() {
+        return expenseRepository;
+    }
+
+    // returns the reference of the expense.
+    public IExpense getExpense() {
+        expense = new Expense();
+        return expense;
+    }
 }
