@@ -9,7 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.eqvypay.persistence.IActivity;
 import com.eqvypay.service.database.DatabaseConnectionManagementService;
+import org.springframework.stereotype.Service;
 
+@Service
 public class ActivityDataManipulation implements IActivityDataManipulation{
 
 	// reference of the database connection service class.

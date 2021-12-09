@@ -128,9 +128,9 @@ public class GroupServiceTest {
         IUser testUser = new User();
         IGroup testGroup = new Group();
 
-        testGroup.setGroupId("TEST_DELETE_GROUP_ID");
-        testGroup.setGroupName("TEST_DELETE_GROUP_NAME");
-        testGroup.setGroupDesc("TEST_DELETE_GROUP_DESC");
+        testGroup.setGroupId("TEST_DELETE_GROUP_ID1");
+        testGroup.setGroupName("TEST_DELETE_GROUP_NAME1");
+        testGroup.setGroupDesc("TEST_DELETE_GROUP_DESC1");
 
         groupRepository.createGroup(testUser, testGroup);
         groupRepository.joinGroup(testUser, testGroup.getGroupId());

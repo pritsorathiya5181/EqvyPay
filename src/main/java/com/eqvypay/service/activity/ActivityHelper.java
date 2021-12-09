@@ -10,14 +10,6 @@ import org.springframework.stereotype.Service;
 
 import com.eqvypay.persistence.IActivity;
 
-/**
- * @param userId userUUID of the user.
- * @return List<IActivity> Object of the user.
- * @throws Exception if any error occurs while performing
- *                   operation of fetching activity information
- *                   from the Activity table.
- */
-
 @Service
 public class ActivityHelper {
 
@@ -25,7 +17,7 @@ public class ActivityHelper {
 	private static IActivityDataManipulation activityDataManipulation;
 	
 	@Autowired
-	public static void setActivityDataManipulation(IActivityDataManipulation activityDataManipulation) {
+	public void setActivityDataManipulation(IActivityDataManipulation activityDataManipulation) {
 		ActivityHelper.activityDataManipulation = activityDataManipulation;
 	}
 
