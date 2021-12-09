@@ -17,21 +17,25 @@ import com.eqvypay.util.DtoUtils;
 import com.eqvypay.util.constants.Environment;
 
 @Service
+/**
+ * {@code FriendService} implements the
+ * {@code FriendRepository} to provide a concrete
+ * implementation for fetching activity information for a user
+ */
 public class ActivityService implements ActivityRepository {
 
-	@Autowired
+	// reference of the database connection service class.
+    @Autowired
 	private DatabaseConnectionManagementService dcms;
 	
-	@Override
-	public boolean addActivity(IActivity activity) throws Exception {
-		Connection connection = dcms.getConnection(dcms.parseEnvironment());
-		PreparedStatement statement = connection.prepareStatement("INSERT INTO Activity (uuid,userId,message) VALUES (?,?,?)");
-		statement.setString(1, UUID.randomUUID().toString());
-		statement.setString(2, activity.getUserId());
-		statement.setString(3, activity.getMessage());
-		statement.executeUpdate();
-		return true;
-	}
+
+    /**
+     * @param userId userUUID of the user.
+     * @return List<IActivity> Object of the user.
+     * @throws Exception if any error occurs while performing
+     *                   operation of fetching activity information
+     *                   from the Activity table.
+     */
 
 	@Override
 	public List<IActivity> getUserActivity(String userId) throws Exception {
@@ -42,20 +46,5 @@ public class ActivityService implements ActivityRepository {
 		return DtoUtils.getActivityFromResultSet(resultSet);
 	}
 
-	@Override
-	public boolean deleteActivity(String uuid) throws Exception {
-		Connection connection = dcms.getConnection(dcms.parseEnvironment());
-		PreparedStatement statement = connection.prepareStatement("DELETE FROM Activity where uuid = ?");
-		statement.setString(1, uuid);
-		int result = statement.executeUpdate();
-		return true;
-	}
-	
-	@Override
-	public void createTable() throws Exception {
-		Connection connection = dcms.getConnection(dcms.parseEnvironment());
-		PreparedStatement statement = connection.prepareStatement("CREATE TABLE Activity(uuid varchar(255) primary key,userId varchar(255),message varchar(255));");
-		statement.executeUpdate();
-	}
 
 }

@@ -9,11 +9,16 @@ import com.eqvypay.persistence.IActivity;
 @Service
 public class ActivityFactory {
 
+	// static instance of ActivityFactory class
+    
     private static ActivityFactory activityFactory = null;
 
+    // reference of the activity repository.
     @Autowired
     private ActivityRepository activityRepository;
 
+    // reference of the activity.
+	
     private IActivity activity;
 
     public static ActivityFactory getInstance() {

@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.eqvypay.persistence.IActivity;
+import com.eqvypay.service.activity.ActivityDataManipulation;
 import com.eqvypay.service.activity.ActivityFactory;
 import com.eqvypay.service.activity.ActivityService;
 
@@ -20,6 +21,9 @@ public class ActivityServiceTest {
 
 	@Autowired
 	private ActivityService activityService;
+	
+	@Autowired
+	private ActivityDataManipulation activityDataManipulation;
 	
 	
 	@Test
@@ -31,7 +35,7 @@ public class ActivityServiceTest {
 		activity.setMessage("test-message");
 		activity.setUserId(userId);
 		activity.setUuid(uuid);
-		assertTrue(activityService.addActivity(activity));
+		assertTrue(activityDataManipulation.addActivity(activity));
 	}
 	
 	@Test
@@ -46,7 +50,7 @@ public class ActivityServiceTest {
 	@Order(3)
 	public void shouldDeleteActivity() throws Exception {	
 		String uuid = "85df2df1-29a9-42d0-a12a-696ce6b62d11";
-		assertTrue(activityService.deleteActivity(uuid));
+		assertTrue(activityDataManipulation.deleteActivity(uuid));
 	}
 	
 }
