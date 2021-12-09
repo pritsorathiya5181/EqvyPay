@@ -1,8 +1,12 @@
 package com.eqvypay.web;
 
+import com.eqvypay.persistence.IPersonalActivity;
+import com.eqvypay.persistence.IUser;
 import com.eqvypay.persistence.PersonalActivity;
 import com.eqvypay.persistence.User;
+import com.eqvypay.service.moneymanager.IMoneyManagerDataManipulation;
 import com.eqvypay.service.moneymanager.MoneyManagerDataManipulation;
+import com.eqvypay.service.moneymanager.MoneyManagerFactory;
 import com.eqvypay.service.moneymanager.MoneyManagerRepository;
 import com.eqvypay.util.formatter.NumberFormatUsingFormatter;
 import com.eqvypay.util.formatter.NumberFormatter;
@@ -18,11 +22,16 @@ import java.util.Scanner;
 @Service
 public class MoneyManagerOption {
 
-    @Autowired
-    MoneyManagerDataManipulation dataManipulation;
+	@Autowired
+	private MoneyManagerFactory moneyManagerFactory;
 
-    public void handleOption(User user, MoneyManagerRepository moneyManagerRepository) throws Exception {
-        Scanner sc = new Scanner(System.in);
+
+    public void handleOption(IUser user) throws Exception {
+
+    	MoneyManagerRepository moneyManagerRepository = moneyManagerFactory.getMoneyManagerRepository();
+    	IMoneyManagerDataManipulation dataManipulation = moneyManagerFactory.getManagerDataManipulation();
+
+    	Scanner sc = new Scanner(System.in);
 
         while (true) {
             System.out.println("----------------------------");
@@ -35,7 +44,7 @@ public class MoneyManagerOption {
 
             int option = sc.nextInt();
             DateValidator validator = new DateValidatorUsingDateFormat("MM/dd/yyyy");
-            PersonalActivity newActivity;
+            IPersonalActivity newActivity;
 
             try {
                 switch (option) {
@@ -52,7 +61,7 @@ public class MoneyManagerOption {
                             break;
                         }
 
-                        newActivity = new PersonalActivity();
+                        newActivity = MoneyManagerFactory.getInstance().getPersonalActivity();
 
                         newActivity.setUserId(user.getUuid().toString());
                         newActivity.setAmount(incomeValue);
@@ -78,7 +87,7 @@ public class MoneyManagerOption {
                             break;
                         }
 
-                        newActivity = new PersonalActivity();
+                        newActivity = MoneyManagerFactory.getInstance().getPersonalActivity();
                         String userId = user.getUuid().toString();
 
                         newActivity.setUserId(userId);
@@ -99,7 +108,7 @@ public class MoneyManagerOption {
 
                         int selectOption = 0;
                         selectOption = sc.nextInt();
-                        ArrayList<PersonalActivity> activities = moneyManagerRepository.getActivities(user.getUuid().toString());
+                        ArrayList<IPersonalActivity> activities = moneyManagerRepository.getActivities(user.getUuid().toString());
 
                         if (activities != null) {
 
@@ -119,7 +128,7 @@ public class MoneyManagerOption {
 
                                 if (monthNum > 0) {
                                     for (int i = 0; i < activities.size(); i++) {
-                                        PersonalActivity activity = activities.get(i);
+                                        IPersonalActivity activity = activities.get(i);
 
                                         if (monthNum == Integer.parseInt(activity.getDate().split("/")[0])) {
                                             if (!activityFound) {
@@ -180,7 +189,7 @@ public class MoneyManagerOption {
                                 boolean hasMaxExp = false;
 
                                 for (int i = 0; i < activities.size(); i++) {
-                                    PersonalActivity activity = activities.get(i);
+                                    IPersonalActivity activity = activities.get(i);
 
                                     if (category.equals(activity.getExpenseCategory())) {
                                         if (!activityFound) {

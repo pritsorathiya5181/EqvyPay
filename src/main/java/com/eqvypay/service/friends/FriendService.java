@@ -14,6 +14,7 @@ import com.eqvypay.util.DtoUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.eqvypay.persistence.IUser;
 import com.eqvypay.persistence.User;
 import com.eqvypay.util.constants.Constants;
 import com.eqvypay.util.constants.Environment;
@@ -37,10 +38,10 @@ public class FriendService implements FriendRepository {
     DtoUtils dtoUtils;
 
     @Override
-    public void addFriendByEmail(User user, String email) throws Exception {
+    public void addFriendByEmail(IUser user, String email) throws Exception {
         Connection connection = dcms.getConnection(dcms.parseEnvironment());
         ResultSet result = null;
-        User friend = null;
+        IUser friend = null;
         try {
             friend = userRepository.getByEmail(email);
 
@@ -63,10 +64,10 @@ public class FriendService implements FriendRepository {
 
 
     @Override
-    public void addFriendByContact(User user, String contact) throws Exception {
+    public void addFriendByContact(IUser user, String contact) throws Exception {
         Connection connection = dcms.getConnection(dcms.parseEnvironment());
         ResultSet result = null;
-        User friend = null;
+        IUser friend = null;
         try {
             PreparedStatement selectQuery = connection.prepareStatement("select * from Users where contact = ?");
             selectQuery.setString(1, contact);
@@ -104,7 +105,7 @@ public class FriendService implements FriendRepository {
     }
 
     @Override
-    public void removeFriendByEmail(User user, String email) throws Exception {
+    public void removeFriendByEmail(IUser user, String email) throws Exception {
         Connection connection = dcms.getConnection(dcms.parseEnvironment());
         ResultSet result = null;
         try {
@@ -130,7 +131,7 @@ public class FriendService implements FriendRepository {
 
 
     @Override
-    public void removeFriendByContact(User user, String contact) throws Exception {
+    public void removeFriendByContact(IUser user, String contact) throws Exception {
         Connection connection = dcms.getConnection(dcms.parseEnvironment());
         ResultSet result = null;
         try {

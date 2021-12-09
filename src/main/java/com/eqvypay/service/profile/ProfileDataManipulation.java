@@ -1,13 +1,16 @@
 package com.eqvypay.service.profile;
 
+import com.eqvypay.persistence.IUser;
 import com.eqvypay.persistence.User;
 import com.eqvypay.service.database.DatabaseConnectionManagementService;
 import com.eqvypay.service.user.UserDataManipulation;
 import com.eqvypay.service.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
 
+@Service
 public class ProfileDataManipulation implements IProfileDataManipulation{
 
     @Autowired
@@ -23,7 +26,7 @@ public class ProfileDataManipulation implements IProfileDataManipulation{
     private UserRepository userRepository;
 
     @Override
-    public void getProfile(User user) throws Exception {
+    public void getProfile(IUser user) throws Exception {
         Connection connection = dcms.getConnection(dcms.parseEnvironment());
         user = userRepository.getByEmail(user.getEmail());
 

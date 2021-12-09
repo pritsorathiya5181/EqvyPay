@@ -2,16 +2,26 @@ package com.eqvypay.web;
 
 import java.util.Scanner;
 
+import com.eqvypay.persistence.IUser;
 import com.eqvypay.persistence.User;
+import com.eqvypay.service.profile.ProfileFactory;
 import com.eqvypay.service.profile.ProfileRepository;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.eqvypay.service.authentication.AuthenticationService;
 import com.eqvypay.util.validator.AuthenticationValidator;
 
 @Service
 public class UpdateProfileOption {
-    public void updateProfileOption(User user, ProfileRepository profileRepo) throws Exception {
+	
+	@Autowired
+	private ProfileFactory profileFactory;
+	
+    public void updateProfileOption(IUser user) throws Exception {
 
+    	ProfileRepository profileRepository = profileFactory.getProfileRepository();
+    	
         String input = "";
         String menuInput = "";
         do {
@@ -37,13 +47,13 @@ public class UpdateProfileOption {
                         case 1:
                             System.out.println("Enter the new username");
                             String username = scanner.next();
-                            profileRepo.updateUsername(user, username);
+                            profileRepository.updateUsername(user, username);
                             System.out.println("Username updated successfully.");
                             break;
                         case 2:
                             System.out.println("Enter the new contact number");
                             String contact = scanner.next();
-                            profileRepo.updateContact(user, contact);
+                            profileRepository.updateContact(user, contact);
                             System.out.println("Username updated successfully.");
                             break;
                         case 3:
@@ -54,7 +64,7 @@ public class UpdateProfileOption {
                             if (currentPassword.equals(providedCurrentPassword)) {
                                 System.out.print("New password: ");
                                 providedNewPassword = AuthenticationValidator.getAndValidatePassword(scanner);
-                                profileRepo.updatePassword(user, providedNewPassword);
+                                profileRepository.updatePassword(user, providedNewPassword);
                             } else {
                                 System.out.println("Incorrect current password.");
                             }
@@ -75,7 +85,7 @@ public class UpdateProfileOption {
 
     }
 
-    private void showUserInfo(User user) {
+    private void showUserInfo(IUser user) {
         System.out.println("------------------------------");
         System.out.println("\tMy Account");
         System.out.println("------------------------------");

@@ -11,6 +11,7 @@ import com.eqvypay.service.database.DatabaseConnectionManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.eqvypay.persistence.IUser;
 import com.eqvypay.persistence.User;
 import com.eqvypay.util.DtoUtils;
 import com.eqvypay.util.constants.DatabaseConstants;
@@ -25,7 +26,7 @@ public class UserService implements UserRepository {
     DtoUtils dtoUtils;
 
     @Override
-    public User getUserByEmailAndPassword(String email, String password) throws Exception {
+    public IUser getUserByEmailAndPassword(String email, String password) throws Exception {
         Connection connection = dcms.getConnection(dcms.parseEnvironment());
         Statement statement = connection.createStatement();
         ResultSet resultSet = statement.executeQuery("SELECT * from Users WHERE email ="+"'"+email+"'"+"AND password="+"'"+password+"'");
@@ -33,7 +34,7 @@ public class UserService implements UserRepository {
     }
 
     @Override
-    public User getByEmail(String email) throws Exception {
+    public IUser getByEmail(String email) throws Exception {
         if (dtoUtils.tableExist(dcms,"Users")) {
             Connection connection = dcms.getConnection(dcms.parseEnvironment());
             Statement statement = connection.createStatement();
@@ -43,7 +44,7 @@ public class UserService implements UserRepository {
         return null;
     }
     @Override
-    public User getByUuid(UUID uuid) throws Exception {
+    public IUser getByUuid(UUID uuid) throws Exception {
         Connection connection = dcms.getConnection(dcms.parseEnvironment());
         Statement statement = connection.createStatement();
         ResultSet resultSet = statement.executeQuery("SELECT * from Users WHERE uuid = '"+uuid+"'");
@@ -51,7 +52,7 @@ public class UserService implements UserRepository {
     }
 
     @Override
-    public List<User> findAllFriends(String userId) throws Exception {
+    public List<IUser> findAllFriends(String userId) throws Exception {
         if(dtoUtils.tableExist(dcms, "Friend")) {
             Connection connection = dcms.getConnection(dcms.parseEnvironment());
             Statement statement = connection.createStatement();

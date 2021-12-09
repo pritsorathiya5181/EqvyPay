@@ -9,6 +9,7 @@ import com.eqvypay.service.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.eqvypay.persistence.IUser;
 import com.eqvypay.persistence.User;
 
 @Service
@@ -21,7 +22,7 @@ public class ProfileService implements ProfileRepository {
     private UserRepository userRepo;
 	
 	@Override
-	public void updateUsername(User user, String username) throws Exception {
+	public void updateUsername(IUser user, String username) throws Exception {
 		Connection connection = dcms.getConnection(dcms.parseEnvironment());
 	
 		PreparedStatement updateStatement = connection.prepareStatement("update Users set name=? where email=?");
@@ -32,7 +33,7 @@ public class ProfileService implements ProfileRepository {
 	}
 
 	@Override
-	public void updateContact(User user, String contact) throws Exception {
+	public void updateContact(IUser user, String contact) throws Exception {
 		Connection connection = dcms.getConnection(dcms.parseEnvironment());
 		
 		PreparedStatement updateStatement = connection.prepareStatement("update Users set contact=? where email=?");
@@ -43,7 +44,7 @@ public class ProfileService implements ProfileRepository {
 	}
 
 	@Override
-	public void updatePassword(User user, String password) throws Exception {
+	public void updatePassword(IUser user, String password) throws Exception {
 		Connection connection = dcms.getConnection(dcms.parseEnvironment());
 		String hashedPassword = AuthenticationService.getHashedPassword(password);
 		PreparedStatement updateStatement = connection.prepareStatement("update Users set password=? where email=?");

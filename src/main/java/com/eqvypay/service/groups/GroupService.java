@@ -1,6 +1,8 @@
 package com.eqvypay.service.groups;
 
 import com.eqvypay.persistence.Group;
+import com.eqvypay.persistence.IGroup;
+import com.eqvypay.persistence.IUser;
 import com.eqvypay.persistence.User;
 import com.eqvypay.service.activity.ActivityHelper;
 import com.eqvypay.service.database.DatabaseConnectionManagementService;
@@ -32,7 +34,7 @@ public class GroupService implements GroupRepository {
     DtoUtils dtoUtils;
 
     @Override
-    public void createGroup(User user, Group group) throws Exception {
+    public void createGroup(IUser user, IGroup group) throws Exception {
         if (!dtoUtils.tableExist(dcms, "Groups")) {
             dataManipulation.createTable();
         }
@@ -51,7 +53,7 @@ public class GroupService implements GroupRepository {
     }
 
     @Override
-    public void joinGroup(User user, String inputId) throws Exception {
+    public void joinGroup(IUser user, String inputId) throws Exception {
         if (dtoUtils.tableExist(dcms, "Groups")) {
             Connection connection = dcms.getConnection(dcms.parseEnvironment());
             Statement stmt = connection.createStatement();
@@ -70,7 +72,7 @@ public class GroupService implements GroupRepository {
     }
 
     @Override
-    public void leaveGroup(User user, String groupName) throws Exception {
+    public void leaveGroup(IUser user, String groupName) throws Exception {
         if (dtoUtils.tableExist(dcms, "Groups")) {
             Connection connection = dcms.getConnection(dcms.parseEnvironment());
             Statement stmt = connection.createStatement();
@@ -103,7 +105,7 @@ public class GroupService implements GroupRepository {
     }
 
     @Override
-    public void deleteGroup(String groupName, User user) throws Exception {
+    public void deleteGroup(String groupName, IUser user) throws Exception {
         if (dtoUtils.tableExist(dcms, "Groups")) {
             Connection connection = dcms.getConnection(dcms.parseEnvironment());
             Statement statement = connection.createStatement();
@@ -133,13 +135,13 @@ public class GroupService implements GroupRepository {
     }
 
     @Override
-    public List<Group> getAllGroups() throws Exception {
-        List<Group> groups = new ArrayList<>();
+    public List<IGroup> getAllGroups() throws Exception {
+        List<IGroup> groups = new ArrayList<>();
         Connection connection = dcms.getConnection(dcms.parseEnvironment());
         Statement stmt = connection.createStatement();
         ResultSet rs = stmt.executeQuery("Select * from Groups");
         while (rs.next()) {
-            Group group = new Group();
+            IGroup group = GroupFactory.getInstance().getGroup();
 
             group.setGroupId(rs.getString("group_id"));
             group.setGroupName(rs.getString("group_name"));
@@ -168,7 +170,7 @@ public class GroupService implements GroupRepository {
     }
 
     @Override
-    public ArrayList<Group> getAllJoinedGroups(User user) throws Exception {
+    public ArrayList<IGroup> getAllJoinedGroups(IUser user) throws Exception {
         if (dtoUtils.tableExist(dcms, "GroupMembers")) {
             Connection connection = dcms.getConnection(dcms.parseEnvironment());
             Statement statement = connection.createStatement();
@@ -183,7 +185,7 @@ public class GroupService implements GroupRepository {
     }
 
     @Override
-    public List<String> getFriendsGroupIds(User user) throws Exception {
+    public List<String> getFriendsGroupIds(IUser user) throws Exception {
         boolean hasFriendTable = dtoUtils.tableExist(dcms, "Friend");
         boolean hasGroupTable = dtoUtils.tableExist(dcms, "GroupMembers");
 

@@ -2,15 +2,22 @@ package com.eqvypay.web;
 
 import java.util.Scanner;
 
-import com.eqvypay.persistence.User;
-import com.eqvypay.service.authentication.AuthenticationService;
+import com.eqvypay.persistence.IUser;
+import com.eqvypay.service.friends.FriendFactory;
 import com.eqvypay.service.friends.FriendRepository;
 import com.eqvypay.util.validator.AuthenticationValidator;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AddFriendOption {
-	public void friendOptions(User user,FriendRepository friendRepository) throws Exception {
+	
+	@Autowired
+	private FriendFactory friendFactory;
+	
+	public void friendOptions(IUser user) throws Exception {
+		FriendRepository friendRepository = friendFactory.getFriendRepository();
         Scanner sc = new Scanner(System.in);
         
         while (true) {

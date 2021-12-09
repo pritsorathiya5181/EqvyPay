@@ -1,5 +1,6 @@
 package com.eqvypay.service;
 
+import com.eqvypay.persistence.IUser;
 import com.eqvypay.persistence.User;
 import com.eqvypay.service.database.DatabaseConnectionManagementService;
 import com.eqvypay.service.profile.ProfileRepository;
@@ -39,7 +40,7 @@ public class ProfileServiceTest {
         connection = dcms.getConnection(Environment.TEST);
 
         String updatedUsername = "hirva";
-        User user = userRepository.getByEmail("hirva@gmail.com");
+        IUser user = userRepository.getByEmail("hirva@gmail.com");
         profileRepository.updateUsername(user, updatedUsername);
 
         PreparedStatement selectQuery = connection.prepareStatement("select * from Users where uuid = ?");
@@ -56,7 +57,7 @@ public class ProfileServiceTest {
         connection = dcms.getConnection(Environment.TEST);
 
         String updatedContact = "9026404405";
-        User user = userRepository.getByEmail("hirva@gmail.com");
+        IUser user = userRepository.getByEmail("hirva@gmail.com");
         profileRepository.updateContact(user, updatedContact);
 
         PreparedStatement selectQuery = connection.prepareStatement("select * from Users where uuid = ?");
@@ -73,7 +74,7 @@ public class ProfileServiceTest {
         connection = dcms.getConnection(Environment.TEST);
 
         String updatedPassword = "hirva";
-        User user = userRepository.getByEmail("hirva@gmail.com");
+        IUser user = userRepository.getByEmail("hirva@gmail.com");
         profileRepository.updateContact(user, updatedPassword);
 
         PreparedStatement selectQuery = connection.prepareStatement("select * from Users where uuid = ?");

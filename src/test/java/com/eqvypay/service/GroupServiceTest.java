@@ -1,6 +1,8 @@
 package com.eqvypay.service;
 
 import com.eqvypay.persistence.Group;
+import com.eqvypay.persistence.IGroup;
+import com.eqvypay.persistence.IUser;
 import com.eqvypay.persistence.User;
 import com.eqvypay.service.authentication.AuthenticationService;
 import com.eqvypay.service.database.DatabaseConnectionManagementService;
@@ -41,9 +43,9 @@ public class GroupServiceTest {
     @Test
     @Order(1)
     public void testCreateGroup() throws Exception {
-        Group testGroup = new Group();
+        IGroup testGroup = new Group();
 
-        User user = new User();
+        IUser user = new User();
         user.setName("ADD_FRIEND_TEST_USER");
         user.setEmail("testUser1@gmail.com");
         user.setContact("1234567891");
@@ -56,10 +58,10 @@ public class GroupServiceTest {
         testGroup.setGroupDesc("TEST_CREATE_GROUP_DESC");
 
         groupRepository.createGroup(user, testGroup);
-        List<Group> allGroups = groupRepository.getAllGroups();
+        List<IGroup> allGroups = groupRepository.getAllGroups();
 
         boolean shouldBeTrue = false;
-        for (Group eachGroup : allGroups) {
+        for (IGroup eachGroup : allGroups) {
             System.out.println(eachGroup.getGroupId());
             if (eachGroup.getGroupId().equals(testGroup.getGroupId())) {
                 shouldBeTrue = true;
@@ -73,8 +75,8 @@ public class GroupServiceTest {
     @Order(2)
     public void testJoinGroup() throws Exception {
 
-        User testUser = new User();
-        Group testGroup = new Group();
+        IUser testUser = new User();
+        IGroup testGroup = new Group();
 //        testGroup.setGroupId("TEST_JOIN_GROUP_ID");
         testGroup.setGroupName("TEST_JOIN_GROUP_NAME");
         testGroup.setGroupDesc("TEST_JOIN_GROUP_DESC");
@@ -100,8 +102,8 @@ public class GroupServiceTest {
     @Order(3)
     public void testLeaveGroup() {
         try {
-            User testUser = new User();
-            Group testGroup = new Group();
+            IUser testUser = new User();
+            IGroup testGroup = new Group();
 
             testGroup.setGroupId("TEST_LEAVE_GROUP_ID");
             testGroup.setGroupName("TEST_LEAVE_GROUP_NAME");
@@ -123,8 +125,8 @@ public class GroupServiceTest {
     @Test
     @Order(4)
     public void testDeleteGroup() throws Exception {
-        User testUser = new User();
-        Group testGroup = new Group();
+        IUser testUser = new User();
+        IGroup testGroup = new Group();
 
         testGroup.setGroupId("TEST_DELETE_GROUP_ID");
         testGroup.setGroupName("TEST_DELETE_GROUP_NAME");
@@ -137,7 +139,7 @@ public class GroupServiceTest {
 
         boolean shouldRemainTrue = true;
 
-        for(Group eachGroup: groupRepository.getAllGroups()) {
+        for(IGroup eachGroup: groupRepository.getAllGroups()) {
             if(eachGroup.getGroupId() != null && eachGroup.getGroupId().equals(testGroup.getGroupId())) {
                 shouldRemainTrue = false;
             }

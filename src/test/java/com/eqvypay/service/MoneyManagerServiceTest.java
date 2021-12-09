@@ -1,5 +1,7 @@
 package com.eqvypay.service;
 
+import com.eqvypay.persistence.IPersonalActivity;
+import com.eqvypay.persistence.IUser;
 import com.eqvypay.persistence.PersonalActivity;
 import com.eqvypay.persistence.User;
 import com.eqvypay.service.authentication.AuthenticationService;
@@ -63,7 +65,7 @@ public class MoneyManagerServiceTest {
         Connection connection = dcms.getConnection(dcms.parseEnvironment());
 
         moneyManagerDataManipulation.createTable();
-        User user = new User();
+        IUser user = new User();
         user.setName("ADD_INCOME_TEST_USER");
         user.setEmail("testAddIncome@gmail.com");
         user.setContact("1234567891");
@@ -73,7 +75,7 @@ public class MoneyManagerServiceTest {
 
         userRepository.getByEmail("testAddIncome@gmail.com");
 
-        PersonalActivity personalActivity = new PersonalActivity();
+        IPersonalActivity personalActivity = new PersonalActivity();
         personalActivity.setAmount(50F);
         personalActivity.setDate("12/05/2021");
         personalActivity.setExpenseCategory("food");
@@ -95,9 +97,9 @@ public class MoneyManagerServiceTest {
     @Test
     @Order(4)
     public void testGetActivities() throws Exception {
-        User user = userRepository.getByEmail("hirva@gmail.com");
-        ArrayList<PersonalActivity> activities = moneyManagerRepository.getActivities(user.getUuid().toString());
-        for (PersonalActivity activity : activities) {
+        IUser user = userRepository.getByEmail("hirva@gmail.com");
+        ArrayList<IPersonalActivity> activities = moneyManagerRepository.getActivities(user.getUuid().toString());
+        for (IPersonalActivity activity : activities) {
             Assertions.assertEquals(activity.getAmount(), 50);
             Assertions.assertEquals(activity.getDate(), "12/05/2021");
             Assertions.assertEquals(activity.getExpenseCategory(), "food");

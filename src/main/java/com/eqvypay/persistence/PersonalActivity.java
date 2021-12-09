@@ -1,6 +1,6 @@
 package com.eqvypay.persistence;
 
-public class PersonalActivity {
+public class PersonalActivity implements IPersonalActivity{
     private String userId;
     private Float amount;
     private String description;

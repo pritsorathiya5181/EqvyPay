@@ -2,7 +2,7 @@ package com.eqvypay.persistence;
 
 import java.util.Random;
 
-public class Group {
+public class Group implements IGroup {
     private String groupId;
     private String groupName;
     private String groupDesc;

@@ -1,5 +1,6 @@
 package com.eqvypay.service;
 
+import com.eqvypay.persistence.IUser;
 import com.eqvypay.persistence.User;
 import com.eqvypay.service.database.DatabaseConnectionManagementService;
 import com.eqvypay.service.user.UserDataManipulation;
@@ -54,7 +55,7 @@ public class UserServiceTest {
     public void testDelete() throws Exception {
         connection = dcms.getConnection(Environment.TEST);
 
-        User user = userRepository.getByUuid(UUID.fromString("51e0b823-4704-4b82-bed8-e62c68ea5ab0"));
+        IUser user = userRepository.getByUuid(UUID.fromString("51e0b823-4704-4b82-bed8-e62c68ea5ab0"));
         userDataManipulation.delete(UUID.fromString("51e0b823-4704-4b82-bed8-e62c68ea5ab0"));
         PreparedStatement selectQuery = connection.prepareStatement("select * from Users where uuid = ?");
         selectQuery.setString(1, String.valueOf(user.getUuid()));

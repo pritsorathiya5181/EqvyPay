@@ -2,6 +2,9 @@ package com.eqvypay.service;
 
 import com.eqvypay.persistence.Expense;
 import com.eqvypay.persistence.Group;
+import com.eqvypay.persistence.IExpense;
+import com.eqvypay.persistence.IGroup;
+import com.eqvypay.persistence.IUser;
 import com.eqvypay.persistence.User;
 import com.eqvypay.service.database.DatabaseConnectionManagementService;
 import com.eqvypay.service.expense.ExpenseDataManipulation;
@@ -77,7 +80,7 @@ public class ManageExpenseServiceTest {
         User testUser1 = new User();
         User testUser2 = new User();
 
-        Expense testExpense1 = new Expense();
+        IExpense testExpense1 = new Expense();
         testExpense1.setId(UUID.randomUUID().toString());
         testExpense1.setExpenseDesc("testing expense 1");
         testExpense1.setExpenseAmt(105F);
@@ -86,12 +89,12 @@ public class ManageExpenseServiceTest {
         testExpense1.setSourceUserId(testUser2.getUuid().toString());
         testExpense1.setTargetUserId(testUser1.getUuid().toString());
 
-        List<Expense> expenses = new ArrayList<>();
+        List<IExpense> expenses = new ArrayList<>();
         expenses.add(testExpense1);
 
         expenseDataManipulation.saveAll(expenses);
 
-        List<Expense> expensesResult =  expenseRepository.getExpensesByUserId(testUser1.getUuid().toString());
+        List<IExpense> expensesResult =  expenseRepository.getExpensesByUserId(testUser1.getUuid().toString());
         boolean hasExpenses = expensesResult != null && expensesResult.size() > 0;
         Assertions.assertTrue(hasExpenses);
     }
@@ -99,14 +102,14 @@ public class ManageExpenseServiceTest {
     @Test
     @Order(4)
     public void testSaveAllExpenses() throws Exception {
-        Group testGroup = new Group();
+        IGroup testGroup = new Group();
         testGroup.setGroupId("TEST_ADD_EXPENSE_GROUP_ID");
         testGroup.setGroupName("TEST_ADD_EXPENSE_GROUP_NAME");
         testGroup.setGroupDesc("TEST_ADD_EXPENSE_GROUP_DESC");
 
-        User testUser = new User();
+        IUser testUser = new User();
 
-        Expense testExpense1 = new Expense();
+        IExpense testExpense1 = new Expense();
         testExpense1.setGroupId(testGroup.getGroupId());
         testExpense1.setExpenseDesc("testing expense 1");
         testExpense1.setExpenseAmt(105F);
@@ -115,7 +118,7 @@ public class ManageExpenseServiceTest {
         testExpense1.setTargetUserId(testUser.getUuid().toString());
         testExpense1 = expenseDataManipulation.save(testExpense1);
 
-        Expense testExpense2 = new Expense();
+        IExpense testExpense2 = new Expense();
         testExpense2.setGroupId(testGroup.getGroupId());
         testExpense2.setExpenseDesc("testing expense 2");
         testExpense2.setExpenseAmt(50F);
@@ -124,16 +127,16 @@ public class ManageExpenseServiceTest {
         testExpense2.setTargetUserId(testUser.getUuid().toString());
         testExpense2 = expenseDataManipulation.save(testExpense2);
 
-        List<Expense> expenses = new ArrayList<>();
+        List<IExpense> expenses = new ArrayList<>();
         expenses.add(testExpense1);
         expenses.add(testExpense2);
 
         expenseDataManipulation.saveAll(expenses);
-        List<Expense> expensesResult = expenseRepository.getExpensesByUserId(testUser.getUuid().toString());
+        List<IExpense> expensesResult = expenseRepository.getExpensesByUserId(testUser.getUuid().toString());
 
         boolean hasExpense1 = false;
         boolean hasExpense2 = false;
-        for (Expense expense : expensesResult) {
+        for (IExpense expense : expensesResult) {
             if(expense.getId().equals(testExpense1.getId())){
                 hasExpense1 = true;
             }
@@ -148,10 +151,10 @@ public class ManageExpenseServiceTest {
     @Test
     @Order(5)
     public void testSettleExpense() throws Exception {
-        User testUser1 = new User();
-        User testUser2 = new User();
+        IUser testUser1 = new User();
+        IUser testUser2 = new User();
 
-        Expense testExpense = new Expense();
+        IExpense testExpense = new Expense();
         testExpense.setId(UUID.randomUUID().toString());
         testExpense.setExpenseDesc("testing expense 1");
         testExpense.setExpenseAmt(105F);
@@ -160,7 +163,7 @@ public class ManageExpenseServiceTest {
         testExpense.setSourceUserId(testUser2.getUuid().toString());
         testExpense.setTargetUserId(testUser1.getUuid().toString());
 
-        List<Expense> expenses = new ArrayList<>();
+        List<IExpense> expenses = new ArrayList<>();
         expenses.add(testExpense);
 
         expenseDataManipulation.saveAll(expenses);

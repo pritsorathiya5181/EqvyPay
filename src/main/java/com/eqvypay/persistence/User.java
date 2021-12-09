@@ -2,7 +2,7 @@ package com.eqvypay.persistence;
 
 import java.util.UUID;
 
-public class User {
+public class User implements IUser{
 
     public void setUuid(UUID uuid) {
         this.uuid = uuid;

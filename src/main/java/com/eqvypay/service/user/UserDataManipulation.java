@@ -1,5 +1,6 @@
 package com.eqvypay.service.user;
 
+import com.eqvypay.persistence.IUser;
 import com.eqvypay.persistence.User;
 import com.eqvypay.service.database.DatabaseConnectionManagementService;
 import com.eqvypay.util.DtoUtils;
@@ -41,7 +42,7 @@ public class UserDataManipulation implements IUserDataManipulation {
     }
 
     @Override
-    public void save(User user) throws Exception {
+    public void save(IUser user) throws Exception {
         createTable();
 
         Connection connection = dcms.getConnection(dcms.parseEnvironment());

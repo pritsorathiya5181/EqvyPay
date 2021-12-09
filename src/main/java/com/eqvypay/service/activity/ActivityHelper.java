@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.eqvypay.persistence.Activity;
+import com.eqvypay.persistence.IActivity;
 
 @Service
 public class ActivityHelper {
@@ -27,7 +28,7 @@ public class ActivityHelper {
 		activityRepository.addActivity(activity);
 	}
 	
-	public static List<Activity> getActivity(String userId) throws Exception {
+	public static List<IActivity> getActivity(String userId) throws Exception {
 		return activityRepository.getUserActivity(userId);
 	}
 	

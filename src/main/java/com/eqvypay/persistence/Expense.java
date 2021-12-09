@@ -2,7 +2,7 @@ package com.eqvypay.persistence;
 
 import com.eqvypay.util.constants.enums.ExpenseType;
 
-public class Expense {
+public class Expense implements IExpense{
 	
 	private String id;
 	private String targetUserId;

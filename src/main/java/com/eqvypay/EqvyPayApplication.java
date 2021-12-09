@@ -5,7 +5,9 @@ import com.eqvypay.service.authentication.AuthenticationService;
 import com.eqvypay.service.database.DatabaseConnectionManagementService;
 import com.eqvypay.service.expense.ExpenseRepository;
 import com.eqvypay.service.moneymanager.MoneyManagerRepository;
+import com.eqvypay.service.user.IUserDataManipulation;
 import com.eqvypay.service.user.UserDataManipulation;
+import com.eqvypay.service.user.UserFactory;
 import com.eqvypay.util.DtoUtils;
 import com.eqvypay.util.validator.AuthenticationValidator;
 import com.eqvypay.web.UserMenu;
@@ -21,6 +23,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.core.env.Environment;
 
+import com.eqvypay.persistence.IUser;
 import com.eqvypay.persistence.User;
 
 @SpringBootApplication(scanBasePackages = {"com.eqvypay.service", "com.eqvypay.web", "com.eqvypay.util"})
@@ -29,22 +32,13 @@ public class EqvyPayApplication implements CommandLineRunner {
     private Environment env;
 
     @Autowired
-    private UserRepository userRepository;
-
+    private UserFactory userFactory;
+    
     @Autowired
     private UserMenu userMenu;
 
     @Autowired
-    private ExpenseRepository expenseRepository;
-
-    @Autowired
-    private MoneyManagerRepository moneyManagerRepository;
-
-    @Autowired
     private DatabaseConnectionManagementService dcms;
-
-    @Autowired
-    private UserDataManipulation dataManipulation;
 
     @Autowired
     DtoUtils dtoUtils;
@@ -59,6 +53,8 @@ public class EqvyPayApplication implements CommandLineRunner {
     public void run(String... args) throws Exception {
         boolean test = Arrays.stream(env.getActiveProfiles()).anyMatch(profile -> profile.equals("test"));
         if (!test) {
+        	UserRepository userRepository = userFactory.getUserRepository();
+        	IUserDataManipulation userDataManipulation = userFactory.getUserDataManipuation();
             boolean loggedIn = false;
             while (true) {
                 Scanner scanner = new Scanner(System.in);
@@ -72,7 +68,7 @@ public class EqvyPayApplication implements CommandLineRunner {
                 System.out.println("Select an option: ");
 
                 String option = scanner.next();
-                User user = null;
+                IUser user = null;
                 switch (option) {
                     case "0":
                         System.exit(0);
@@ -100,17 +96,17 @@ public class EqvyPayApplication implements CommandLineRunner {
                         String confirmPassword = AuthenticationValidator.getAndValidatePassword(scanner);
                         confirmPassword = AuthenticationValidator.getAndValidatePasswordAndConfirmPassword(scanner, registrationPassword, confirmPassword);
                         String securityAnswer = AuthenticationValidator.getAndValidateSecurityAnswer(scanner);
-                        User newUser = new User();
+                        IUser newUser = UserFactory.getInstance().getUser();
                         newUser.setName(name);
                         newUser.setEmail(registrationEmail);
                         newUser.setContact(contact);
                         newUser.setPassword(AuthenticationService.getHashedPassword(registrationPassword));
                         newUser.setSecurityAnswer(securityAnswer);
-                        dataManipulation.save(newUser);
+                        userDataManipulation.save(newUser);
                         break;
                     case "3":
                         String userEmail = AuthenticationValidator.getAndValidateEmail(scanner);
-                        User oldUser = userRepository.getByEmail(userEmail);
+                        IUser oldUser = userRepository.getByEmail(userEmail);
                         System.out.println("What is your first school name?");
                         String providedSecurityAnswer = scanner.next();
                         if (providedSecurityAnswer.equals(oldUser.getSecurityAnswer())) {
@@ -121,10 +117,10 @@ public class EqvyPayApplication implements CommandLineRunner {
                             System.out.println("New: " + newPassword);
                             System.out.println("Confirmed: " + finalConfirmNewPassword);
                             if (newPassword.equals(finalConfirmNewPassword)) {
-                                User updatedUser = oldUser;
+                                IUser updatedUser = oldUser;
                                 updatedUser.setPassword(AuthenticationService.getHashedPassword(newPassword));
-                                dataManipulation.delete(oldUser.getUuid());
-                                dataManipulation.save(updatedUser);
+                                userDataManipulation.delete(oldUser.getUuid());
+                                userDataManipulation.save(updatedUser);
                             }
                         } else {
                             System.out.println("Incorrect security answer, please try again");

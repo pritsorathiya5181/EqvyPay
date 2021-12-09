@@ -23,7 +23,7 @@ public class MoneyManagerService implements MoneyManagerRepository {
     DtoUtils dtoUtils;
 
     @Override
-    public void addIncomeExpense(PersonalActivity activity) throws Exception {
+    public void addIncomeExpense(IPersonalActivity activity) throws Exception {
         Connection connection = dcms.getConnection(dcms.parseEnvironment());
         PreparedStatement preparedStatement = connection.prepareStatement(DatabaseConstants.INSERT_PERSONAL_ACTIVITY);
 
@@ -39,7 +39,7 @@ public class MoneyManagerService implements MoneyManagerRepository {
     }
 
     @Override
-    public ArrayList<PersonalActivity> getActivities(String userId) throws Exception {
+    public ArrayList<IPersonalActivity> getActivities(String userId) throws Exception {
         if(dtoUtils.tableExist(dcms, "PersonalActivities")) {
             Connection connection = dcms.getConnection(dcms.parseEnvironment());
             Statement statement = connection.createStatement();

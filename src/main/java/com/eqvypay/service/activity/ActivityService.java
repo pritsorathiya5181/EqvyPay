@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.eqvypay.persistence.Activity;
+import com.eqvypay.persistence.IActivity;
 import com.eqvypay.service.database.DatabaseConnectionManagementService;
 import com.eqvypay.util.DtoUtils;
 import com.eqvypay.util.constants.Environment;
@@ -22,7 +23,7 @@ public class ActivityService implements ActivityRepository {
 	private DatabaseConnectionManagementService dcms;
 	
 	@Override
-	public void addActivity(Activity activity) throws Exception {
+	public void addActivity(IActivity activity) throws Exception {
 		Connection connection = dcms.getConnection(Environment.DEV);
 		PreparedStatement statement = connection.prepareStatement("INSERT INTO Activity (uuid,userId,message) VALUES (?,?,?)");
 		statement.setString(1, UUID.randomUUID().toString());
@@ -32,7 +33,7 @@ public class ActivityService implements ActivityRepository {
 	}
 
 	@Override
-	public List<Activity> getUserActivity(String userId) throws Exception {
+	public List<IActivity> getUserActivity(String userId) throws Exception {
 		Connection connection = dcms.getConnection(Environment.DEV);
 		PreparedStatement statement = connection.prepareStatement("SELECT * from Activity where userId = ?");
 		statement.setString(1, userId);
