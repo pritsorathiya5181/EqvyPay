@@ -17,9 +17,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Scanner;
 
 @Service
 public class GroupService implements GroupRepository {
@@ -72,7 +70,7 @@ public class GroupService implements GroupRepository {
     }
 
     @Override
-    public void leaveGroup(IUser user, String groupName) throws Exception {
+    public List<String> getJoinedGroups(IUser user) throws Exception {
         if (dtoUtils.tableExist(dcms, "Groups")) {
             Connection connection = dcms.getConnection(dcms.parseEnvironment());
             Statement stmt = connection.createStatement();
@@ -88,10 +86,28 @@ public class GroupService implements GroupRepository {
 
             if (joinedGroups.size() == 0) {
                 System.out.println("Unfortunately you are not part of any group!!");
+                return null;
             } else {
-                System.out.println("Group that you are currently part of: ");
-                System.out.println(Arrays.toString(joinedGroups.toArray()));
+                return joinedGroups;
+            }
+        } else {
+            System.out.println("No groups are available.");
+            return null;
+        }
+    }
 
+    @Override
+    public void leaveGroup(IUser user, String groupName) throws Exception {
+        if (dtoUtils.tableExist(dcms, "Groups")) {
+            Connection connection = dcms.getConnection(dcms.parseEnvironment());
+            Statement stmt = connection.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM GroupMembers WHERE uuid ='" + user.getUuid() + "'");
+            List<String> ids = dtoUtils.getIdFromResultSet(rs);
+            List<String> joinedGroups = getJoinedGroups(user);;
+
+            if (joinedGroups == null || joinedGroups.size() == 0) {
+                System.out.println("Unfortunately you are not part of any group!!");
+            } else {
                 if (joinedGroups.contains(groupName)) {
                     stmt.executeUpdate("DELETE FROM GroupMembers WHERE group_id ='" + ids.get(joinedGroups.indexOf(groupName)) + "' AND uuid = '" + user.getUuid() + "'");
                     System.out.println("Left from the group " + groupName);
@@ -138,18 +154,22 @@ public class GroupService implements GroupRepository {
     public List<IGroup> getAllGroups() throws Exception {
         List<IGroup> groups = new ArrayList<>();
         Connection connection = dcms.getConnection(dcms.parseEnvironment());
-        Statement stmt = connection.createStatement();
-        ResultSet rs = stmt.executeQuery("Select * from Groups");
-        while (rs.next()) {
-            IGroup group = GroupFactory.getInstance().getGroup();
 
-            group.setGroupId(rs.getString("group_id"));
-            group.setGroupName(rs.getString("group_name"));
-            group.setGroupDesc(rs.getString("group_desc"));
+        if (dtoUtils.tableExist(dcms, "Groups")) {
+            Statement stmt = connection.createStatement();
+            ResultSet rs = stmt.executeQuery("Select * from Groups");
+            while (rs.next()) {
+                IGroup group = new Group();
 
-            groups.add(group);
+                group.setGroupId(rs.getString("group_id"));
+                group.setGroupName(rs.getString("group_name"));
+                group.setGroupDesc(rs.getString("group_desc"));
+
+                groups.add(group);
+            }
+            return groups;
         }
-        return groups;
+        return null;
     }
 
     @Override
@@ -199,6 +219,10 @@ public class GroupService implements GroupRepository {
 
             while (rs.next()) {
                 friendIds.add(rs.getString("friend_id"));
+            }
+            ResultSet rs1 = stmt.executeQuery("SELECT user_id from Friend WHERE friend_id = '" + user.getUuid() + "'");
+            while (rs1.next()) {
+                friendIds.add(rs1.getString("user_id"));
             }
             for (String id : friendIds) {
                 rs = stmt.executeQuery("SELECT group_id FROM GroupMembers WHERE uuid ='" + id + "'");

@@ -17,6 +17,8 @@ public interface GroupRepository {
 
     public void createGroup(IUser user, IGroup group) throws Exception;
 
+    public List<String> getJoinedGroups(IUser user) throws Exception;
+
     public void leaveGroup(IUser user, String groupName) throws Exception;
 
     public List<IGroup> getAllGroups() throws Exception;
@@ -25,6 +27,6 @@ public interface GroupRepository {
 
     ArrayList<IGroup> getAllJoinedGroups(IUser user) throws Exception;
 
-     List<String> getMembersOfGroup(String groupId) throws Exception;
-	
+    List<String> getMembersOfGroup(String groupId) throws Exception;
+
 }

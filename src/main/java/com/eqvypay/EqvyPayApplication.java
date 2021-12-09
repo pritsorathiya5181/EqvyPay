@@ -33,7 +33,7 @@ public class EqvyPayApplication implements CommandLineRunner {
 
     @Autowired
     private UserFactory userFactory;
-    
+
     @Autowired
     private UserMenu userMenu;
 
@@ -53,8 +53,8 @@ public class EqvyPayApplication implements CommandLineRunner {
     public void run(String... args) throws Exception {
         boolean test = Arrays.stream(env.getActiveProfiles()).anyMatch(profile -> profile.equals("test"));
         if (!test) {
-        	UserRepository userRepository = userFactory.getUserRepository();
-        	IUserDataManipulation userDataManipulation = userFactory.getUserDataManipuation();
+            UserRepository userRepository = userFactory.getUserRepository();
+            IUserDataManipulation userDataManipulation = userFactory.getUserDataManipuation();
             boolean loggedIn = false;
             while (true) {
                 Scanner scanner = new Scanner(System.in);
@@ -109,21 +109,25 @@ public class EqvyPayApplication implements CommandLineRunner {
                         IUser oldUser = userRepository.getByEmail(userEmail);
                         System.out.println("What is your first school name?");
                         String providedSecurityAnswer = scanner.next();
-                        if (providedSecurityAnswer.equals(oldUser.getSecurityAnswer())) {
-                            String newPassword = AuthenticationValidator.getAndValidatePassword(scanner);
-                            System.out.println("Confirm password");
-                            String confirmNewPassword = AuthenticationValidator.getAndValidatePassword(scanner);
-                            String finalConfirmNewPassword = AuthenticationValidator.getAndValidatePasswordAndConfirmPassword(scanner, newPassword, confirmNewPassword);
-                            System.out.println("New: " + newPassword);
-                            System.out.println("Confirmed: " + finalConfirmNewPassword);
-                            if (newPassword.equals(finalConfirmNewPassword)) {
-                                IUser updatedUser = oldUser;
-                                updatedUser.setPassword(AuthenticationService.getHashedPassword(newPassword));
-                                userDataManipulation.delete(oldUser.getUuid());
-                                userDataManipulation.save(updatedUser);
+                        if (oldUser != null) {
+                            if (providedSecurityAnswer.equals(oldUser.getSecurityAnswer())) {
+                                String newPassword = AuthenticationValidator.getAndValidatePassword(scanner);
+                                System.out.println("Confirm password");
+                                String confirmNewPassword = AuthenticationValidator.getAndValidatePassword(scanner);
+                                String finalConfirmNewPassword = AuthenticationValidator.getAndValidatePasswordAndConfirmPassword(scanner, newPassword, confirmNewPassword);
+                                System.out.println("New: " + newPassword);
+                                System.out.println("Confirmed: " + finalConfirmNewPassword);
+                                if (newPassword.equals(finalConfirmNewPassword)) {
+                                    IUser updatedUser = oldUser;
+                                    updatedUser.setPassword(AuthenticationService.getHashedPassword(newPassword));
+                                    userDataManipulation.delete(oldUser.getUuid());
+                                    userDataManipulation.save(updatedUser);
+                                }
+                            } else {
+                                System.out.println("Incorrect security answer, please try again");
                             }
                         } else {
-                            System.out.println("Incorrect security answer, please try again");
+                            System.out.println("User doesn't exists");
                         }
                         break;
                     default:

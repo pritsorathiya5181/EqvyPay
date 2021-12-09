@@ -74,21 +74,19 @@ public class ManageExpenseOption {
                 if (payOption.equals("1")) {
                     System.out.println("[1] Add in the existing group");
                     System.out.println("[2] Create a new group");
-                    System.out.print("Select am option: ");
+                    System.out.print("Select an option: ");
 
                     String groupOption = sc.nextLine();
-                    System.out.println("group option " + groupOption);
                     if (groupOption.equals("1")) {
                         System.out.println("List of available groups");
                         ArrayList<IGroup> groups = groupRepository.getAllJoinedGroups(user);
 
-                        if (groups.size() > 0) {
+                        if (groupOption != null && groups.size() > 0) {
                             for (int i = 0; i < groups.size(); i++) {
                                 System.out.println((i + 1) + ". " + groups.get(i).getGroupName());
                             }
 
                             System.out.println("Enter a group name: ");
-                            //sc.nextLine();
                             String groupNameInput = sc.nextLine();
                             boolean validGroup = false;
                             for (IGroup group : groups) {
@@ -100,7 +98,6 @@ public class ManageExpenseOption {
                                     String expenseString = sc.nextLine();
                                     float expenseAmt = Float.valueOf(expenseString);
                                     System.out.println("Enter currency type");
-                                    //sc.nextLine();
                                     String currencyType = sc.nextLine();
 
                                     IExpense newExpense = ExpenseFactory.getInstance().getExpense();
@@ -216,7 +213,6 @@ public class ManageExpenseOption {
                         String expenseAmtString = sc.nextLine();
                         float expenseAmt = Float.valueOf(expenseAmtString);
                         System.out.println("Enter currency type");
-                       // sc.nextLine();
                         String currencyType = sc.nextLine();
                         System.out.println("Friend option selected");
 

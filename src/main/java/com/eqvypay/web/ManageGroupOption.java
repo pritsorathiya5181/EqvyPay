@@ -12,6 +12,7 @@ import com.eqvypay.service.groups.IGroupDataManipulation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -68,7 +69,7 @@ public class ManageGroupOption {
                         List<String> groupIds = groupRepository.getFriendsGroupIds(user);
                         List<IGroup> all_groups = groupRepository.getAllGroups();
 
-                        if (groupIds != null) {
+                        if (groupIds != null && groupIds.size() > 0) {
                             if (all_groups.size() != 0) {
                                 System.out.println("List of groups that your friends are member of:");
                                 for (IGroup each_group : all_groups) {
@@ -84,9 +85,10 @@ public class ManageGroupOption {
                                 } else {
                                     System.out.println("Enter group id from list given only. Please try again.");
                                 }
-                            } else {
-                                System.out.println("Your friends are not part of any group.");
                             }
+                        }
+                        else {
+                            System.out.println("Your friends are not part of any group.");
                         }
                     } catch (Exception e) {
                         System.out.println("Exception occurred: " + e.toString());
@@ -96,8 +98,14 @@ public class ManageGroupOption {
                 case "3":
                     try {
                         System.out.println("Enter group name that you want to leave: ");
-                        groupName = sc.next();
-                        groupRepository.leaveGroup(user, groupName);
+                        List<String> joinedGroups = groupRepository.getJoinedGroups(user);
+
+                        if (joinedGroups != null && joinedGroups.size() > 0) {
+                            System.out.println(Arrays.toString(joinedGroups.toArray()));
+                            System.out.println("Enter group name that you want to leave: ");
+                            groupName = sc.next();
+                            groupRepository.leaveGroup(user, groupName);
+                        }
                     } catch (Exception e) {
                         System.out.println(e.toString());
                     }
